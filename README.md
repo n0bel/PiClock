@@ -14,4 +14,4 @@ The early days and evolution of it are chronicled on my blog http://n0bel.net/v1
 
 This project is still in flux, not ready for general usage.    Expect major refactoring and reorganization to occur.
 
-
+I'll be posting detailed instructions at some point when its ready for release.
