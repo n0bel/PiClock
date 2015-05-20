@@ -35,4 +35,4 @@ cd ..
 
 # the main app
 cd Clock
-python PyQtPiClock.py Config-Chris
+python PyQtPiClock.py
