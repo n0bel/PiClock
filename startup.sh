@@ -22,7 +22,7 @@ amixer cset numid=1 -- 400
 
 # NeoPixel AmbiLights
 cd Leds
-python NeoAmbi.py &
+sudo python NeoAmbi.py &
 cd ..
 
 # gpio button to keyboard input
