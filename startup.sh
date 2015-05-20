@@ -1,6 +1,6 @@
 # Startup script for the PiClock
 # Designed to be started from crontab as follows
-#@reboot /home/pi/PiClock/startup.sh
+#@reboot sh /home/pi/PiClock/startup.sh
 
 #
 cd /home/pi/PiClock
