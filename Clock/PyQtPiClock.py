@@ -411,13 +411,6 @@ class myMain(QtGui.QWidget):
             if event.key() == Qt.Key_Right:
                 nextframe()
                 
-def buttoncheck():
-    global g23, g23p
-    g23.seek(0)
-    g23n = g23.readAll()
-    if g23n < g23p:
-        nextframe()
-    g23p = g23n
 
 configname = 'Config'
 
@@ -646,13 +639,6 @@ for i in range(0,9):
 manager = QtNetwork.QNetworkAccessManager()
 
 
-if QtCore.QFile.exists("/sys/class/gpio/gpio23/value"):
-    g23 = QtCore.QFile("/sys/class/gpio/gpio23/value")
-    g23.open(QtCore.QFile.ReadOnly)
-    g23p = g23.readAll()
-    btimer = QtCore.QTimer()
-    btimer.timeout.connect(buttoncheck)
-    btimer.start(100)    
 
 #proxy = QNetworkProxy()
 #proxy.setType(QNetworkProxy.HttpProxy)
