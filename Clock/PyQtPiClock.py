@@ -423,7 +423,11 @@ configname = 'Config'
 
 if len(sys.argv) > 1: 
     configname = sys.argv[1]
-    
+
+if not os.path.isfile(configname+".py"):
+    print "Config file not found %s" % configname+".py"
+    exit(1)
+      
 Config = __import__(configname)
 
 lastmin = -1
