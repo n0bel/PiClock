@@ -22,28 +22,28 @@ When you first boot your Pi, you'll be presente with a configuration menu.
 Generally on your second boot it will not show up, and you'll need to do
 "sudo raspi-config".   Therefore I recommend doing these first step all at once.
 
-  Expand File system 
-  Change User Password -- this will set the password for the use pi, for ssh logins.
-  Enable Boot to Desktop/Scratch
-    Pick the second option "Desktop Log in as user 'pi'....."
-  Internationalization
-    Change Locale.
-      Everything I've done is in English.  en_GB/UTF-8 will already be selected.
+  - Expand File system 
+  - Change User Password -- this will set the password for the use pi, for ssh logins.
+  - Enable Boot to Desktop/Scratch
+    * Pick the second option "Desktop Log in as user 'pi'....."
+  - Internationalization
+    * Change Locale.
+      - Everything I've done is in English.  en_GB/UTF-8 will already be selected.
       If you're in the US, you'll probably want to also select en_US/UTF-8.
       After that page is done, you'll need to choose a default, again en_GB or en_US as you prefer.
-  Change Timezone.
-     You'll want this to be correct, or the clock will be wrong.
-  Change Keyboard Layout
-     Generally not needed, but good to check if you like the default
-  Advanced options
-    Overscan
-      Turn it off
-    Hostname
-      Maybe set this to PiClock?
-    SSH
-      I'd turn it on
-    Audio
-      Set as appropriate HDMI or Audio Jack outputs
+  - Change Timezone.
+    *  You'll want this to be correct, or the clock will be wrong.
+  - Change Keyboard Layout
+    *  Generally not needed, but good to check if you like the default
+  - Advanced options
+    * Overscan
+      - Turn it off
+    * Hostname
+      - Maybe set this to PiClock?
+    * SSH
+      - I'd turn it on
+    * Audio
+      - Set as appropriate HDMI or Audio Jack outputs
 
 Finish and let it reboot.
 
