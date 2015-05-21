@@ -87,7 +87,7 @@ ping github.com
 
 ### Get all the software that PiClock needs.
 
-Become super user! (root)  <trumpets play in the background> (ok, maybe just in my head)
+Become super user! (root)  (trumpets play in the background) (ok, maybe just in my head)
 ```
 sudo su -
 ```
