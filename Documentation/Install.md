@@ -1,11 +1,14 @@
 # Install Instructions for PiClock
 
-PiClock and this install guide are based on Raspian 2015-05-05 image released on https://www.raspberrypi.org/downloads/
-It will work with many raspbian versions, but you may have to add more packages, etc.  That excersise is left for the reader.
+PiClock and this install guide are based on Raspian 2015-05-05 image
+released on https://www.raspberrypi.org/downloads/ It will work with many
+raspbian versions, but you may have to add more packages, etc.  That excersise
+is left for the reader.
 
-What follows is a step by step guide.  If you start with a new clean raspbian image, it should just work.
-I'm assuming that you already know how to hook up your Raspi, monitor, and keyboard/mouse.   If please 
-do a web search regarding setting up the basic hardware for your Raspi.
+What follows is a step by step guide.  If you start with a new clean raspbian
+image, it should just work. I'm assuming that you already know how to hook
+up your Raspi, monitor, and keyboard/mouse.   If please do a web search
+regarding setting up the basic hardware for your Raspi.
  
 ### Download Raspbian and put it on an SD Card
 
@@ -15,31 +18,32 @@ https://www.raspberrypi.org/downloads/
 
 ### First boot and configure
 
-When you first boot your Pi, you'll be presente with a configuration menu.  Generally on your second boot it will not
-show up, and you'll need to do "sudo raspi-config".   Therefore I recommend doing these first step all at once.
+When you first boot your Pi, you'll be presente with a configuration menu.
+Generally on your second boot it will not show up, and you'll need to do
+"sudo raspi-config".   Therefore I recommend doing these first step all at once.
 
-1. Expand File system 
-2. Change User Password -- this will set the password for the use pi, for ssh logins.
-3. Enable Boot to Desktop/Scratch
-   Pick the second option "Desktop Log in as user 'pi'....."
-4. Internationalization
-   Change Locale.
-     Everything I've done is in English.  en_GB/UTF-8 will already be selected.
-     If you're in the US, you'll probably want to also select en_US/UTF-8.   After that page is done, 
-     you'll need to choose a default, again en_GB or en_US as you prefer.
-   Change Timezone.
+  Expand File system 
+  Change User Password -- this will set the password for the use pi, for ssh logins.
+  Enable Boot to Desktop/Scratch
+    Pick the second option "Desktop Log in as user 'pi'....."
+  Internationalization
+    Change Locale.
+      Everything I've done is in English.  en_GB/UTF-8 will already be selected.
+      If you're in the US, you'll probably want to also select en_US/UTF-8.
+      After that page is done, you'll need to choose a default, again en_GB or en_US as you prefer.
+  Change Timezone.
      You'll want this to be correct, or the clock will be wrong.
-   Change Keyboard Layout
+  Change Keyboard Layout
      Generally not needed, but good to check if you like the default
-8. Advanced options
-   Overscan
-     Turn it off
-   Hostname
-     Maybe set this to PiClock?
-   SSH
-     I'd turn it on
-   Audio
-     Set as appropriate HDMI or Audio Jack outputs
+  Advanced options
+    Overscan
+      Turn it off
+    Hostname
+      Maybe set this to PiClock?
+    SSH
+      I'd turn it on
+    Audio
+      Set as appropriate HDMI or Audio Jack outputs
 
 Finish and let it reboot.
 
@@ -177,8 +181,9 @@ Now that you have your api keys...
 
 ```
 cd PiClock
+cd Clock
 cp ApiKeys-example.py ApiKeys.py
-nano
+nano ApiKeys.py
 ```
 Put your api keys in the file as indicated
 ```
@@ -189,10 +194,20 @@ googleapi = 'YOUR GOOGLE MAPS API KEY'
 wuapi = 'YOUR WEATHER UNDERGROUND API KEY'
 ```
 
+### Configure your PiClock
+here's were you tell PiClock where your weather should come from, and the radar map centers and markers.
 
+```
+cd PiClock
+cd Clock
+cp Config-example.py Config.py
+nano Config.py
+```
 
-There are 2 config files. 
-
+The first thing is to change the Latitudes and Longitudes you see to yours.   They occur in several places.
+The first one in the file is where your weather forecast comes from.   The others are where your radar images
+are centered and where your 
+ 
 
 
 #.................. more to come.. this is not complete
