@@ -20,17 +20,20 @@ https://www.raspberrypi.org/downloads/
 
 When you first boot your Pi, you'll be presente with a configuration menu.
 Generally on your second boot it will not show up, and you'll need to do
-"sudo raspi-config".   Therefore I recommend doing these first step all at once.
+"sudo raspi-config".   Therefore I recommend doing these first step
+all at once.
 
-  - Expand File system 
-  - Change User Password -- this will set the password for the use pi, for ssh logins.
+  - Expand File system -- do it
+  - Change User Password -- this will set the password for the use pi,
+     for ssh logins.
   - Enable Boot to Desktop/Scratch
     * Pick the second option "Desktop Log in as user 'pi'....."
   - Internationalization
     * Change Locale.
-      - Everything I've done is in English.  en_GB/UTF-8 will already be selected.
-      If you're in the US, you'll probably want to also select en_US/UTF-8.
-      After that page is done, you'll need to choose a default, again en_GB or en_US as you prefer.
+      - Everything I've done is in English.  en_GB/UTF-8 will already 
+      be selected. If you're in the US, you'll probably want to also
+      select en_US/UTF-8. After that page is done, you'll need to choose
+      a default, again en_GB or en_US as you prefer.
   - Change Timezone.
     *  You'll want this to be correct, or the clock will be wrong.
   - Change Keyboard Layout
@@ -62,7 +65,8 @@ dtoverlay=w1-gpio,gpiopin=4
 ```
 are in there somewhere, and occur only once.
 
-You're free to change the pins, but of course the hardware guide will need to be adjusted to match.
+You're free to change the pins, but of course the hardware guide will need to
+be adjusted to match.
 
 use nano to edit the modules file
 ```
@@ -82,16 +86,19 @@ sudo reboot
 
 ### Get connected to the internet
 
-Either connect to your wired network, or setup wifi and verify you have internet access from the Pi
+Either connect to your wired network, or setup wifi and verify you have
+internet access from the Pi
 
 ```
 ping github.com
 ```
-(remember ctrl-c aborts programs, like breaking out of ping, which will go on forever)
+(remember ctrl-c aborts programs, like breaking out of ping, which will
+go on forever)
 
 ### Get all the software that PiClock needs.
 
-Become super user! (root)  (trumpets play in the background) (ok, maybe just in my head)
+Become super user! (root)  (trumpets play in the background) (ok, maybe
+just in my head)
 ```
 sudo su -
 ```
@@ -150,7 +157,8 @@ apt-get install mpg123
 ```
 
 ### reboot
-To get some things running, and ensure the final config is right, we'll do a reboot
+To get some things running, and ensure the final config is right, we'll do
+a reboot
 ```
 reboot
 ```
@@ -163,19 +171,30 @@ and this is where we want to be.
 git clone https://github.com/n0bel/PiClock.git
 ```
 Once that is done, you'll have a new directory called PiClock
+One little command is needed if you intend to use gpio buttons
+and the gpio-keys driver:
+```
+chmod +x PiClock/Button/gpio-keys
+```
+(git hub does not allow me to set attributes on files, so we
+must do it manually)
+
 
 ### Configure the PiClock api keys
 
-The first is to set API keys for Weather Underground and Google Maps.  These are both free, unless you have large volume.
+The first is to set API keys for Weather Underground and Google Maps.  
+These are both free, unless you have large volume.
 The PiClock usage is well below the maxiums imposes by the free api keys.
 
 Google Maps api keys are created at this link:
 https://console.developers.google.com/flows/enableapi?apiid=maps_backend&keyType=CLIENT_SIDE
-You'll require a google user and password.  After that it'll require you create a "project" (maybe PiClock for a project name?)
+You'll require a google user and password.  After that it'll require
+you create a "project" (maybe PiClock for a project name?)
 It will also ask about Client Ids, which you can skip (just clock ok/create)
 
-Weather Underground api keys are created at this link: http://www.wunderground.com/weather/api/
-Here too, it'll ask you for an Application (maybe PiClock?) that you're using the api key with.
+Weather Underground api keys are created at this link: 
+http://www.wunderground.com/weather/api/ Here too, it'll ask you for an
+Application (maybe PiClock?) that you're using the api key with.
 
 Now that you have your api keys...
 
@@ -195,7 +214,8 @@ wuapi = 'YOUR WEATHER UNDERGROUND API KEY'
 ```
 
 ### Configure your PiClock
-here's were you tell PiClock where your weather should come from, and the radar map centers and markers.
+here's were you tell PiClock where your weather should come from, and the
+radar map centers and markers. 
 
 ```
 cd PiClock
@@ -204,10 +224,35 @@ cp Config-example.py Config.py
 nano Config.py
 ```
 
-The first thing is to change the Latitudes and Longitudes you see to yours.   They occur in several places.
-The first one in the file is where your weather forecast comes from.   The others are where your radar images
-are centered and where your 
+This file is a python script, subject to python rules and syntax.
+The configuration is a set of variables, objects and arrays,
+set up in python syntax.  The positioning of the {} and () and ','
+are not arbitrary.  If you're not familiar with python, use extra
+care not to disturb the format while changing the data.
+
+The first thing is to change the Latitudes and Longitudes you see to yours.
+They occur in several places. The first one in the file is where your weather
+forecast comes from.   The others are where your radar images are centered
+and where the markers appear on those images.  Markers are those little red
+location pointers.
+
+The second thing to change is your NOAA weather radio stream url.  You can
+find it here: http://www.wunderground.com/wxradio/
+
+At this point, I'd not recommend many other changes until you have tested
+and gotten it running.
+
+### Run it!
+
+```
+cd PiClock
+sh startup.sh
+```
+Your screen should be covered by the PiClock  YAY!
+
+There may be some output on the terminal screen as startup.sh executes.
+If everything works, it can be ignored.  If for some reason the clock
+doesn't work, or maps are missing, etc the output may give a reason
+or reasons, which usually reference something to do with the config
+file (Config.py)
  
-
-
-#.................. more to come.. this is not complete
