@@ -5,6 +5,7 @@ import sys, os, platform, signal
 import datetime, time, json
 from pprint import pprint
 import random
+from pywin import framework
 sys.dont_write_bytecode = True
 
 from PyQt4 import QtGui, QtCore, QtNetwork
@@ -265,6 +266,8 @@ class Radar(QtGui.QLabel):
         self.wmk.setStyleSheet("#mk { background-color: transparent; }")    
         self.wmk.setGeometry(0, 0, rect.width(), rect.height())
 
+        self.wxmovie = QMovie()
+
     def mapurl(self, radar,rect,markersonly):
         #'https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&center='+rcenter.lat+','+rcenter.lng+'&zoom='+rzoom+'&size=300x275'+markersr;
         urlp = [];
@@ -329,7 +332,8 @@ class Radar(QtGui.QLabel):
         self.wxbuff.open(QtCore.QIODevice.ReadOnly)
         self.wxmovie = QMovie(self.wxbuff, 'GIF')
         self.wwx.setMovie( self.wxmovie)
-        self.wxmovie.start()
+        if self.parent().isVisible():
+            self.wxmovie.start()
 
     def getwx(self):
         global manager
@@ -357,6 +361,12 @@ class Radar(QtGui.QLabel):
         QtCore.QObject.connect(self.timer,QtCore.SIGNAL("timeout()"), self.getwx)
         self.timer.start(interval)
        
+    def wxstart(self):
+        self.wxmovie.start()
+        
+    def wxstop(self):
+        self.wxmovie.stop()
+        
     def stop(self):
         try:
             self.timer.stop()
@@ -381,14 +391,26 @@ def myquit(a=0,b=0):
     temptimer.stop()
     
     QtCore.QTimer.singleShot(30, realquit)
-    
+
+def fixupframe(frame,onoff):
+    for child in frame.children():
+        if isinstance(child,Radar):
+            if onoff:
+                #print "calling wxstart on radar on ",frame.objectName()
+                child.wxstart()
+            else:
+                #print "calling wxstop on radar on ",frame.objectName()
+                child.wxstop()
+        
 def nextframe():
     global frames, framep
     frames[framep].setVisible(False)
+    fixupframe(frames[framep],False)
     framep += 1
     if framep >= len(frames): framep = 0
     frames[framep].setVisible(True)
-    
+    fixupframe(frames[framep],True)
+
 class myMain(QtGui.QWidget):
     def keyPressEvent(self, event):
         global weatherplayer, lastkeytime
@@ -457,10 +479,19 @@ frames.append(frame1)
 frame2 = QtGui.QFrame(w)
 frame2.setObjectName("frame2")
 frame2.setGeometry(0,0,width,height)
-frame2.setStyleSheet("#frame2 { background-color: blue; border-image: url("+Config.background2+") 0 0 0 0 stretch stretch;}")
+frame2.setStyleSheet("#frame2 { background-color: blue; border-image: url("+Config.background+") 0 0 0 0 stretch stretch;}")
 frame2.setVisible(False)
 frames.append(frame2)
 
+squares1 = QtGui.QFrame(frame1)
+squares1.setObjectName("squares1")
+squares1.setGeometry(0,height-yscale*600,xscale*340,yscale*600)
+squares1.setStyleSheet("#squares1 { background-color: transparent; border-image: url("+Config.squares1+") 0 0 0 0 stretch stretch;}")
+
+squares2 = QtGui.QFrame(frame1)
+squares2.setObjectName("squares2")
+squares2.setGeometry(width-xscale*340,0,xscale*340,yscale*900)
+squares2.setStyleSheet("#squares2 { background-color: transparent; border-image: url("+Config.squares2+") 0 0 0 0 stretch stretch;}")
 
 clockface = QtGui.QFrame(frame1)
 clockface.setObjectName("clockface")
