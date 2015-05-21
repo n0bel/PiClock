@@ -87,7 +87,7 @@ ping github.com
 
 ### Get all the software that PiClock needs.
 
-Become super user!  <trumpets play in the background> (ok, maybe just in my head)
+Become super user! (root)  <trumpets play in the background> (ok, maybe just in my head)
 ```
 sudo su -
 ```
@@ -95,26 +95,62 @@ update the repository
 ```
 apt-get update
 ```
-wait...........
-when thats done
+then get qt4 for python
 ```
 apt-get install python-qt4
 ```
-wait.......
 you may need to confirm some things, like:
 After this operation, 44.4 MB of additional disk space will be used.
 Do you want to continue [Y/n]? y
 Go ahead, say yes
 
-Next we're installing a python driver for DS18B20s.  Skip this if you're not using this feature.
+then get libboost for python (optional for the NeoPixel LED Driver)
+```
+apt-get install libboost-python1.49.0
+```
+
+### Get the DS18B20 Temperature driver for Python (optional)
+
+(you must still be root [super user]) 
 ```
 git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
 python setup.py install
 ```
 
-Next we're installing Lirc, a driver for IR remote control of the PiClock, skip this if you're not using this feature.
+### Get Lirc driver for IR remote (optional)
+
+(you must still be root [super user]) 
 ```
 apt-get install lirc
 ```
+
+use nano to edit lirc hardware file
+```
+sudo nano /etc/lirc/hardware.conf
+```
+Be sure the LIRCD_ARGS line appears as follows
+```
+LIRCD_ARGS="--uinput"
+```
+
+Be sure the DRIVER line appears as follows
+```
+DRIVER="default"
+```
+
+### Get mpg123 (optional to play NOAA weather radio streams)
+
+(you must still be root [super user]) 
+```
+apt-get install mpg123
+```
+
+### reboot
+To get some things running, and ensure the final config is right, we'll do a reboot
+```
+reboot
+```
+
+
 
 #.................. more to come.. this is not complete
