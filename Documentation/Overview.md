@@ -42,7 +42,8 @@ So what do you need to build a PiClock?
   * A Raspberry Pi Model B, or B+ or Pi 2 Model B
   * A Display Monitor & Cable
   * Power Supply (or if you're ambitious tap your display power supply,
-    you'll probably need a switching down regulator to 5v)
+    you'll probably need a switching down regulator to 5v)  Remember
+    the Pi likes something that can source up to 2A.
   * A USB Keyboard and Mouse for setup (if you want something small
     and semi-permanent, I've had good luck with this: 
     https://www.google.com/search?q=iPazzPort+2.4G+Mini+Wireless+Keyboard 
@@ -51,7 +52,9 @@ So what do you need to build a PiClock?
 
 Optional things
 
-  * A string of WS2818 based RGB LEDs for the AmbiLight effect
+  * One or more DS18B20s for showing the inside temperature ( https://www.google.com/#q=ds18b20 )
+  * A string of WS2818 based RGB LEDs for the AmbiLight effect.  At 40ma per LED, and 30 or so
+    LEDs you're quickly up to needing an extra 1.2A from the power supply.  Size it appropriately.
     One option is https://learn.adafruit.com/adafruit-neopixel-uberguide/overview)
   * A TSOP4838 IR Receiver to flip the page display of the PiClock (https://www.google.com/search?q=tsop4838)
   * An IR Remote control ( I use this little guy: https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain )
