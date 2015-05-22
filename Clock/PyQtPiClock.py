@@ -5,7 +5,6 @@ import sys, os, platform, signal
 import datetime, time, json
 from pprint import pprint
 import random
-from pywin import framework
 sys.dont_write_bytecode = True
 
 from PyQt4 import QtGui, QtCore, QtNetwork

@@ -295,7 +295,7 @@ and gotten it running.
 cd PiClock
 sh startup.sh
 ```
-Your screen should be covered by the PiClock  YAY!
+After about 45 seconds, your screen should be covered by the PiClock  YAY!
 
 There may be some output on the terminal screen as startup.sh executes.
 If everything works, it can be ignored.  If for some reason the clock
@@ -336,3 +336,17 @@ and reboot to test
 ```
 sudo reboot
 ```
+
+### Updating to newer/updated versions
+Since we pulled the software from github originally, it can be updated
+using git and github.
+```
+cd PiClock
+git pull
+python update.py
+```
+This will automatically update any part(s) of the software that has changed.
+The update.py program will then convert any config files as needed.
+
+You'll want to reboot after the upate.
+
