@@ -60,8 +60,19 @@ to GPIO18, header pin 12.
 
 [image to be created]
 
-## Buttons
+## GPIO Buttons
 
-
+Up to 3 simple push button switches come preconfigured in the software. The switches are
+wired simply to connect a gpio pin to ground when pushed. The following line
+in startup.sh configure their function, and which GPIO they are locted on.
+```
+sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
+```
+ * GPIO23 (header pin 16) is mapped to a space (which flips pages on the clock.
+ * GPIO24 (header pin 18) is mapped to F2 (which toggles the NOAA stream)
+ * GPIO25 (header pin 22) is mapped to UP (which does nothing yet)
+ * A convinient ground is on header pin 20.
+ 
+[image to be created]
 
 # this guide is not yet complete

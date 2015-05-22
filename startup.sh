@@ -26,7 +26,7 @@ sudo python NeoAmbi.py &
 cd ..
 
 # gpio button to keyboard input
-sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 &
+sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
 
 # for temperature sensor(s) on One Wire bus
 cd Temperature

@@ -179,6 +179,53 @@ chmod +x PiClock/Button/gpio-keys
 (git hub does not allow me to set attributes on files, so we
 must do it manually)
 
+### Set up Lirc (IR Remote)
+If you're using the recommended IR Key Fob, 
+https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain
+you can copy the lircd.conf file included in the distribution as follows:
+```
+sudo IR/lircd.conf /etc/lirc/
+```
+If you're using something else, you'll need to use irrecord, or load a remote file
+as found on http://lirc.org/
+
+The software expects 7 keys.   KEY_F1, KEY_F2, KEY_F3, KEY_UP, KEY_DOWN, KEY_RIGHT
+and KEY_LEFT.   Lirc takes these keys and injects them into linix as if they
+were typed from a keyboard.   PyQPiClock.py then simply looks for normal keyboard
+events.   Therefore of course, if you have a usb keyboard attached, those keys
+work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV. 
+
+You should (must) verify your IR codes.   I've included a program called IRCodes.pl
+which will verify that your lircd.conf is setup correctly.
+If you've rebooted after installing lircd.conf, you'll have to stop lirc first:
+```
+sudo service lirc stop
+```
+Then use the IRCodes.pl program as follows:
+```
+perl IR/IRCodes.pl
+```
+Yes, I reverted to perl.. I may redo it in Python one day.
+
+If you're using the recommended key fob remote, they come randomly programmed from
+the supplier.   To program them you press and hold the mute button (the middle one)
+while watching the screen scroll through codes.
+When the screen shows 
+```
+************ KEY_F2
+```
+STOP! then try the other keys, be sure they all report KEY_UP, KEY_DOWN correctly.
+If not press and hold the mute button again, waiting for the asterisks and KEY_F2,
+then STOP again, try the other keys.   Repeat the process until you have all the 
+keys working.
+
+Ctrl-C to abort perl.
+
+then reboot
+```
+sudo reboot
+```
+
 
 ### Configure the PiClock api keys
 
