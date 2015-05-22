@@ -100,9 +100,10 @@ def tempfinished():
     tempdata = json.loads(tempstr)
     s = 'Inside Temp '+tempdata['temp']
     if tempdata['temps']:
-        s = ''
-        for tk in tempdata['temps']:
-            s += ' ' + tk + ':' + tempdata['temps'][tk]
+        if len(tempdata['temps']) > 1:
+            s = ''
+            for tk in tempdata['temps']:
+                s += ' ' + tk + ':' + tempdata['temps'][tk]
     temp.setText(s)
     
 def gettemp():

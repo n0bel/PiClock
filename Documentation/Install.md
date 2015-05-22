@@ -302,4 +302,37 @@ If everything works, it can be ignored.  If for some reason the clock
 doesn't work, or maps are missing, etc the output may give a reason
 or reasons, which usually reference something to do with the config
 file (Config.py)
- 
+
+### First Use
+
+  * The space bar or right or left arrows will change the page.
+  * F2 will start and stop the NOAA weather radio stream
+  * F4 will close the clock
+  
+If you're using the temperature feature AND you have multiple temperature sensors,
+you'll see the clock display: 000000283872:74.6 00000023489:65.4 or something similar.
+Note the numbers exactly.   Use F4 to stop the clock,
+then..
+```
+nano Temperature/TempNames.py
+```
+Give each number a name, like is shown in the examples in that file
+
+### setting the clock to auto start
+At this point the clock will only start when you manually start it, as
+described in the Run It section.
+
+To have it auto start on boot we need to do one more thing, edit the
+crontab file as follows: (it will automatically start nano)
+```
+crontab -e
+```
+and add the following line:
+```
+@reboot sh /home/pi/PiClock/startup.sh
+```
+save the file
+and reboot to test
+```
+sudo reboot
+```
