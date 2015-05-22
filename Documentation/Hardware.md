@@ -12,6 +12,18 @@ If you want to experiment and learn about the various hardware, and possibly bre
 them first, I've included some decent guides for that. *However, you can just skip to the
 picture to show the hookup for the PiClock.*
 
+## Raspberry Pi Models
+
+This hardware guide directly supports the following
+
+* Raspberry Pi Revision 2 Model B
+* Raspberry Pi Model B+
+* Raspberry Pi 2 Model B
+
+Changes can be made, alternate pins (grounds/gpios) can be used to support
+other models, but this is left as an exercise for the reader.
+
+
 ## IR receiver (TSOP4838)
 
 There are many guides showing how to connect an IR receiver (and IR LEDs) to a Raspberry Pi.
@@ -27,8 +39,7 @@ Raspi Header Pin           TSOP4838 Pin
 Gnd   Pin 9                  Pin 1
 GPIO3 Pin 5                  Pin 3
 ```
-
-[image to be created]
+![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/tsop4838.jpg)
 
 ## Inside Temperature ( DS18B20 )
 
@@ -42,7 +53,7 @@ Gnd   Pin 9                  Pin 1
 GPIO4 Pin 7                  Pin 2
 ```
 
-[image to be created]
+![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/ds18b20.jpg)
 
 
 ## WS2818b RGB LED AmbiLight strip
@@ -56,9 +67,10 @@ power the LED string, so size your power supply accordingly.
 
 Everyone seems to recommend a level shift (3.3V to 5V) to drive the LEDs.   I've found this to
 be unnecessary.  Your milage may vary.  The data pin of the WS2818b string should be connected
-to GPIO18, header pin 12.
+to GPIO18, header pin 12.   Note the markings on the LED strip since they all are not pinned
+the same.
 
-[image to be created]
+![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/NeoPixel.jpg)
 
 ## GPIO Buttons
 
@@ -73,6 +85,14 @@ sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
  * GPIO25 (header pin 22) is mapped to UP (which does nothing yet)
  * A convinient ground is on header pin 20.
  
-[image to be created]
+![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/gpiobuttons.jpg)
 
-# this guide is not yet complete
+
+## Schematic of all connections
+
+For those that want to work from a schematic, I threw together a simple one
+
+![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/Hardware_Schematic.png)
+
+
+

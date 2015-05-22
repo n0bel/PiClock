@@ -39,7 +39,7 @@ And I've made some for friends and family with different customizations.
 
 So what do you need to build a PiClock?
 
-  * A Raspberry Pi Model B, or B+ or Pi 2 Model B
+  * A Raspberry Pi (revision 2) Model B, or B+ or Pi 2 Model B
   * A Display Monitor & Cable
   * Power Supply (or if you're ambitious tap your display power supply,
     you'll probably need a switching down regulator to 5v)  Remember
