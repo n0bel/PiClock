@@ -14,4 +14,13 @@ The early days and evolution of it are chronicled on my blog http://n0bel.net/v1
 
 This project is still in flux, not ready for general usage.    Expect major refactoring and reorganization to occur.
 
-I'll be posting detailed instructions at some point when its ready for release.
+A decent amount of documentation is now ready. 
+
+I'd suggest starting with the overview https://github.com/n0bel/PiClock/blob/master/Documentation/Overview.md
+
+All of the extra hardware (IR Remote, GPIO buttons, Temerature, LEDs) are optional, so you can then jump to the install guide
+https://github.com/n0bel/PiClock/blob/master/Documentation/Install.md
+
+Of course you can jump to the hardware guide anytime https://github.com/n0bel/PiClock/blob/master/Documentation/Hardware.md
+
+ 
