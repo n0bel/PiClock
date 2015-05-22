@@ -15,7 +15,7 @@ Google Maps API.   **You must get API Keys from both weather underground
 and Google Maps in order to make this work.**  Both are free for low
 usage such as this application.
 
-The PiClock can be customized with several supported addtional things:
+The PiClock can be customized with several supported additional things:
   * RGB LED strips (NeoPixel) to create an ambilight effect
   * gpio buttons for changing the view
   * IR Remote Control for changing the view
@@ -71,7 +71,7 @@ steps through all the things that you need to do to a stock Raspbian image to ma
 ## History
 
 It all started one Satuday afternoon when I was feeling bored.  My super duper radio
-controlled clock ( you know those AccuRite clocks) was WRONG!.    Aparently the
+controlled clock ( you know those AccuRite clocks) was WRONG!.    Apparently the
 daylight savings time adjustment was coded to the pre-2007 dates.   I was going
 to go get something new.. when I spotted an unused monitor in the corner of my 
 livingroom...  My eyes flicked back and forth between it and the wall.  I had
@@ -84,7 +84,7 @@ image.  The Pi ran at about 60% cpu, having to move the second hand once per sec
 while re-rendering the other hands and clock face layers.
 
 After well over a year, and some minor changes, I decided to give it a facelift,
-change the weather to Weather Undeground and the background maps to Google Maps.
+change the weather to Weather Underground and the background maps to Google Maps.
 Well the Midori browser really had a tough time keeping up with all that going on.
 You could see it skipping past seconds two at a time.  And the animated radar
 GIFs would stall more often than not.  Yes I tried Ephemeral and it was worse!
@@ -95,7 +95,7 @@ the language of choice for Pi's.  It took a while to settle on a GUI framework.
 The primary issue on most of the GUIs was lack of image transparency support.
 Qt4 and its Python wrapper PyQt4 is what I finally chose.
 
-The details of this evolution are are my blog http://n0bel.net/v1/index.php/projects/raspberry-pi-clock
+The details of this evolution are on my blog http://n0bel.net/v1/index.php/projects/raspberry-pi-clock
 as well as newer postings and updates.   Some of my friends have been treated (subjected)
 to more timely updates via my public facebook page https://www.facebook.com/pages/Kevin-N0BEL/946361588712436 
 

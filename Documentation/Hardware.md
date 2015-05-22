@@ -10,7 +10,7 @@ to add features or make your clock cooler.
 
 If you want to experiment and learn about the various hardware, and possibly breadboard
 them first, I've included some decent guides for that. *However, you can just skip to the
-picture to show the hookup for the PiClock.*
+picture showing the hookup for the PiClock.*
 
 ## Raspberry Pi Models
 
@@ -76,7 +76,7 @@ the same.
 
 Up to 3 simple push button switches come preconfigured in the software. The switches are
 wired simply to connect a gpio pin to ground when pushed. The following line
-in startup.sh configure their function, and which GPIO they are locted on.
+in startup.sh configure their function, and which GPIO they are located on.
 ```
 sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
 ```

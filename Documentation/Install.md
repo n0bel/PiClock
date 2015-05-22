@@ -2,7 +2,7 @@
 
 PiClock and this install guide are based on Raspian 2015-05-05 image
 released on https://www.raspberrypi.org/downloads/ It will work with many
-raspbian versions, but you may have to add more packages, etc.  That excersise
+raspbian versions, but you may have to add more packages, etc.  That exercise
 is left for the reader.
 
 What follows is a step by step guide.  If you start with a new clean raspbian
@@ -18,7 +18,7 @@ https://www.raspberrypi.org/downloads/
 
 ### First boot and configure
 
-When you first boot your Pi, you'll be presente with a configuration menu.
+When you first boot your Pi, you'll be presented with a configuration menu.
 Generally on your second boot it will not show up, and you'll need to do
 "sudo raspi-config".   Therefore I recommend doing these first step
 all at once.
@@ -231,7 +231,7 @@ sudo reboot
 
 The first is to set API keys for Weather Underground and Google Maps.  
 These are both free, unless you have large volume.
-The PiClock usage is well below the maxiums imposes by the free api keys.
+The PiClock usage is well below the maximums  imposed by the free api keys.
 
 Google Maps api keys are created at this link:
 https://console.developers.google.com/flows/enableapi?apiid=maps_backend&keyType=CLIENT_SIDE
@@ -348,5 +348,5 @@ python update.py
 This will automatically update any part(s) of the software that has changed.
 The update.py program will then convert any config files as needed.
 
-You'll want to reboot after the upate.
+You'll want to reboot after the update.
 
