@@ -402,12 +402,13 @@ def fixupframe(frame,onoff):
                 #print "calling wxstop on radar on ",frame.objectName()
                 child.wxstop()
         
-def nextframe():
+def nextframe(plusminus):
     global frames, framep
     frames[framep].setVisible(False)
     fixupframe(frames[framep],False)
-    framep += 1
+    framep += plusminus
     if framep >= len(frames): framep = 0
+    if framep < 0: framep = len(frames) - 1
     frames[framep].setVisible(True)
     fixupframe(frames[framep],True)
 
@@ -417,7 +418,6 @@ class myMain(QtGui.QWidget):
         if type(event) == QtGui.QKeyEvent:
 #            print event.key(), format(event.key(), '08x')
             if event.key() == Qt.Key_F4: myquit()
-            if event.key() == Qt.Key_F8: myquit()
             if event.key() == Qt.Key_F2:
                 if time.time() > lastkeytime:
                     if weatherplayer == None:
@@ -427,11 +427,11 @@ class myMain(QtGui.QWidget):
                         weatherplayer = None
                 lastkeytime = time.time() + 2
             if event.key() == Qt.Key_Space:
-                nextframe()
+                nextframe(1)
             if event.key() == Qt.Key_Left:
-                nextframe()
+                nextframe(-1)
             if event.key() == Qt.Key_Right:
-                nextframe()
+                nextframe(1)
                 
 
 configname = 'Config'
@@ -462,10 +462,13 @@ w.setWindowTitle(os.path.basename(__file__))
 
 w.setStyleSheet("QWidget { background-color: black;}")  
 
-fullbgpixmap = QtGui.QPixmap(Config.background)
-fullbgrect = fullbgpixmap.rect()
-xscale = float(width)/fullbgpixmap.width()
-yscale = float(height)/fullbgpixmap.height()
+#fullbgpixmap = QtGui.QPixmap(Config.background)
+#fullbgrect = fullbgpixmap.rect()
+#xscale = float(width)/fullbgpixmap.width()
+#yscale = float(height)/fullbgpixmap.height()
+
+xscale = float(width)/1440.0
+yscale = float(height)/900.0
 
 frames = []
 framep = 0
@@ -482,6 +485,13 @@ frame2.setGeometry(0,0,width,height)
 frame2.setStyleSheet("#frame2 { background-color: blue; border-image: url("+Config.background+") 0 0 0 0 stretch stretch;}")
 frame2.setVisible(False)
 frames.append(frame2)
+
+frame3 = QtGui.QFrame(w)
+frame3.setObjectName("frame3")
+frame3.setGeometry(0,0,width,height)
+frame3.setStyleSheet("#frame3 { background-color: blue; border-image: url("+Config.background+") 0 0 0 0 stretch stretch;}")
+frame3.setVisible(False)
+frames.append(frame3)
 
 squares1 = QtGui.QFrame(frame1)
 squares1.setObjectName("squares1")
