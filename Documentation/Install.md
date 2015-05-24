@@ -337,6 +337,21 @@ and reboot to test
 sudo reboot
 ```
 
+### Setting the Pi to auto reboot every day
+This is optional but some may want their PiClock to reboot every day.  I do this with mine,
+but it is probably not needed.
+```
+sudo crontab -e
+```
+add the following line
+```
+22 3 * * * /sbin/reboot
+```
+save the file
+
+This sets the reboot to occur at 3:22am every day.   Adjust as needed.
+
+
 ### Updating to newer/updated versions
 Since we pulled the software from github originally, it can be updated
 using git and github.
