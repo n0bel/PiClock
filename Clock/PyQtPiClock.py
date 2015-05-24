@@ -486,12 +486,12 @@ frame2.setStyleSheet("#frame2 { background-color: blue; border-image: url("+Conf
 frame2.setVisible(False)
 frames.append(frame2)
 
-frame3 = QtGui.QFrame(w)
-frame3.setObjectName("frame3")
-frame3.setGeometry(0,0,width,height)
-frame3.setStyleSheet("#frame3 { background-color: blue; border-image: url("+Config.background+") 0 0 0 0 stretch stretch;}")
-frame3.setVisible(False)
-frames.append(frame3)
+#frame3 = QtGui.QFrame(w)
+#frame3.setObjectName("frame3")
+#frame3.setGeometry(0,0,width,height)
+#frame3.setStyleSheet("#frame3 { background-color: blue; border-image: url("+Config.background+") 0 0 0 0 stretch stretch;}")
+#frame3.setVisible(False)
+#frames.append(frame3)
 
 squares1 = QtGui.QFrame(frame1)
 squares1.setObjectName("squares1")
