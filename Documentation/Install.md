@@ -7,7 +7,7 @@ is left for the reader.
 
 What follows is a step by step guide.  If you start with a new clean raspbian
 image, it should just work. I'm assuming that you already know how to hook
-up your Raspi, monitor, and keyboard/mouse.   If please do a web search
+up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
  
 ### Download Raspbian and put it on an SD Card
@@ -20,7 +20,7 @@ https://www.raspberrypi.org/downloads/
 
 When you first boot your Pi, you'll be presented with a configuration menu.
 Generally on your second boot it will not show up, and you'll need to do
-"sudo raspi-config".   Therefore I recommend doing these first step
+"sudo raspi-config".   Therefore I recommend doing these first steps
 all at once.
 
   - Expand File system -- do it
@@ -46,7 +46,7 @@ all at once.
     * SSH
       - I'd turn it on
     * Audio
-      - Set as appropriate HDMI or Audio Jack outputs
+      - Set as appropriate HDMI or Audio Jack outputs, to your monitor or speaker setup.
 
 Finish and let it reboot.
 

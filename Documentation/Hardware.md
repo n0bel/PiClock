@@ -62,13 +62,17 @@ A good background guide about how WS2818b connects to the Raspberry Pi can be fo
 https://learn.adafruit.com/neopixels-on-raspberry-pi/overview
 
 You might be tempted to connect the LED strip power to the 5V header pin of the Pi -- just don't!
-That pin can't pass enough current.   With all the lights on full you may need an extra 1A to
-power the LED string, so size your power supply accordingly.
+That pin can't pass enough current.   With all the lights on full you may need an extra 2A to
+power a 30 LED string (NeoPixels for example come in 30, 60 and 144 LEDs per meter), so size
+your power supply accordingly.
 
 Everyone seems to recommend a level shift (3.3V to 5V) to drive the LEDs.   I've found this to
-be unnecessary.  Your milage may vary.  The data pin of the WS2818b string should be connected
+be unnecessary.  It also seems that Adafruit recommends a 1000uF cap on the power supply, with
+the dubious explaination that it protects the LEDs from inrush surges.  Again I don't botther.
+Meh... Your milage may vary.  The data pin of the WS2818b string should be connected
 to GPIO18, header pin 12.   Note the markings on the LED strip since they all are not pinned
 the same.
+
 
 ![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/NeoPixel.jpg)
 
