@@ -20,7 +20,10 @@ The PiClock can be customized with several supported additional things:
   * gpio buttons for changing the view
   * IR Remote Control for changing the view
   * Streaming the NOAA weather radio stream for your area
-  
+
+The power usage I've measured is about 35watts with a 19" HDMI Monitor, 27 LEDs and the Pi.
+The LEDs contributed 3 or so watts, and I think the Pi is about 2-3 Watts normally.
+
 This is the basic PiClock, with some options added.
 ![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150307_222711.jpg)
 
