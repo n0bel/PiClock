@@ -247,6 +247,7 @@ class Radar(QtGui.QLabel):
         global xscale, yscale
         self.rect = rect
         self.baseurl = self.mapurl(radar, rect, False)
+        print "google map base url: "+self.baseurl
         self.mkurl = self.mapurl(radar, rect, True)
         self.wxurl = self.radarurl(radar, rect)
         QtGui.QLabel.__init__(self, parent)
@@ -272,7 +273,7 @@ class Radar(QtGui.QLabel):
         #'https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&center='+rcenter.lat+','+rcenter.lng+'&zoom='+rzoom+'&size=300x275'+markersr;
         urlp = [];
         
-        urlp.append('key='+ApiKeys.googleapi)
+        if len(ApiKeys.googleapi) > 0: urlp.append('key='+ApiKeys.googleapi)
         urlp.append('center='+str(radar['center'].lat)+','+str(radar['center'].lng))
         zoom = radar['zoom']
         rsize = rect.size()
