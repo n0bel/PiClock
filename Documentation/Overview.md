@@ -11,8 +11,8 @@ as long as python 2.7+ and PyQt4 is installed.
 
 The Weather data comes from Weather Underground using their API 
 ( http://www.wunderground.com/weather/api/ ).   The maps are from
-Google Maps API.   **You must get API Keys from both weather underground
-and Google Maps in order to make this work.**  Both are free for low
+Google Maps API.   **You must get an API Key from both weather
+underground in order to make this work.**  It is free for low
 usage such as this application.
 
 The PiClock can be customized with several supported additional things:
