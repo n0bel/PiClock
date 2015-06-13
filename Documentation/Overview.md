@@ -71,6 +71,12 @@ gives more details about how to wire/connect the various extras.
 The Install guide ( https://github.com/n0bel/PiClock/blob/master/Documentation/Install.md )
 steps through all the things that you need to do to a stock Raspbian image to make the PiClock work.
 
+## Not a Pi Person?
+
+If you want to use the PiClock on your desktop (not your Pi), I've created instructinos for that
+https://github.com/n0bel/PiClock/blob/master/Documentation/Install-Clock-Only.md
+
+
 ## History
 
 It all started one Satuday afternoon when I was feeling bored.  My super duper radio
@@ -103,5 +109,5 @@ as well as newer postings and updates.   Some of my friends have been treated (s
 to more timely updates via my public facebook page https://www.facebook.com/pages/Kevin-N0BEL/946361588712436 
 
 And of course I tweet https://twitter.com/KevinN0BEL, Pin https://www.pinterest.com/kevinuhir/,
-and Instagram https://instagram.com/kevin_n0bel/
+Instagram https://instagram.com/kevin_n0bel/, and hack https://hackaday.io/n0bel
 
