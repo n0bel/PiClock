@@ -368,10 +368,15 @@ class Radar(QtGui.QLabel):
         self.wxbuff = QtCore.QBuffer(self.wxdata)
         self.wxbuff.open(QtCore.QIODevice.ReadOnly)
         self.wxmovie = QMovie(self.wxbuff, 'GIF')
+        print "radar map frame count:"+self.myname+":"+str(self.wxmovie.frameCount())
         if self.wxmovie.frameCount() > 2:
             self.lastwx = time.time()
         else:
+            # radar image retreval failed
             self.lastwx = 0
+            # retry in 5 seconds
+            QtCore.QTimer.singleShot(5*1000, self.getwx)
+            return
         self.wwx.setMovie( self.wxmovie)
         if self.parent().isVisible():
             self.wxmovie.start()
