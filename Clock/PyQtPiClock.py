@@ -130,14 +130,24 @@ def wxfinished():
     wxiconpixmap = QtGui.QPixmap(Config.icons+"/"+icp+f['icon']+".png")
     wxicon.setPixmap(wxiconpixmap.scaled(wxicon.width(),wxicon.height(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
     wxicon2.setPixmap(wxiconpixmap.scaled(wxicon.width(),wxicon.height(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
-    temper.setText(str(f['temp_f'])+u'°F')
-    temper2.setText(str(f['temp_f'])+u'°F')
     wxdesc.setText(f['weather'])
     wxdesc2.setText(f['weather'])
-    press.setText("Pressure "+f['pressure_in']+' '+f['pressure_trend'])
-    humidity.setText("Humidity "+f['relative_humidity'])
-    wind.setText('Wind '+f['wind_dir']+' '+str(f['wind_mph'])+' gusting '+str(f['wind_gust_mph']))
-    wind2.setText("Feels like "+str(f['feelslike_f']) )
+    
+    if Config.metric:
+        temper.setText(str(f['temp_c'])+u'°C')
+        temper2.setText(str(f['temp_c'])+u'°C')
+        press.setText("Pressure "+f['pressure_mb']+' '+f['pressure_trend'])
+        humidity.setText("Humidity "+f['relative_humidity'])
+        wind.setText('Wind '+f['wind_dir']+' '+str(f['wind_kph'])+' gusting '+str(f['wind_gust_kph']))
+        wind2.setText("Feels like "+str(f['feelslike_c']) )
+    else:
+        temper.setText(str(f['temp_f'])+u'°F')
+        temper2.setText(str(f['temp_f'])+u'°F')
+        press.setText("Pressure "+f['pressure_in']+' '+f['pressure_trend'])
+        humidity.setText("Humidity "+f['relative_humidity'])
+        wind.setText('Wind '+f['wind_dir']+' '+str(f['wind_mph'])+' gusting '+str(f['wind_gust_mph']))
+        wind2.setText("Feels like "+str(f['feelslike_f']) )
+        
     wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(int(f['local_epoch']))))
     bottom.setText('Sun Rise:'+
                 wxdata['sun_phase']['sunrise']['hour']+':'+wxdata['sun_phase']['sunrise']['minute']+
@@ -164,12 +174,21 @@ def wxfinished():
         wx2 = fl.findChild(QtGui.QLabel,"wx2")
         s = '';
         if float(f['pop']) > 0.0:  s += f['pop'] + '% ';
-        if float(f['snow']['english']) > 0.0:
-            s += ' Snow: '+f['snow']['english']+'in '
+        if Config.metric:
+            if float(f['snow']['metric']) > 0.0:
+                s += ' Snow: '+f['snow']['metric']+'mm '
+            else:
+                if float(f['qpf']['metric']) > 0.0:
+                    s += ' Rain: '+f['qpf']['metric']+'mm '
+            s += f['temp']['metric']+u'°C'
         else:
-            if float(f['qpf']['english']) > 0.0:
-                s += ' Rain: '+f['qpf']['english']+'in '
-        s += f['temp']['english']+u'°F'
+            if float(f['snow']['english']) > 0.0:
+                s += ' Snow: '+f['snow']['english']+'in '
+            else:
+                if float(f['qpf']['english']) > 0.0:
+                    s += ' Rain: '+f['qpf']['english']+'in '
+            s += f['temp']['english']+u'°F'
+            
         wx2.setText(s)
         
     for i in range(3,9):
@@ -185,12 +204,20 @@ def wxfinished():
         wx2 = fl.findChild(QtGui.QLabel,"wx2")
         s = '';
         if float(f['pop']) > 0.0:  s += str(f['pop']) + '% ';
-        if float(f['snow_allday']['in']) > 0.0:
-            s += ' Snow: '+str(f['snow_allday']['in'])+'in '
+        if Config.metric:
+            if float(f['snow_allday']['cm']) > 0.0:
+                s += ' Snow: '+str(f['snow_allday']['cm'])+'cm '
+            else:
+                if float(f['qpf_allday']['mm']) > 0.0:
+                    s += ' Rain: '+str(f['qpf_allday']['mm'])+'mm '
+            s += str(f['high']['celsius'])+'/'+str(f['low']['celsius'])+u'°C'
         else:
-            if float(f['qpf_allday']['in']) > 0.0:
-                s += ' Rain: '+str(f['qpf_allday']['in'])+'in '
-        s += str(f['high']['fahrenheit'])+'/'+str(f['low']['fahrenheit'])+u'°F'
+            if float(f['snow_allday']['in']) > 0.0:
+                s += ' Snow: '+str(f['snow_allday']['in'])+'in '
+            else:
+                if float(f['qpf_allday']['in']) > 0.0:
+                    s += ' Rain: '+str(f['qpf_allday']['in'])+'in '
+            s += str(f['high']['fahrenheit'])+'/'+str(f['low']['fahrenheit'])+u'°F'
         wx2.setText(s)
 
         
@@ -445,6 +472,13 @@ if not os.path.isfile(configname+".py"):
     exit(1)
       
 Config = __import__(configname)
+
+# define default values for new config variables.
+
+try: Config.metric
+except AttributeError: Config.metric = 0
+
+# 
 
 lastmin = -1
 weatherplayer = None
