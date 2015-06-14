@@ -14,6 +14,8 @@ minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
 metric = 0  #0 = English, 1 = Metric
+radar_refresh = 10      # minutes
+weather_refresh = 30    # minutes
 
 radar1 = {
     'center' : LatLng(44.9764016,-93.2486732),

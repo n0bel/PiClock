@@ -5,6 +5,7 @@ import sys, os, platform, signal
 import datetime, time, json
 from pprint import pprint
 import random
+from pandas.tseries.interval import IntervalIndex
 sys.dont_write_bytecode = True
 
 from PyQt4 import QtGui, QtCore, QtNetwork
@@ -225,6 +226,7 @@ def wxfinished():
 def getwx():
     global wxurl
     global wxreply
+    print "getting current and forecast:"+time.ctime()
     wxurl = Config.wuprefix + ApiKeys.wuapi + '/conditions/astronomy/hourly10day/forecast10day/q/' 
     wxurl += str(Config.wulocation.lat)+','+str(Config.wulocation.lng)+'.json' 
     wxurl += '?r=' + str(random.random())
@@ -248,12 +250,12 @@ def qtstart():
     
     gettemp()
 
-    r1 = random.uniform(1000,10000)
-    r2 = random.uniform(1000,10000)
-    objradar1.start(1000*5*60+r1)
-    objradar2.start(1000*5*60+r1)
-    objradar3.start(1000*5*60+r2)
-    objradar4.start(1000*5*60+r2)
+    objradar1.start(Config.radar_refresh*60)
+    objradar1.wxstart()
+    objradar2.start(Config.radar_refresh*60)
+    objradar2.wxstart()
+    objradar3.start(Config.radar_refresh*60)
+    objradar4.start(Config.radar_refresh*60)
     
     ctimer = QtCore.QTimer()
     ctimer.timeout.connect(tick)
@@ -261,7 +263,7 @@ def qtstart():
     
     wxtimer = QtCore.QTimer()
     wxtimer.timeout.connect(getallwx)
-    wxtimer.start(1000*10*60+random.uniform(1000,10000))
+    wxtimer.start(1000*Config.weather_refresh*60+random.uniform(1000,10000))
 
     temptimer = QtCore.QTimer()
     temptimer.timeout.connect(gettemp)
@@ -270,14 +272,17 @@ def qtstart():
 
 class Radar(QtGui.QLabel):
 
-    def __init__(self, parent, radar, rect):
+    def __init__(self, parent, radar, rect, myname):
         global xscale, yscale
+        self.myname = myname
         self.rect = rect
         self.baseurl = self.mapurl(radar, rect, False)
-        print "google map base url: "+self.baseurl
+        #print "google map base url: "+self.baseurl
         self.mkurl = self.mapurl(radar, rect, True)
         self.wxurl = self.radarurl(radar, rect)
         QtGui.QLabel.__init__(self, parent)
+        self.interval = Config.radar_refresh*60
+        self.lastwx = 0
         
         self.setObjectName("radar")
         self.setGeometry(rect)
@@ -292,7 +297,7 @@ class Radar(QtGui.QLabel):
         self.wmk = QtGui.QLabel(self)
         self.wmk.setObjectName("mk")
         self.wmk.setStyleSheet("#mk { background-color: transparent; }")    
-        self.wmk.setGeometry(0, 0, rect.width(), rect.height())
+        self.wmk.setGeometry(0, 0, rect.width(), rect.height()) 
 
         self.wxmovie = QMovie()
 
@@ -354,17 +359,36 @@ class Radar(QtGui.QLabel):
         self.wmk.setPixmap(self.mkpixmap)
 
     def wxfinished(self):
-        if self.wxreply.error() != QNetworkReply.NoError: return
+        if self.wxreply.error() != QNetworkReply.NoError:
+            print "get radar error "+self.myname+":"+str(self.wxreply.error())
+            self.lastwx = 0
+            return
+        print "radar map received:"+self.myname+":"+time.ctime()
         self.wxdata = QtCore.QByteArray(self.wxreply.readAll())
         self.wxbuff = QtCore.QBuffer(self.wxdata)
         self.wxbuff.open(QtCore.QIODevice.ReadOnly)
         self.wxmovie = QMovie(self.wxbuff, 'GIF')
+        if self.wxmovie.frameCount() > 2:
+            self.lastwx = time.time()
+        else:
+            self.lastwx = 0
         self.wwx.setMovie( self.wxmovie)
         if self.parent().isVisible():
             self.wxmovie.start()
 
     def getwx(self):
+        global lastapiget
+        i = 0.1
+        # making sure there is at least 2 seconds between radar api calls
+        lastapiget += 2
+        if time.time() > lastapiget: lastapiget = time.time()
+        else: i = lastapiget - time.time()
+        print "get radar api call spacing oneshot get i="+str(i)
+        QtCore.QTimer.singleShot(i*1000, self.getwx2)
+
+    def getwx2(self):
         global manager
+        print "getting radar map "+self.myname+":"+time.ctime()
         self.wxreq = QNetworkRequest(QUrl(self.wxurl+'&rrrand='+str(time.time())))
         self.wxreply = manager.get(self.wxreq)
         QtCore.QObject.connect(self.wxreply, QtCore.SIGNAL("finished()"),self.wxfinished)
@@ -381,18 +405,24 @@ class Radar(QtGui.QLabel):
         self.mkreply = manager.get(self.mkreq)
         QtCore.QObject.connect(self.mkreply,QtCore.SIGNAL("finished()"),self.mkfinished)
         
-    def start(self, interval=10*60*1000):
+    def start(self, interval=0):
+        if interval > 0: self.interval = interval
         self.getbase()
         self.getmk()
-        self.getwx()
         self.timer = QtCore.QTimer()
         QtCore.QObject.connect(self.timer,QtCore.SIGNAL("timeout()"), self.getwx)
-        self.timer.start(interval)
        
     def wxstart(self):
+        print "wxstart for "+self.myname
+        if (self.lastwx == 0 or (self.lastwx+self.interval) < time.time()): self.getwx()
+        # random 1 to 10 seconds added to refresh interval to spread the queries over time
+        i = (self.interval+random.uniform(1,10))*1000
+        self.timer.start(i)
         self.wxmovie.start()
         
     def wxstop(self):
+        print "wxstop for "+self.myname
+        self.timer.stop()
         self.wxmovie.stop()
         
     def stop(self):
@@ -473,16 +503,23 @@ if not os.path.isfile(configname+".py"):
       
 Config = __import__(configname)
 
-# define default values for new config variables.
+# define default values for new/optional config variables.
 
 try: Config.metric
 except AttributeError: Config.metric = 0
+
+try: Config.weather_refresh
+except AttributeError: Config.weather_refresh = 30   #minutes
+
+try: Config.radar_refresh
+except AttributeError: Config.radar_refresh = 10    #minutes
 
 # 
 
 lastmin = -1
 weatherplayer = None
 lastkeytime = 0;
+lastapiget = time.time()
 
 app = QtGui.QApplication(sys.argv)
 desktop = app.desktop()
@@ -564,16 +601,16 @@ secpixmap = QtGui.QPixmap(Config.sechand)
 secpixmap2 = QtGui.QPixmap(Config.sechand)
 
 radar1rect = QtCore.QRect(3*xscale, 344*yscale, 300*xscale, 275*yscale)
-objradar1 = Radar(frame1, Config.radar1, radar1rect)
+objradar1 = Radar(frame1, Config.radar1, radar1rect, "radar1")
 
 radar2rect = QtCore.QRect(3*xscale, 622*yscale, 300*xscale, 275*yscale)
-objradar2 = Radar(frame1, Config.radar2, radar2rect)
+objradar2 = Radar(frame1, Config.radar2, radar2rect, "radar2")
 
 radar3rect = QtCore.QRect(13*xscale, 50*yscale, 700*xscale, 700*yscale)
-objradar3 = Radar(frame2, Config.radar3, radar3rect)
+objradar3 = Radar(frame2, Config.radar3, radar3rect, "radar3")
 
 radar4rect = QtCore.QRect(726*xscale, 50*yscale, 700*xscale, 700*yscale)
-objradar4 = Radar(frame2, Config.radar4, radar4rect)
+objradar4 = Radar(frame2, Config.radar4, radar4rect, "radar4")
 
 
 datex = QtGui.QLabel(frame1)
