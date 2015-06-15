@@ -35,4 +35,13 @@ cd ..
 
 # the main app
 cd Clock
-python PyQtPiClock.py
+# create a new log file name, max of 7 log files
+lc=`expr $(cat log.count 2>/dev/null) + 1`
+if [ "$lc" -gt "7" ]
+then
+  lc=1
+fi
+echo $lc >log.count
+lf="PyQtPiClock.$lc.log"
+# start the clock
+python PyQtPiClock.py >$lf 2>&1
