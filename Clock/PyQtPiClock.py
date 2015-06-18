@@ -392,6 +392,10 @@ class Radar(QtGui.QLabel):
 
     def getwx2(self):
         global manager
+        try:
+            if self.wxreply.isRunning(): return
+        except Exception:
+            pass
         print "getting radar map "+self.myname+":"+time.ctime()
         self.wxreq = QNetworkRequest(QUrl(self.wxurl+'&rrrand='+str(time.time())))
         self.wxreply = manager.get(self.wxreq)
@@ -423,6 +427,7 @@ class Radar(QtGui.QLabel):
         i = (self.interval+random.uniform(1,10))*1000
         self.timer.start(i)
         self.wxmovie.start()
+        QtCore.QTimer.singleShot(1000, self.wxmovie.start)
         
     def wxstop(self):
         print "wxstop for "+self.myname
