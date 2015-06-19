@@ -443,7 +443,7 @@ class Radar(QtGui.QLabel):
             pass
 
 def realquit():    
-    QtGui.QApplication.quit()
+    QtGui.QApplication.exit(0)
         
 def myquit(a=0,b=0):
     global objradar1, objradar2,objradar3,objradar4

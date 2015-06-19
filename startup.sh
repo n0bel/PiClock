@@ -44,4 +44,4 @@ fi
 echo $lc >log.count
 lf="PyQtPiClock.$lc.log"
 # start the clock
-python PyQtPiClock.py >$lf 2>&1
+python -u PyQtPiClock.py >$lf 2>&1
