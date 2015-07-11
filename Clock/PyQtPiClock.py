@@ -97,12 +97,20 @@ def tempfinished():
     if tempreply.error() != QNetworkReply.NoError: return
     tempstr = str(tempreply.readAll())
     tempdata = json.loads(tempstr)
-    s = 'Inside Temp '+tempdata['temp']
-    if tempdata['temps']:
-        if len(tempdata['temps']) > 1:
-            s = ''
-            for tk in tempdata['temps']:
-                s += ' ' + tk + ':' + tempdata['temps'][tk]
+    if Config.metric:
+        s = 'Inside Temp '+ "%3.1f" % ((float(tempdata['temp'])-32.0)*5.0/9.0)
+        if tempdata['temps']:
+            if len(tempdata['temps']) > 1:
+                s = ''
+                for tk in tempdata['temps']:
+                    s += ' ' + tk + ':' + "%3.1f" % ((float(tempdata['temps'][tk])-32.0)*5.0/9.0)
+    else:
+        s = 'Inside Temp '+tempdata['temp']
+        if tempdata['temps']:
+            if len(tempdata['temps']) > 1:
+                s = ''
+                for tk in tempdata['temps']:
+                    s += ' ' + tk + ':' + tempdata['temps'][tk]
     temp.setText(s)
     
 def gettemp():
@@ -363,12 +371,13 @@ class Radar(QtGui.QLabel):
             self.lastwx = 0
             return
         print "radar map received:"+self.myname+":"+time.ctime()
+	self.wxmovie.stop()
         self.wxdata = QtCore.QByteArray(self.wxreply.readAll())
         self.wxbuff = QtCore.QBuffer(self.wxdata)
         self.wxbuff.open(QtCore.QIODevice.ReadOnly)
-        self.wxmovie = QMovie(self.wxbuff, 'GIF')
-        print "radar map frame count:"+self.myname+":"+str(self.wxmovie.frameCount())
-        if self.wxmovie.frameCount() > 2:
+        mov = QMovie(self.wxbuff, 'GIF')
+        print "radar map frame count:"+self.myname+":"+str(mov.frameCount())
+        if mov.frameCount() > 2:
             self.lastwx = time.time()
         else:
             # radar image retreval failed
@@ -376,6 +385,7 @@ class Radar(QtGui.QLabel):
             # retry in 5 seconds
             QtCore.QTimer.singleShot(5*1000, self.getwx)
             return
+        self.wxmovie = mov
         self.wwx.setMovie( self.wxmovie)
         if self.parent().isVisible():
             self.wxmovie.start()
