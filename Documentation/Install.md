@@ -273,7 +273,7 @@ radar map centers and markers.
 ```
 cd PiClock
 cd Clock
-cp Config-example.py Config.py
+cp Config-Example.py Config.py
 nano Config.py
 ```
 
