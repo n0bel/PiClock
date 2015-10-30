@@ -148,6 +148,8 @@ def wxfinished():
         humidity.setText("Humidity "+f['relative_humidity'])
         wind.setText('Wind '+f['wind_dir']+' '+str(f['wind_kph'])+' gusting '+str(f['wind_gust_kph']))
         wind2.setText("Feels like "+str(f['feelslike_c']) )
+        wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(int(f['local_epoch'])))+
+                      ' Precip 1hr:'+f['precip_1hr_metric']+'mm Today:'+f['precip_today_metric']+'mm')
     else:
         temper.setText(str(f['temp_f'])+u'°F')
         temper2.setText(str(f['temp_f'])+u'°F')
@@ -155,8 +157,9 @@ def wxfinished():
         humidity.setText("Humidity "+f['relative_humidity'])
         wind.setText('Wind '+f['wind_dir']+' '+str(f['wind_mph'])+' gusting '+str(f['wind_gust_mph']))
         wind2.setText("Feels like "+str(f['feelslike_f']) )
+        wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(int(f['local_epoch'])))+
+                      ' Precip 1hr:'+f['precip_1hr_in']+'in Today:'+f['precip_today_in']+'in')
         
-    wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(int(f['local_epoch']))))
     bottom.setText('Sun Rise:'+
                 wxdata['sun_phase']['sunrise']['hour']+':'+wxdata['sun_phase']['sunrise']['minute']+
                 ' Set:'+
