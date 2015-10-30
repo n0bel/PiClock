@@ -120,6 +120,11 @@ then get libboost for python (optional for the NeoPixel LED Driver)
 apt-get install libboost-python1.49.0
 ```
 
+then get unclutter (disables the mouse pointer when there's no activity)
+```
+apt-get install unclutter
+```
+
 ### Get the DS18B20 Temperature driver for Python (optional)
 
 (you must still be root [super user]) 
