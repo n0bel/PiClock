@@ -1,6 +1,6 @@
 # Install Instructions for PiClock
 
-PiClock and this install guide are based on Raspian 2015-05-05 image
+PiClock and this install guide are based on Raspian Wheezy 2015-05-05 image
 released on https://www.raspberrypi.org/downloads/ It will work with many
 raspbian versions, but you may have to add more packages, etc.  That exercise
 is left for the reader.
@@ -10,10 +10,10 @@ image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
  
-### Download Raspbian and put it on an SD Card
+### Download Raspbian Wheezy and put it on an SD Card
 
 The image and instructions for doing this are on the following page:
-https://www.raspberrypi.org/downloads/  
+https://www.raspberrypi.org/downloads/  Choose Raspbian Wheezy.
 
 
 ### First boot and configure
@@ -273,7 +273,7 @@ radar map centers and markers.
 ```
 cd PiClock
 cd Clock
-cp Config-example.py Config.py
+cp Config-Example.py Config.py
 nano Config.py
 ```
 
