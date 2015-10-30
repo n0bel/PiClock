@@ -184,7 +184,7 @@ If you're using the recommended IR Key Fob,
 https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain
 you can copy the lircd.conf file included in the distribution as follows:
 ```
-sudo IR/lircd.conf /etc/lirc/
+sudo cp IR/lircd.conf /etc/lirc/
 ```
 If you're using something else, you'll need to use irrecord, or load a remote file
 as found on http://lirc.org/
