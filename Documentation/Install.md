@@ -13,7 +13,13 @@ regarding setting up the basic hardware for your Raspi.
 ### Download Raspbian Wheezy and put it on an SD Card
 
 The image and instructions for doing this are on the following page:
-https://www.raspberrypi.org/downloads/  Choose Raspbian Wheezy.
+https://www.raspberrypi.org/downloads/  HOWEVER: Jessie is rolled
+into the latest download for Raspbian. and Wheezy has been removed
+from the download page. Some hardware functions (temperature, buttons, ir)
+won't work if you use Wheezy. (Yes, I need to get to updating some of
+the PiClock software to get this to work).  The last version of 
+Wheezy is archived here: 
+https://downloads.raspberrypi.org/raspbian/images/raspbian-2015-05-07/2015-05-05-raspbian-wheezy.zip
 
 
 ### First boot and configure
