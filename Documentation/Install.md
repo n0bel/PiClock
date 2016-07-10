@@ -181,12 +181,10 @@ Once that is done, you'll have a new directory called PiClock
 A few commands are needed if you intend to use gpio buttons
 and the gpio-keys driver to compile it for the latest Raspbian:
 ```
-cd PiClock/Buttons
+cd PiClock/Button
 make gpio-keys
 cd ../..
 ```
-(git hub does not allow me to set attributes on files, so we
-must do it manually)
 
 ### Set up Lirc (IR Remote)
 If you're using the recommended IR Key Fob, 
