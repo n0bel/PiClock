@@ -24,32 +24,31 @@ Just change the Items below.
  - General Tab
   - Change User Password -- this will set the password for the use pi,
      for ssh logins.
+  - Hostname: (Maybe set this to PiClock?)
   - Boot: To Desktop
   - Auto Login: Checked
   - Underscan: (Initally leave as default, but if your monitor has extra black area on the border, or bleeds off the edge, then change this)
  - Interfaces
   - 1-Wire Enable (for the inside temperature, DS18B20 if you're using it)
- - Internationalization
-   * Change Locale.
-      - Everything I've done is in English.  en_GB/UTF-8 will already 
-      be selected. If you're in the US, you'll probably want to also
-      select en_US/UTF-8. After that page is done, you'll need to choose
-      a default, again en_GB or en_US as you prefer.
-  - Change Timezone.
-    *  You'll want this to be correct, or the clock will be wrong.
-  - Change Keyboard Layout
-    *  Generally not needed, but good to check if you like the default
-  - Advanced options
-    * Overscan
-      - Turn it off
-    * Hostname
-      - Maybe set this to PiClock?
-    * SSH
-      - I'd turn it on
-    * Audio
-      - Set as appropriate HDMI or Audio Jack outputs, to your monitor or speaker setup.
+ - Internationalization Tab
+   - Set Locale.
+    - Language: en  -- everything I've done is in english
+    - Set Country
+    - Character Set: UTF-8
+  - Set Timezone.
+    -  You'll want this to be correct, or the clock will be wrong.
+  - Set Keyboard
+    -  Generally not needed, but good to check if you like the default
+  - Set WiFi Country (may not always show up)
 
 Finish and let it reboot.
+
+I've found that sometimes on reboot, Jessie doesn't go back to desktop mode.  
+If this is the case, 
+```
+sudo raspi-config
+``` 
+and change the boot option to Desktop/Auto-login
 
 ### editing config.txt
 
@@ -65,6 +64,8 @@ dtoverlay=lirc-rpi,gpio_in_pin=3,gpio_out_pin=2
 dtoverlay=w1-gpio,gpiopin=4
 ```
 are in there somewhere, and occur only once.
+The default config has lirc-rpi commented out (# in front), don't forget to remove the #
+Also add the pin arguments just as shown above, if they are not already there.
 
 You're free to change the pins, but of course the hardware guide will need to
 be adjusted to match.
