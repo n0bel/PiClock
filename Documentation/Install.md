@@ -1,7 +1,7 @@
 # Install Instructions for PiClock 
 ## For Raspbian Jessie
 
-PiClock and this install guide are based on Raspian Wheezy 2015-05-05 image
+PiClock and this install guide are based on Raspian Jessie
 released on https://www.raspberrypi.org/downloads/ It will work with many
 raspbian versions, but you may have to add more packages, etc.  That exercise
 is left for the reader.
@@ -14,29 +14,23 @@ regarding setting up the basic hardware for your Raspi.
 ### Download Raspbian Wheezy and put it on an SD Card
 
 The image and instructions for doing this are on the following page:
-https://www.raspberrypi.org/downloads/  HOWEVER: Jessie is rolled
-into the latest download for Raspbian. and Wheezy has been removed
-from the download page. Some hardware functions (temperature, buttons, ir)
-won't work if you use Wheezy. (Yes, I need to get to updating some of
-the PiClock software to get this to work).  The last version of 
-Wheezy is archived here: 
-https://downloads.raspberrypi.org/raspbian/images/raspbian-2015-05-07/2015-05-05-raspbian-wheezy.zip
-
+https://www.raspberrypi.org/downloads/  
 
 ### First boot and configure
-
-When you first boot your Pi, you'll be presented with a configuration menu.
-Generally on your second boot it will not show up, and you'll need to do
-"sudo raspi-config".   Therefore I recommend doing these first steps
-all at once.
-
-  - Expand File system -- do it
+A keyboard and mouse are really handy at this point.
+When you first boot your Pi, you'll be presented with the desktop.
+Navigate to Menu->Preferences->Raspberry Pi Configuration.
+Just change the Items below.
+ - General Tab
   - Change User Password -- this will set the password for the use pi,
      for ssh logins.
-  - Enable Boot to Desktop/Scratch
-    * Pick the second option "Desktop Log in as user 'pi'....."
-  - Internationalization
-    * Change Locale.
+  - Boot: To Desktop
+  - Auto Login: Checked
+  - Underscan: (Initally leave as default, but if your monitor has extra black area on the border, or bleeds off the edge, then change this)
+ - Interfaces
+  - 1-Wire Enable (for the inside temperature, DS18B20 if you're using it)
+ - Internationalization
+   * Change Locale.
       - Everything I've done is in English.  en_GB/UTF-8 will already 
       be selected. If you're in the US, you'll probably want to also
       select en_US/UTF-8. After that page is done, you'll need to choose
