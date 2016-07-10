@@ -178,10 +178,12 @@ and this is where we want to be.
 git clone https://github.com/n0bel/PiClock.git
 ```
 Once that is done, you'll have a new directory called PiClock
-One little command is needed if you intend to use gpio buttons
-and the gpio-keys driver:
+A few commands are needed if you intend to use gpio buttons
+and the gpio-keys driver to compile it for the latest Raspbian:
 ```
-chmod +x PiClock/Button/gpio-keys
+cd PiClock/Buttons
+make gpio-keys
+cd ../..
 ```
 (git hub does not allow me to set attributes on files, so we
 must do it manually)
