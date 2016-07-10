@@ -1,4 +1,5 @@
 # Install Instructions for PiClock
+## For Raspbian Wheezy
 
 PiClock and this install guide are based on Raspian Wheezy 2015-05-05 image
 released on https://www.raspberrypi.org/downloads/ It will work with many
