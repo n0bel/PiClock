@@ -44,7 +44,9 @@ LSunRise = "Sun Rise:"
 LSet = " Set: "
 LMoonPhase = " Moon Phase:"
 LInsideTemp = "Inside Temp "
- 
+LRain = " Rain: "
+LSnow = " Snow: "
+
 radar1 = {
     'center' : LatLng(44.9764016,-93.2486732),
     'zoom' : 7,

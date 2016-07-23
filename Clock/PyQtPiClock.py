@@ -198,17 +198,17 @@ def wxfinished():
         if float(f['pop']) > 0.0:  s += f['pop'] + '% ';
         if Config.metric:
             if float(f['snow']['metric']) > 0.0:
-                s += ' Snow: '+f['snow']['metric']+'mm '
+                s += Config.LSnow+f['snow']['metric']+'mm '
             else:
                 if float(f['qpf']['metric']) > 0.0:
-                    s += ' Rain: '+f['qpf']['metric']+'mm '
+                    s += Config.LRain+f['qpf']['metric']+'mm '
             s += f['temp']['metric']+u'°C'
         else:
             if float(f['snow']['english']) > 0.0:
-                s += ' Snow: '+f['snow']['english']+'in '
+                s += Config.LSnow+f['snow']['english']+'in '
             else:
                 if float(f['qpf']['english']) > 0.0:
-                    s += ' Rain: '+f['qpf']['english']+'in '
+                    s += Config.LRain+f['qpf']['english']+'in '
             s += f['temp']['english']+u'°F'
             
         wx2.setText(s)
@@ -228,17 +228,17 @@ def wxfinished():
         if float(f['pop']) > 0.0:  s += str(f['pop']) + '% ';
         if Config.metric:
             if float(f['snow_allday']['cm']) > 0.0:
-                s += ' Snow: '+str(f['snow_allday']['cm'])+'cm '
+                s += Config.LSnow+str(f['snow_allday']['cm'])+'cm '
             else:
                 if float(f['qpf_allday']['mm']) > 0.0:
-                    s += ' Rain: '+str(f['qpf_allday']['mm'])+'mm '
+                    s += Config.LRain+str(f['qpf_allday']['mm'])+'mm '
             s += str(f['high']['celsius'])+'/'+str(f['low']['celsius'])+u'°C'
         else:
             if float(f['snow_allday']['in']) > 0.0:
-                s += ' Snow: '+str(f['snow_allday']['in'])+'in '
+                s += Config.LSnow+str(f['snow_allday']['in'])+'in '
             else:
                 if float(f['qpf_allday']['in']) > 0.0:
-                    s += ' Rain: '+str(f['qpf_allday']['in'])+'in '
+                    s += Config.LRain+str(f['qpf_allday']['in'])+'in '
             s += str(f['high']['fahrenheit'])+'/'+str(f['low']['fahrenheit'])+u'°F'
         wx2.setText(s)
 
@@ -612,6 +612,8 @@ except AttributeError:
     Config.LSet = " Set: "
     Config.LMoonPhase = " Moon Phase:"
     Config.LInsideTemp = "Inside Temp "
+    Config.LRain = " Rain: "
+    Config.LSnow = " Snow: "
 #
 
 
