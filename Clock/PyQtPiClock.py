@@ -3,6 +3,7 @@
 
 import sys, os, platform, signal
 import datetime, time, json
+import locale
 from pprint import pprint
 import random
 sys.dont_write_bytecode = True
@@ -85,7 +86,12 @@ def tick():
         if (now.day == 1 or now.day == 21 or now.day == 31): sup = 'st'
         if (now.day == 2 or now.day == 22): sup = 'nd'
         if (now.day == 3 or now.day == 23): sup = 'rd'
-        if Config.wuLanguage != "EN": sup = ""
+        if Config.DateLocale != "":
+            sup = ""
+            try:
+                locale.setlocale(locale.LC_TIME, Config.DateLocale)
+            except:
+                pass 
         ds = "{0:%A %B} {0.day}<sup>".format(now)+sup+"</sup> {0.year}".format(now)
         datex.setText(ds)
         datex2.setText(ds)
@@ -608,12 +614,6 @@ except AttributeError:
     Config.LInsideTemp = "Inside Temp "
 #
 
-if Config.DateLocale != "":
-    import locale
-    try:
-        locale.setlocale(locale.LC_TIME, Config.DateLocale)
-    except:
-        pass 
 
 lastmin = -1
 weatherplayer = None

@@ -28,7 +28,11 @@ dimcolor.setAlpha(0)            # see and try Config-Example-Bedside.py
 
 # Language Specific wording
 wuLanguage = "EN"   # Weather Undeground Language code (https://www.wunderground.com/weather/api/d/docs?d=language-support&MR=1)
-DateLocale = '' # The Python Locale for date/time (locale.setlocale), blank, leave default
+DateLocale = ''  # The Python Locale for date/time (locale.setlocale) -- '' for default Pi Setting
+                            # Locales must be installed in your Pi.. to check what is installed
+                            # locale -a
+                            # to install locales
+                            # sudo dpkg-reconfigure locales
 LPressure = "Pressure "
 LHumidity = "Humidity "
 LWind = "Wind "
