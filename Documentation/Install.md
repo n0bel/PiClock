@@ -32,7 +32,8 @@ Just change the Items below.
   - 1-Wire Enable (for the inside temperature, DS18B20 if you're using it)
  - Internationalization Tab
    - Set Locale.
-    - Language: en  -- everything I've done is in english
+    - Set Language  -- if you set language and country here, the date will automaticly be in your language
+    				-- other settings in Config.py (described later) control the language of the weather data
     - Set Country
     - Character Set: UTF-8
   - Set Timezone.
