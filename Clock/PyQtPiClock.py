@@ -290,6 +290,7 @@ class Radar(QtGui.QLabel):
         #print "google map base url: "+self.baseurl
         self.mkurl = self.mapurl(radar, rect, True)
         self.wxurl = self.radarurl(radar, rect)
+        #print "radar url: "+self.wxurl
         QtGui.QLabel.__init__(self, parent)
         self.interval = Config.radar_refresh*60
         self.lastwx = 0
