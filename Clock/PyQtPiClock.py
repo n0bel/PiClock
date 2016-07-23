@@ -8,7 +8,7 @@ import random
 sys.dont_write_bytecode = True
 
 from PyQt4 import QtGui, QtCore, QtNetwork
-from PyQt4.QtGui import QPixmap, QMovie
+from PyQt4.QtGui import QPixmap, QMovie, QBrush, QColor, QPainter
 from PyQt4.QtCore import Qt, QByteArray, QUrl, QFile, QIODevice, QString
 from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply, QNetworkProxy
 from subprocess import Popen
@@ -85,6 +85,7 @@ def tick():
         if (now.day == 1 or now.day == 21 or now.day == 31): sup = 'st'
         if (now.day == 2 or now.day == 22): sup = 'nd'
         if (now.day == 3 or now.day == 23): sup = 'rd'
+        if Config.wuLanguage != "EN": sup = ""
         ds = "{0:%A %B} {0.day}<sup>".format(now)+sup+"</sup> {0.year}".format(now)
         datex.setText(ds)
         datex2.setText(ds)
@@ -98,14 +99,14 @@ def tempfinished():
     tempstr = str(tempreply.readAll())
     tempdata = json.loads(tempstr)
     if Config.metric:
-        s = 'Inside Temp '+ "%3.1f" % ((float(tempdata['temp'])-32.0)*5.0/9.0)
+        s = Config.LInsideTemp+ "%3.1f" % ((float(tempdata['temp'])-32.0)*5.0/9.0)
         if tempdata['temps']:
             if len(tempdata['temps']) > 1:
                 s = ''
                 for tk in tempdata['temps']:
                     s += ' ' + tk + ':' + "%3.1f" % ((float(tempdata['temps'][tk])-32.0)*5.0/9.0)
     else:
-        s = 'Inside Temp '+tempdata['temp']
+        s = Config.LInsideTemp+tempdata['temp']
         if tempdata['temps']:
             if len(tempdata['temps']) > 1:
                 s = ''
@@ -144,27 +145,31 @@ def wxfinished():
     if Config.metric:
         temper.setText(str(f['temp_c'])+u'°C')
         temper2.setText(str(f['temp_c'])+u'°C')
-        press.setText("Pressure "+f['pressure_mb']+' '+f['pressure_trend'])
-        humidity.setText("Humidity "+f['relative_humidity'])
-        wind.setText('Wind '+f['wind_dir']+' '+str(f['wind_kph'])+' gusting '+str(f['wind_gust_kph']))
-        wind2.setText("Feels like "+str(f['feelslike_c']) )
+        press.setText(Config.LPressure+f['pressure_mb']+' '+f['pressure_trend'])
+        humidity.setText(Config.LHumidity+f['relative_humidity'])
+        wd = f['wind_dir']
+        if Config.wind_degrees: wd = str(f['wind_degrees'])+u'°'
+        wind.setText(Config.LWind+wd+' '+str(f['wind_kph'])+Config.Lgusting+str(f['wind_gust_kph']))
+        wind2.setText(Config.LFeelslike+str(f['feelslike_c']) )
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(int(f['local_epoch'])))+
-                      ' Precip 1hr:'+f['precip_1hr_metric']+'mm Today:'+f['precip_today_metric']+'mm')
+                      Config.LPrecip1hr+f['precip_1hr_metric']+'mm '+Config.LToday+f['precip_today_metric']+'mm')
     else:
         temper.setText(str(f['temp_f'])+u'°F')
         temper2.setText(str(f['temp_f'])+u'°F')
-        press.setText("Pressure "+f['pressure_in']+' '+f['pressure_trend'])
-        humidity.setText("Humidity "+f['relative_humidity'])
-        wind.setText('Wind '+f['wind_dir']+' '+str(f['wind_mph'])+' gusting '+str(f['wind_gust_mph']))
-        wind2.setText("Feels like "+str(f['feelslike_f']) )
+        press.setText(Config.LPressure+f['pressure_in']+' '+f['pressure_trend'])
+        humidity.setText(Config.LHumidity+f['relative_humidity'])
+        wd = f['wind_dir']
+        if Config.wind_degrees: wd = str(f['wind_degrees'])+u'°'
+        wind.setText(Config.LWind+wd+' '+str(f['wind_mph'])+Config.Lgusting+str(f['wind_gust_mph']))
+        wind2.setText(Config.LFeelslike+str(f['feelslike_f']) )
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(int(f['local_epoch'])))+
-                      ' Precip 1hr:'+f['precip_1hr_in']+'in Today:'+f['precip_today_in']+'in')
+                      Config.LPrecip1hr+f['precip_1hr_in']+'in '+Config.LToday+f['precip_today_in']+'in')
         
-    bottom.setText('Sun Rise:'+
+    bottom.setText(Config.LSunRise+
                 wxdata['sun_phase']['sunrise']['hour']+':'+wxdata['sun_phase']['sunrise']['minute']+
-                ' Set:'+
+                Config.LSet+
                 wxdata['sun_phase']['sunset']['hour']+':'+wxdata['sun_phase']['sunset']['minute']+
-                ' Moon Phase: '+
+                Config.LMoonPhase+
                 wxdata['moon_phase']['phaseofMoon']    
                 )
                 
@@ -237,9 +242,10 @@ def getwx():
     global wxurl
     global wxreply
     print "getting current and forecast:"+time.ctime()
-    wxurl = Config.wuprefix + ApiKeys.wuapi + '/conditions/astronomy/hourly10day/forecast10day/q/' 
+    wxurl = Config.wuprefix + ApiKeys.wuapi + '/conditions/astronomy/hourly10day/forecast10day/lang:'+Config.wuLanguage+'/q/' 
     wxurl += str(Config.wulocation.lat)+','+str(Config.wulocation.lng)+'.json' 
     wxurl += '?r=' + str(random.random())
+    print wxurl
     r = QUrl(wxurl)
     r = QNetworkRequest(r)
     wxreply = manager.get(r)
@@ -287,10 +293,10 @@ class Radar(QtGui.QLabel):
         self.myname = myname
         self.rect = rect
         self.baseurl = self.mapurl(radar, rect, False)
-        #print "google map base url: "+self.baseurl
+        print "google map base url: "+self.baseurl
         self.mkurl = self.mapurl(radar, rect, True)
         self.wxurl = self.radarurl(radar, rect)
-        #print "radar url: "+self.wxurl
+        print "radar url: "+self.wxurl
         QtGui.QLabel.__init__(self, parent)
         self.interval = Config.radar_refresh*60
         self.lastwx = 0
@@ -343,7 +349,18 @@ class Radar(QtGui.QLabel):
         #wuprefix+wuapi+'/animatedradar/image.gif?maxlat='+rNE.lat+'&maxlon='+rNE.lng+'&minlat='+rSW.lat+'&minlon='+rSW.lng+wuoptionsr;
         #wuoptionsr = '&width=300&height=275&newmaps=0&reproj.automerc=1&num=5&delay=25&timelabel=1&timelabel.y=10&rainsnow=1&smooth=1';
         rr = getCorners(radar['center'],radar['zoom'],rect.width(),rect.height())
-        return (Config.wuprefix+ApiKeys.wuapi+'/animatedradar/image.gif'+
+        if Config.satellite:
+            return (Config.wuprefix+ApiKeys.wuapi+'/animatedsatellite/lang:'+Config.wuLanguage+'/image.gif'+
+                '?maxlat='+str(rr['N'])+
+                '&maxlon='+str(rr['E'])+
+                '&minlat='+str(rr['S'])+
+                '&minlon='+str(rr['W'])+
+                '&width='+str(rect.width())+
+                '&height='+str(rect.height())+
+                '&newmaps=0&reproj.automerc=1&num=5&delay=25&timelabel=1&timelabel.y=10&smooth=1&key=sat_ir4_bottom'
+                )
+        else:
+            return (Config.wuprefix+ApiKeys.wuapi+'/animatedradar/lang:'+Config.wuLanguage+'/image.gif'+
                 '?maxlat='+str(rr['N'])+
                 '&maxlon='+str(rr['E'])+
                 '&minlat='+str(rr['S'])+
@@ -352,6 +369,7 @@ class Radar(QtGui.QLabel):
                 '&height='+str(rect.height())+
                 '&newmaps=0&reproj.automerc=1&num=5&delay=25&timelabel=1&timelabel.y=10&rainsnow=1&smooth=1&radar_bitmap=1&xnoclutter=1&xnoclutter_mask=1&cors=1'
                 )
+            
     
     def basefinished(self):
         if self.basereply.error() != QNetworkReply.NoError: return
@@ -359,7 +377,19 @@ class Radar(QtGui.QLabel):
         self.basepixmap.loadFromData(self.basereply.readAll())
         if self.basepixmap.size() != self.rect.size():
             self.basepixmap = self.basepixmap.scaled(self.rect.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.setPixmap(self.basepixmap)
+        if Config.satellite:
+            p = QPixmap(self.basepixmap.size())
+            p.fill(Qt.transparent)
+            painter = QPainter()
+            painter.begin(p)
+            painter.setOpacity(0.6)
+            painter.drawPixmap(0,0,self.basepixmap)
+            painter.end()
+            self.basepixmap = p
+            self.wwx.setPixmap(self.basepixmap)
+        else:
+            self.setPixmap(self.basepixmap)
+            
     
     def mkfinished(self):
         if self.mkreply.error() != QNetworkReply.NoError: return
@@ -367,6 +397,11 @@ class Radar(QtGui.QLabel):
         self.mkpixmap.loadFromData(self.mkreply.readAll())
         if self.mkpixmap.size() != self.rect.size():
             self.mkpixmap = self.mkpixmap.scaled(self.rect.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        br = QBrush(QColor(Config.dimcolor) );
+        painter = QPainter();
+        painter.begin(self.mkpixmap);
+        painter.fillRect(0,0,self.mkpixmap.width(),self.mkpixmap.height(),br);
+        painter.end();
         self.wmk.setPixmap(self.mkpixmap)
 
     def wxfinished(self):
@@ -375,7 +410,7 @@ class Radar(QtGui.QLabel):
             self.lastwx = 0
             return
         print "radar map received:"+self.myname+":"+time.ctime()
-	self.wxmovie.stop()
+        self.wxmovie.stop()
         self.wxdata = QtCore.QByteArray(self.wxreply.readAll())
         self.wxbuff = QtCore.QBuffer(self.wxdata)
         self.wxbuff.open(QtCore.QIODevice.ReadOnly)
@@ -390,7 +425,10 @@ class Radar(QtGui.QLabel):
             QtCore.QTimer.singleShot(5*1000, self.getwx)
             return
         self.wxmovie = mov
-        self.wwx.setMovie( self.wxmovie)
+        if Config.satellite:
+            self.setMovie( self.wxmovie)
+        else:
+            self.wwx.setMovie( self.wxmovie)
         if self.parent().isVisible():
             self.wxmovie.start()
 
@@ -537,7 +575,45 @@ except AttributeError: Config.weather_refresh = 30   #minutes
 try: Config.radar_refresh
 except AttributeError: Config.radar_refresh = 10    #minutes
 
-# 
+try: Config.fontattr
+except AttributeError: Config.fontattr = ''
+
+try: Config.dimcolor
+except AttributeError:
+    Config.dimcolor = QColor('#000000')
+    Config.dimcolor.setAlpha(0)
+
+try: Config.DateLocale
+except AttributeError: Config.DateLocale = ''
+
+try: Config.wind_degrees
+except AttributeError: Config.wind_degrees = 0
+
+try: Config.satellite
+except AttributeError: Config.satellite = 0
+
+try: Config.LPressure
+except AttributeError:
+    Config.wuLanguage = "EN"
+    Config.LPressure = "Pressure "
+    Config.LHumidity = "Humidity "
+    Config.LWind = "Wind "
+    Config.Lgusting = " gusting "
+    Config.LFeelslike = "Feels like "
+    Config.LPrecip1hr = " Precip 1hr:"
+    Config.LToday = "Today: "
+    Config.LSunRise = "Sun Rise:"
+    Config.LSet = " Set: "
+    Config.LMoonPhase = " Moon Phase:"
+    Config.LInsideTemp = "Inside Temp "
+#
+
+if Config.DateLocale != "":
+    import locale
+    try:
+        locale.setlocale(locale.LC_TIME, Config.DateLocale)
+    except:
+        pass 
 
 lastmin = -1
 weatherplayer = None
@@ -638,18 +714,18 @@ objradar4 = Radar(frame2, Config.radar4, radar4rect, "radar4")
 
 datex = QtGui.QLabel(frame1)
 datex.setObjectName("datex")
-datex.setStyleSheet("#datex { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px }")
+datex.setStyleSheet("#datex { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px; "+Config.fontattr+"}")
 datex.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 datex.setGeometry(0,0,width,100)
 
 datex2 = QtGui.QLabel(frame2)
 datex2.setObjectName("datex2")
-datex2.setStyleSheet("#datex2 { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px }")
+datex2.setStyleSheet("#datex2 { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px; "+Config.fontattr+"}")
 datex2.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 datex2.setGeometry(800*xscale,780*yscale,640*xscale,100)
 datey2 = QtGui.QLabel(frame2)
 datey2.setObjectName("datey2")
-datey2.setStyleSheet("#datey2 { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px }")
+datey2.setStyleSheet("#datey2 { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px; "+Config.fontattr+"}")
 datey2.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 datey2.setGeometry(800*xscale,840*yscale,640*xscale,100)
 
@@ -667,73 +743,73 @@ wxicon2.setGeometry(0*xscale,750*yscale,150*xscale,150*yscale)
 ypos += 130
 wxdesc = QtGui.QLabel(frame1)
 wxdesc.setObjectName("wxdesc")
-wxdesc.setStyleSheet("#wxdesc { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(30*xscale))+"px }")
+wxdesc.setStyleSheet("#wxdesc { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(30*xscale))+"px; "+Config.fontattr+"}")
 wxdesc.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 wxdesc.setGeometry(3*xscale,ypos*yscale,300*xscale,100)
 
 wxdesc2 = QtGui.QLabel(frame2)
 wxdesc2.setObjectName("wxdesc2")
-wxdesc2.setStyleSheet("#wxdesc2 { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(50*xscale))+"px }")
+wxdesc2.setStyleSheet("#wxdesc2 { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(50*xscale))+"px; "+Config.fontattr+"}")
 wxdesc2.setAlignment(Qt.AlignLeft | Qt.AlignTop);
 wxdesc2.setGeometry(400*xscale,800*yscale,400*xscale,100)
 
 ypos += 25
 temper = QtGui.QLabel(frame1)
 temper.setObjectName("temper")
-temper.setStyleSheet("#temper { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(70*xscale))+"px }")
+temper.setStyleSheet("#temper { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(70*xscale))+"px; "+Config.fontattr+"}")
 temper.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 temper.setGeometry(3*xscale,ypos*yscale,300*xscale,100)
 
 temper2 = QtGui.QLabel(frame2)
 temper2.setObjectName("temper2")
-temper2.setStyleSheet("#temper2 { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(70*xscale))+"px }")
+temper2.setStyleSheet("#temper2 { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(70*xscale))+"px; "+Config.fontattr+"}")
 temper2.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 temper2.setGeometry(125*xscale,780*yscale,300*xscale,100)
 
 ypos += 80
 press = QtGui.QLabel(frame1)
 press.setObjectName("press")
-press.setStyleSheet("#press { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(25*xscale))+"px }")
+press.setStyleSheet("#press { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(25*xscale))+"px; "+Config.fontattr+"}")
 press.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 press.setGeometry(3*xscale,ypos*yscale,300*xscale,100)
 
 ypos += 30
 humidity = QtGui.QLabel(frame1)
 humidity.setObjectName("humidity")
-humidity.setStyleSheet("#humidity { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(25*xscale))+"px }")
+humidity.setStyleSheet("#humidity { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(25*xscale))+"px; "+Config.fontattr+"}")
 humidity.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 humidity.setGeometry(3*xscale,ypos*yscale,300*xscale,100)
 
 ypos += 30
 wind = QtGui.QLabel(frame1)
 wind.setObjectName("wind")
-wind.setStyleSheet("#wind { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(20*xscale))+"px }")
+wind.setStyleSheet("#wind { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(20*xscale))+"px; "+Config.fontattr+"}")
 wind.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 wind.setGeometry(3*xscale,ypos*yscale,300*xscale,100)
 
 ypos += 20
 wind2 = QtGui.QLabel(frame1)
 wind2.setObjectName("wind2")
-wind2.setStyleSheet("#wind2 { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(20*xscale))+"px }")
+wind2.setStyleSheet("#wind2 { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(20*xscale))+"px; "+Config.fontattr+"}")
 wind2.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 wind2.setGeometry(3*xscale,ypos*yscale,300*xscale,100)
 
 ypos += 20
 wdate = QtGui.QLabel(frame1)
 wdate.setObjectName("wdate")
-wdate.setStyleSheet("#wdate { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(15*xscale))+"px }")
+wdate.setStyleSheet("#wdate { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(15*xscale))+"px; "+Config.fontattr+"}")
 wdate.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 wdate.setGeometry(3*xscale,ypos*yscale,300*xscale,100)
 
 bottom = QtGui.QLabel(frame1)
 bottom.setObjectName("bottom")
-bottom.setStyleSheet("#bottom { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(30*xscale))+"px }")
+bottom.setStyleSheet("#bottom { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(30*xscale))+"px; "+Config.fontattr+"}")
 bottom.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 bottom.setGeometry(0,height-50,width,50)
 
 temp = QtGui.QLabel(frame1)
 temp.setObjectName("temp")
-temp.setStyleSheet("#temp { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(30*xscale))+"px }")
+temp.setStyleSheet("#temp { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(30*xscale))+"px; "+Config.fontattr+"}")
 temp.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 temp.setGeometry(0,height-100,width,50)
 
@@ -742,7 +818,7 @@ forecast = []
 for i in range(0,9):
     lab = QtGui.QLabel(frame1)
     lab.setObjectName("forecast"+str(i))
-    lab.setStyleSheet("QWidget { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(20*xscale))+"px }")
+    lab.setStyleSheet("QWidget { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(20*xscale))+"px; "+Config.fontattr+"}")
     lab.setGeometry(1137*xscale,i*100*yscale,300*xscale,100*yscale)
     
     icon = QtGui.QLabel(lab)
