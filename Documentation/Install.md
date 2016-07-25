@@ -365,6 +365,26 @@ save the file
 
 This sets the reboot to occur at 3:22am every day.   Adjust as needed.
 
+### Switching skins at certain times of the day
+This is optional, but if its just too bright at night, a switcher script will kill and restart
+PyQtPiClock with an alternate config.
+
+First you need to set up an alternate config.   Config.py is the normal name, so perhaps Config-Night.py
+might be appropriate.  For a dimmer display use Config-Example-Bedside.py as a guide.
+
+Now we'll tell our friend cron to run the switcher script (switcher.sh) on day/night cycles.
+Run the cron editor: (should *not* be roor)
+```
+crontab -e
+```
+Add lines similar to this:
+```
+0 8 * * * sh /home/pi/PiClock/switcher.sh Config
+0 21 * * * sh /home/pi/PiClock/switcher.sh Config-Night
+```
+The 8 there means 8am, to switch to the normal config, and the 21 means switch to Config-Night at 9pm.
+More info on crontab can be found here: https://en.wikipedia.org/wiki/Cron
+
 
 ### Updating to newer/updated versions
 Since we pulled the software from github originally, it can be updated
