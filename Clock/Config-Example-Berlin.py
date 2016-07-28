@@ -34,6 +34,7 @@ DateLocale = 'de_DE.utf-8'  # The Python Locale for date/time (locale.setlocale)
                             # locale -a
                             # to install locales
                             # sudo dpkg-reconfigure locales
+#thanks to colonia27 for the language work
 LPressure = "Luftdruck "
 LHumidity = "Feuchtigkeit "
 LWind = "Wind "
