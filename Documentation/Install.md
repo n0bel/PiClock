@@ -11,7 +11,7 @@ image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
  
-### Download Raspbian Wheezy and put it on an SD Card
+### Download Raspbian Jessie and put it on an SD Card
 
 The image and instructions for doing this are on the following page:
 https://www.raspberrypi.org/downloads/  
