@@ -92,7 +92,7 @@ def tick():
                 locale.setlocale(locale.LC_TIME, Config.DateLocale)
             except:
                 pass 
-        ds = "{0:%A %B} {0.day}<sup>".format(now)+sup+"</sup> {0.year}".format(now)
+        ds = "{0:%A %B} {0.day}<sup>{1}</sup> {0.year}".format(now,sup)
         datex.setText(ds)
         datex2.setText(ds)
         datey2.setText("{0:%I:%M %p}".format(now))
