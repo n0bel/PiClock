@@ -848,7 +848,7 @@ for i in range(0,9):
 
     day = QtGui.QLabel(lab)
     day.setStyleSheet("#day { background-color: transparent; }")
-    day.setGeometry(100*xscale,80*yscale,200*xscale,20*yscale)
+    day.setGeometry(100*xscale,80*yscale,200*xscale,22*yscale)
     day.setAlignment(Qt.AlignRight | Qt.AlignBottom);
     day.setObjectName("day")
 
