@@ -298,6 +298,12 @@ class Radar(QtGui.QLabel):
         global xscale, yscale
         self.myname = myname
         self.rect = rect
+        self.satellite = Config.satellite
+        try: 
+            if radar["satellite"]:
+                self.satellite = 1
+        except KeyError:
+            pass
         self.baseurl = self.mapurl(radar, rect, False)
         print "google map base url: "+self.baseurl
         self.mkurl = self.mapurl(radar, rect, True)
@@ -355,7 +361,7 @@ class Radar(QtGui.QLabel):
         #wuprefix+wuapi+'/animatedradar/image.gif?maxlat='+rNE.lat+'&maxlon='+rNE.lng+'&minlat='+rSW.lat+'&minlon='+rSW.lng+wuoptionsr;
         #wuoptionsr = '&width=300&height=275&newmaps=0&reproj.automerc=1&num=5&delay=25&timelabel=1&timelabel.y=10&rainsnow=1&smooth=1';
         rr = getCorners(radar['center'],radar['zoom'],rect.width(),rect.height())
-        if Config.satellite:
+        if self.satellite:
             return (Config.wuprefix+ApiKeys.wuapi+'/animatedsatellite/lang:'+Config.wuLanguage+'/image.gif'+
                 '?maxlat='+str(rr['N'])+
                 '&maxlon='+str(rr['E'])+
@@ -383,7 +389,7 @@ class Radar(QtGui.QLabel):
         self.basepixmap.loadFromData(self.basereply.readAll())
         if self.basepixmap.size() != self.rect.size():
             self.basepixmap = self.basepixmap.scaled(self.rect.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        if Config.satellite:
+        if self.satellite:
             p = QPixmap(self.basepixmap.size())
             p.fill(Qt.transparent)
             painter = QPainter()
@@ -431,7 +437,7 @@ class Radar(QtGui.QLabel):
             QtCore.QTimer.singleShot(5*1000, self.getwx)
             return
         self.wxmovie = mov
-        if Config.satellite:
+        if self.satellite:
             self.setMovie( self.wxmovie)
         else:
             self.wwx.setMovie( self.wxmovie)

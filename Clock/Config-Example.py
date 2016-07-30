@@ -18,8 +18,9 @@ metric = 0  #0 = English, 1 = Metric
 radar_refresh = 10      # minutes
 weather_refresh = 30    # minutes
 wind_degrees = 0        # Wind in degrees instead of cardinal 0 = cardinal, 1 = degrees
-satellite = 0           # show satellite image (clouds) instead of radar 0 = radar, 1 = satellite
-
+satellite = 0           # Depreciated: use 'satellite' key in radar section, on a per radar basis
+                        # if this is used, all radar blocks will get satellite images
+                        
 fontattr = ''   # gives all text additional attributes using QT style notation
                 # example: fontattr = 'font-weight: bold; '
                 
@@ -48,14 +49,15 @@ LRain = " Rain: "
 LSnow = " Snow: "
 
 radar1 = {
-    'center' : LatLng(44.9764016,-93.2486732),
-    'zoom' : 7,
-    'markers' : (
+    'center' : LatLng(44.9764016,-93.2486732),  # the center of your radar block
+    'zoom' : 7, # this is a google maps zoom factor, bigger = smaller area
+    'satellite' : 0,    # show satellite images instead of radar (colorized IR images)
+    'markers' : (   # google maps markers can be overlayed
         {
         'location' : LatLng(44.9764016,-93.2486732),
         'color' : 'red',
         'size' : 'small',
-        },
+        },          # dangling comma is on purpose.
         )
     }
 
@@ -63,6 +65,7 @@ radar1 = {
 radar2 = {
     'center' : LatLng(44.9764016,-93.2486732),
     'zoom' : 11,
+    'satellite' : 0,
     'markers' : (
         {
         'location' : LatLng(44.9764016,-93.2486732),
@@ -76,6 +79,7 @@ radar2 = {
 radar3 = {
     'center' : LatLng(44.9764016,-93.2486732),
     'zoom' : 7,
+    'satellite' : 0,
     'markers' : (
         {
         'location' : LatLng(44.9764016,-93.2486732),
@@ -88,6 +92,7 @@ radar3 = {
 radar4 = {
     'center' : LatLng(44.7212951,-93.2008627),
     'zoom' : 11,
+    'satellite' : 0,
     'markers' : (
         {
         'location' : LatLng(44.7212951,-93.2008627),
