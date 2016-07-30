@@ -399,3 +399,10 @@ The update.py program will then convert any config files as needed.
 
 You'll want to reboot after the update.
 
+Note: If you get errors because you've made changes to the base code you might need
+```
+git reset --hard
+```
+Backup your changes first!
+(This won't bother your Config.py nor ApiKeys.py because they are not tracked in git.
+
