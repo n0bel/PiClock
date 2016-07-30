@@ -51,7 +51,7 @@ LSnow = " Snow: "
 radar1 = {
     'center' : LatLng(44.9764016,-93.2486732),  # the center of your radar block
     'zoom' : 7, # this is a google maps zoom factor, bigger = smaller area
-    'satellite' : 0,    # show satellite images instead of radar (colorized IR images)
+    'satellite' : 0,    # 1 => show satellite images instead of radar (colorized IR images)
     'markers' : (   # google maps markers can be overlayed
         {
         'location' : LatLng(44.9764016,-93.2486732),
