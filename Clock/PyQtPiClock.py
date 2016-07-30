@@ -104,6 +104,7 @@ def tempfinished():
     if tempreply.error() != QNetworkReply.NoError: return
     tempstr = str(tempreply.readAll())
     tempdata = json.loads(tempstr)
+    if tempdata['temp'] == '': return
     if Config.metric:
         s = Config.LInsideTemp+ "%3.1f" % ((float(tempdata['temp'])-32.0)*5.0/9.0)
         if tempdata['temps']:
