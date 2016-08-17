@@ -6,7 +6,7 @@
 cd $HOME/PiClock
 
 # wait for Xwindows and the desktop to start up
-sleep 45
+#sleep 45
 
 # stop screen blanking
 export DISPLAY=:0.0
@@ -30,7 +30,10 @@ if [ $? -eq 0 ]
 fi
 
 # gpio button to keyboard input
-sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
+if [ -x Button/gpio-keys ]
+	then
+	sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
+fi
 
 # for temperature sensor(s) on One Wire bus
 python -c "import w1thermsensor"
