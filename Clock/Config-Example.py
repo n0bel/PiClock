@@ -1,8 +1,10 @@
 from GoogleMercatorProjection import LatLng
 from PyQt4.QtGui import QColor
 
+
+loc = 44.9764016,-93.2486732 # Change to your Lat/Lon
 wuprefix = 'http://api.wunderground.com/api/'
-wulocation = LatLng(44.9764016,-93.2486732)
+wulocation = LatLng(loc[0],loc[1])
 noaastream = 'http://audioplayer.wunderground.com:80/tim273/edina'
 background = 'images/clockbackground-kevin.png'
 squares1 = 'images/squares1-kevin.png'
@@ -49,12 +51,12 @@ LRain = " Rain: "
 LSnow = " Snow: "
 
 radar1 = {
-    'center' : LatLng(44.9764016,-93.2486732),  # the center of your radar block
+    'center' : wulocation,  # the center of your radar block
     'zoom' : 7, # this is a google maps zoom factor, bigger = smaller area
     'satellite' : 0,    # 1 => show satellite images instead of radar (colorized IR images)
     'markers' : (   # google maps markers can be overlayed
         {
-        'location' : LatLng(44.9764016,-93.2486732),
+        'location' : wulocation, 
         'color' : 'red',
         'size' : 'small',
         },          # dangling comma is on purpose.
@@ -63,12 +65,12 @@ radar1 = {
 
     
 radar2 = {
-    'center' : LatLng(44.9764016,-93.2486732),
+    'center' : wulocation, 
     'zoom' : 11,
     'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(44.9764016,-93.2486732),
+        'location' : wulocation, 
         'color' : 'red',
         'size' : 'small',
         },
@@ -77,12 +79,12 @@ radar2 = {
 
     
 radar3 = {
-    'center' : LatLng(44.9764016,-93.2486732),
+    'center' : wulocation, 
     'zoom' : 7,
     'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(44.9764016,-93.2486732),
+        'location' : wulocation, 
         'color' : 'red',
         'size' : 'small',
         },
@@ -90,12 +92,12 @@ radar3 = {
     }
 
 radar4 = {
-    'center' : LatLng(44.7212951,-93.2008627),
+    'center' : wulocation, 
     'zoom' : 11,
     'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(44.7212951,-93.2008627),
+        'location' : wulocation, 
         'color' : 'red',
         'size' : 'small',
         },
