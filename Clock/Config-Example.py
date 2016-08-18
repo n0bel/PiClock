@@ -4,10 +4,11 @@ from PyQt4.QtGui import QColor
 
 # LOCATION(S) 
 # Further radar configuration (zoom, marker location) can be completed under the RADAR section
-primary_location = 44.9764016,-93.2486732 # Change to your Lat/Lon
+primary_coordinates = 44.9764016,-93.2486732 # Change to your Lat/Lon
 
 wuprefix = 'http://api.wunderground.com/api/'
-wulocation = LatLng(primary_location[0],primary_location[1])
+wulocation = LatLng(primary_coordinates[0],primary_coordinates[1]) # Location for weather report
+primary_location = LatLng(primary_coordinates[0],primary_coordinates[1]) # Default radar location
 noaastream = 'http://audioplayer.wunderground.com:80/tim273/edina'
 background = 'images/clockbackground-kevin.png'
 squares1 = 'images/squares1-kevin.png'
@@ -61,7 +62,6 @@ LSnow = " Snow: "
 # primary_location,
 # -TO-
 # LatLng(44.9764016,-93.2486732),
-
 radar1 = {
     'center' : primary_location,  # the center of your radar block
     'zoom' : 7, # this is a google maps zoom factor, bigger = smaller area
