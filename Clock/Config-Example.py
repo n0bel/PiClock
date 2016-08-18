@@ -1,8 +1,14 @@
 from GoogleMercatorProjection import LatLng
 from PyQt4.QtGui import QColor
 
+
+# LOCATION(S) 
+# Further radar configuration (zoom, marker location) can be completed under the RADAR section
+primary_coordinates = 44.9764016,-93.2486732 # Change to your Lat/Lon
+
 wuprefix = 'http://api.wunderground.com/api/'
-wulocation = LatLng(44.9764016,-93.2486732)
+wulocation = LatLng(primary_coordinates[0],primary_coordinates[1]) # Location for weather report
+primary_location = LatLng(primary_coordinates[0],primary_coordinates[1]) # Default radar location
 noaastream = 'http://audioplayer.wunderground.com:80/tim273/edina'
 background = 'images/clockbackground-kevin.png'
 squares1 = 'images/squares1-kevin.png'
@@ -48,13 +54,21 @@ LInsideTemp = "Inside Temp "
 LRain = " Rain: "
 LSnow = " Snow: "
 
+
+# RADAR
+# By default, primary_location entered will be the center and marker of all radar images.
+# To update centers/markers, change radar sections below the desired lat/lon as:
+# -FROM-
+# primary_location,
+# -TO-
+# LatLng(44.9764016,-93.2486732),
 radar1 = {
-    'center' : LatLng(44.9764016,-93.2486732),  # the center of your radar block
+    'center' : primary_location,  # the center of your radar block
     'zoom' : 7, # this is a google maps zoom factor, bigger = smaller area
     'satellite' : 0,    # 1 => show satellite images instead of radar (colorized IR images)
     'markers' : (   # google maps markers can be overlayed
         {
-        'location' : LatLng(44.9764016,-93.2486732),
+        'location' : primary_location, 
         'color' : 'red',
         'size' : 'small',
         },          # dangling comma is on purpose.
@@ -63,12 +77,12 @@ radar1 = {
 
     
 radar2 = {
-    'center' : LatLng(44.9764016,-93.2486732),
+    'center' : primary_location,
     'zoom' : 11,
     'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(44.9764016,-93.2486732),
+        'location' : primary_location, 
         'color' : 'red',
         'size' : 'small',
         },
@@ -77,12 +91,12 @@ radar2 = {
 
     
 radar3 = {
-    'center' : LatLng(44.9764016,-93.2486732),
+    'center' : primary_location, 
     'zoom' : 7,
     'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(44.9764016,-93.2486732),
+        'location' : primary_location, 
         'color' : 'red',
         'size' : 'small',
         },
@@ -90,12 +104,12 @@ radar3 = {
     }
 
 radar4 = {
-    'center' : LatLng(44.7212951,-93.2008627),
+    'center' : primary_location, 
     'zoom' : 11,
     'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(44.7212951,-93.2008627),
+        'location' : primary_location, 
         'color' : 'red',
         'size' : 'small',
         },
