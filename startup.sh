@@ -6,7 +6,10 @@
 cd $HOME/PiClock
 
 # wait for Xwindows and the desktop to start up
-sleep 45
+if [ "$1" != "-n" -a "$1" != "--no-sleep" ]
+then
+	sleep 45
+fi
 
 # stop screen blanking
 export DISPLAY=:0.0
