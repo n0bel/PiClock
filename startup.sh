@@ -3,10 +3,13 @@
 #@reboot sh /home/pi/PiClock/startup.sh
 
 #
-cd /home/pi/PiClock
+cd $HOME/PiClock
 
 # wait for Xwindows and the desktop to start up
-sleep 45
+if [ "$1" != "-n" -a "$1" != "--no-sleep" ]
+then
+	sleep 45
+fi
 
 # stop screen blanking
 export DISPLAY=:0.0
@@ -21,17 +24,28 @@ unclutter &
 amixer cset numid=1 -- 400
 
 # NeoPixel AmbiLights
-cd Leds
-sudo python NeoAmbi.py &
-cd ..
+python -c "import NeoPixel"
+if [ $? -eq 0 ]
+	then
+	cd Leds
+	sudo python NeoAmbi.py &
+	cd ..
+fi
 
 # gpio button to keyboard input
-sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
+if [ -x Button/gpio-keys ]
+	then
+	sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
+fi
 
 # for temperature sensor(s) on One Wire bus
-cd Temperature
-python TempServer.py &
-cd ..
+python -c "import w1thermsensor"
+if [ $? -eq 0 ]
+	then
+	cd Temperature
+	python TempServer.py &
+	cd ..
+fi
 
 # the main app
 cd Clock
