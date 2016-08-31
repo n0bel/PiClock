@@ -313,6 +313,7 @@ class Radar(QtGui.QLabel):
         QtGui.QLabel.__init__(self, parent)
         self.interval = Config.radar_refresh*60
         self.lastwx = 0
+        self.retries = 0
         
         self.setObjectName("radar")
         self.setGeometry(rect)
@@ -330,6 +331,7 @@ class Radar(QtGui.QLabel):
         self.wmk.setGeometry(0, 0, rect.width(), rect.height()) 
 
         self.wxmovie = QMovie()
+        
 
     def mapurl(self, radar,rect,markersonly):
         #'https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&center='+rcenter.lat+','+rcenter.lng+'&zoom='+rzoom+'&size=300x275'+markersr;
@@ -428,12 +430,21 @@ class Radar(QtGui.QLabel):
         self.wxbuff = QtCore.QBuffer(self.wxdata)
         self.wxbuff.open(QtCore.QIODevice.ReadOnly)
         mov = QMovie(self.wxbuff, 'GIF')
-        print "radar map frame count:"+self.myname+":"+str(mov.frameCount())
+        print "radar map frame count:"+self.myname+":"+str(mov.frameCount())+":r"+str(self.retries)
         if mov.frameCount() > 2:
             self.lastwx = time.time()
+            self.retries = 0
         else:
             # radar image retreval failed
+            if self.retries > 3:
+                # give up, last successful animation stays.
+                # the next normal radar_refresh time (default 10min) will apply
+                self.lastwx = time.time()
+                return
+            
             self.lastwx = 0
+            # count retries
+            self.retries = self.retries + 1
             # retry in 5 seconds
             QtCore.QTimer.singleShot(5*1000, self.getwx)
             return
