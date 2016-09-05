@@ -157,6 +157,16 @@ Be sure the DRIVER line appears as follows
 DRIVER="default"
 ```
 
+Be sure the DEVICE line appears as follows
+```
+DEVICE="/dev/lirc0"
+```
+
+Be sure the MODULES line appears as follows
+```
+MODULES="lirc_rpi"
+```
+
 ### Get mpg123 (optional to play NOAA weather radio streams)
 
 (you must still be root [super user]) 
