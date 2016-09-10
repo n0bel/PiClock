@@ -393,6 +393,16 @@ save the file
 
 This sets the reboot to occur at 3:22am every day.   Adjust as needed.
 
+## Some notes about startup.sh
+startup.sh has a few options:
+* -n or --no-delay			Don't delay on starting the clock right away (default is 45 seconds delay)
+* -d X or --delay X			Delay X seconds before starting the clock
+* -m X or --message-delay X 	Delay X seconds while displaying a message on the desktop
+
+Startup also looks at the various optional PiClock items (Buttons, Temperature, NeoPixel, etc)
+and only starts those things that are configured to run.   It also checks if they are already
+running, and refrains from starting them again if they are.
+
 ### Switching skins at certain times of the day
 This is optional, but if its just too bright at night, a switcher script will kill and restart
 PyQtPiClock with an alternate config.
