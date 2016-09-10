@@ -21,7 +21,7 @@ sechand = 'images/sechand-darkgreen.png'
 
 digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
  
-digitalcolor = "#206225"            
+digitalcolor = "#154018"            
 digitalformat = "{0:%I:%M\n%S %p}"  # The format of the time
 digitalsize = 200
 # The above example shows in this way: https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg

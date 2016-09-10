@@ -745,7 +745,7 @@ else:
     clockface.setGeometry(clockrect)
     dcolor = QColor(Config.digitalcolor).darker(0).name()
     lcolor = QColor(Config.digitalcolor).lighter(120).name()
-    clockface.setStyleSheet("#clockface { background-color: transparent; font-family:sans-serif; font-weight: light; color: "+lcolor+"; background-color: transparent; font-size: "+str(int(Config.digitalsize*xscale))+"px; }")
+    clockface.setStyleSheet("#clockface { background-color: transparent; font-family:sans-serif; font-weight: light; color: "+lcolor+"; background-color: transparent; font-size: "+str(int(Config.digitalsize*xscale))+"px; "+Config.fontattr+"}")
     clockface.setAlignment(Qt.AlignCenter);
     clockface.setGeometry(clockrect)
     glow = QtGui.QGraphicsDropShadowEffect()

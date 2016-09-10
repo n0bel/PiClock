@@ -379,20 +379,6 @@ and reboot to test
 sudo reboot
 ```
 
-### Setting the Pi to auto reboot every day
-This is optional but some may want their PiClock to reboot every day.  I do this with mine,
-but it is probably not needed.
-```
-sudo crontab -e
-```
-add the following line
-```
-22 3 * * * /sbin/reboot
-```
-save the file
-
-This sets the reboot to occur at 3:22am every day.   Adjust as needed.
-
 ## Some notes about startup.sh
 startup.sh has a few options:
 * -n or --no-delay			Don't delay on starting the clock right away (default is 45 seconds delay)
@@ -423,6 +409,19 @@ Add lines similar to this:
 The 8 there means 8am, to switch to the normal config, and the 21 means switch to Config-Night at 9pm.
 More info on crontab can be found here: https://en.wikipedia.org/wiki/Cron
 
+### Setting the Pi to auto reboot every day
+This is optional but some may want their PiClock to reboot every day.  I do this with mine,
+but it is probably not needed.
+```
+sudo crontab -e
+```
+add the following line
+```
+22 3 * * * /sbin/reboot
+```
+save the file
+
+This sets the reboot to occur at 3:22am every day.   Adjust as needed.
 
 ### Updating to newer/updated versions
 Since we pulled the software from github originally, it can be updated
@@ -443,4 +442,11 @@ git reset --hard
 ```
 Backup your changes first!
 (This won't bother your Config.py nor ApiKeys.py because they are not tracked in git.
+
+Also, if you're using gpio-keys, you may need to remake it:
+```
+cd PiClock/Buttons
+rm gpio-keys
+make gpio-keys
+```
 

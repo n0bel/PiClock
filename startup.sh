@@ -1,6 +1,9 @@
 #!/bin/bash
 # Startup script for the PiClock
-# Designed to be started from crontab as follows
+#
+# Designed to be started from PiClock.desktop (autostart)
+#
+# or alternatively from crontab as follows
 #@reboot sh /home/pi/PiClock/startup.sh
 
 #
@@ -59,8 +62,9 @@ echo "Setting sound to max (assuming Monitor Tv controls volume)...."
 # push sound level to maximum
 amixer cset numid=1 -- 400 >/dev/null 2>&1
 
-echo "Checking for NeoPixels Ambilight..."
 # NeoPixel AmbiLights
+echo "Checking for NeoPixels Ambilight..."
+cd Leds
 python -c "import NeoPixel" >/dev/null 2>&1
 if [ $? -eq 0 ]
 then
@@ -68,11 +72,10 @@ then
 	if [ $? -eq 1 ]
 	then
 		echo "Starting NeoPixel Ambilight Service..."
-		cd Leds
 		sudo python NeoAmbi.py &
-		cd ..
 	fi
 fi
+cd ..
 
 echo "Checking for GPIO Buttons..."
 # gpio button to keyboard input

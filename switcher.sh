@@ -6,7 +6,6 @@ then
 	export DISPLAY=:0
 fi
 # the main app
-cd Clock
 # create a new log file name, max of 7 log files
 echo "Rotating log files...."
 rm PyQtPiClock.7.log >/dev/null 2>&1
