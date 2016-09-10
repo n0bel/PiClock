@@ -2,8 +2,13 @@
 from GoogleMercatorProjection import LatLng
 from PyQt4.QtGui import QColor
 
+# LOCATION(S) 
+# Further radar configuration (zoom, marker location) can be completed under the RADAR section
+primary_coordinates = 52.5074559,13.144557 # Change to your Lat/Lon
+
 wuprefix = 'http://api.wunderground.com/api/'
-wulocation = LatLng(52.5074559,13.144557)
+wulocation = LatLng(primary_coordinates[0],primary_coordinates[1]) # Location for weather report
+primary_location = LatLng(primary_coordinates[0],primary_coordinates[1]) # Default radar location
 noaastream = ''
 background = 'images/berlin-at-night-mrwallpaper.jpg'
 squares1 = 'images/squares1-kevin.png'
@@ -14,6 +19,20 @@ clockface = 'images/clockface3.png'
 hourhand = 'images/hourhand.png'
 minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
+
+
+digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
+ 
+digitalcolor = "#50CBEB"            # Goes with light blue config (like the default one)
+digitalformat = "{0:%I:%M\n%S %p}"  # The format of the time
+digitalsize = 200
+# The above example shows in this way: https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg
+# ( specifications of the time string are documented here: https://docs.python.org/2/library/time.html#time.strftime )
+
+#digitalformat = "{0:%I:%M}"
+#digitalsize = 250
+# The above example shows in this way: https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
+
 
 metric = 1  #0 = English, 1 = Metric
 radar_refresh = 10      # minutes
@@ -49,25 +68,34 @@ LInsideTemp = "Innen Temp "
 LRain = " Regen: "
 LSnow = " Schnee: "
 
+# RADAR
+# By default, primary_location entered will be the center and marker of all radar images.
+# To update centers/markers, change radar sections below the desired lat/lon as:
+# -FROM-
+# primary_location,
+# -TO-
+# LatLng(44.9764016,-93.2486732),
 radar1 = {
-    'center' : LatLng(52.5074559,13.144557),
-    'zoom' : 7,
-    'markers' : (
+    'center' : primary_location,  # the center of your radar block
+    'zoom' : 7, # this is a google maps zoom factor, bigger = smaller area
+    'satellite' : 0,    # 1 => show satellite images instead of radar (colorized IR images)
+    'markers' : (   # google maps markers can be overlayed
         {
-        'location' : LatLng(52.5074559,13.144557),
+        'location' : primary_location, 
         'color' : 'red',
         'size' : 'small',
-        },
+        },          # dangling comma is on purpose.
         )
     }
 
     
 radar2 = {
-    'center' : LatLng(52.5074559,13.144557),
+    'center' : primary_location,
     'zoom' : 11,
+    'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(52.5074559,13.144557),
+        'location' : primary_location, 
         'color' : 'red',
         'size' : 'small',
         },
@@ -76,11 +104,12 @@ radar2 = {
 
     
 radar3 = {
-    'center' : LatLng(52.5074559,13.144557),
+    'center' : primary_location, 
     'zoom' : 7,
+    'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(52.5074559,13.144557),
+        'location' : primary_location, 
         'color' : 'red',
         'size' : 'small',
         },
@@ -88,11 +117,12 @@ radar3 = {
     }
 
 radar4 = {
-    'center' : LatLng(52.5074559,13.144557),
+    'center' : primary_location, 
     'zoom' : 11,
+    'satellite' : 0,
     'markers' : (
         {
-        'location' : LatLng(52.5074559,13.144557),
+        'location' : primary_location, 
         'color' : 'red',
         'size' : 'small',
         },
