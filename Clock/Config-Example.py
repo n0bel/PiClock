@@ -20,6 +20,20 @@ hourhand = 'images/hourhand.png'
 minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
+
+digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
+ 
+digitalcolor = "#50CBEB"            # Goes with light blue config (like the default one)
+digitalformat = "{0:%I:%M\n%S %p}"  # The format of the time
+digitalsize = 200
+# The above example shows in this way: https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg
+# ( specifications of the time string are documented here: https://docs.python.org/2/library/time.html#time.strftime )
+
+#digitalformat = "{0:%I:%M}"
+#digitalsize = 250
+# The above example shows in this way: https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
+
+
 metric = 0  #0 = English, 1 = Metric
 radar_refresh = 10      # minutes
 weather_refresh = 30    # minutes
