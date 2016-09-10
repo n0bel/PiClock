@@ -301,11 +301,13 @@ set up in python syntax.  The positioning of the {} and () and ','
 are not arbitrary.  If you're not familiar with python, use extra
 care not to disturb the format while changing the data.
 
-The first thing is to change the Latitudes and Longitudes you see to yours.
-They occur in several places. The first one in the file is where your weather
-forecast comes from.   The others are where your radar images are centered
+The first thing is to change the primary_coordinates to yours.  That is really
+all that is manditory.  Further customization of the radar maps can be done in
+the Radar section.  There you can customize where your radar images are centered
 and where the markers appear on those images.  Markers are those little red
-location pointers.
+location pointers.  Radar1 and 2 show on the first page, and 3 and 4 show on the
+second page of the display (here's a post of about that:
+https://www.facebook.com/permalink.php?story_fbid=1371576642857593&id=946361588712436&substory_index=0 )
 
 The second thing to change is your NOAA weather radio stream url.  You can
 find it here: http://www.wunderground.com/wxradio/
@@ -314,18 +316,20 @@ At this point, I'd not recommend many other changes until you have tested
 and gotten it running.
 
 ### Run it!
+You'll need to be on the desktop, in a terminal program.
 
 ```
 cd PiClock
-sh startup.sh
+sh startup.sh -n
 ```
-After about 45 seconds, your screen should be covered by the PiClock  YAY!
+Your screen should be covered by the PiClock  YAY!
 
 There may be some output on the terminal screen as startup.sh executes.
 If everything works, it can be ignored.  If for some reason the clock
 doesn't work, or maps are missing, etc the output may give a reason
 or reasons, which usually reference something to do with the config
-file (Config.py)
+file (Config.py)  Also PiClock/Clock contail PyQtPiClock.[1-7].log, which
+can also help you find issues.
 
 ### First Use
 
@@ -346,6 +350,7 @@ Give each number a name, like is shown in the examples in that file
 At this point the clock will only start when you manually start it, as
 described in the Run It section.
 
+## Autostart Method 2
 To have it auto start on boot we need to do one more thing, edit the
 crontab file as follows: (it will automatically start nano)
 ```
