@@ -350,9 +350,22 @@ Give each number a name, like is shown in the examples in that file
 At this point the clock will only start when you manually start it, as
 described in the Run It section.
 
+Use only one autostart method.
+## Autostart Method 1
+(NOT as root)
+```
+cd PiClock
+chmod +x PiClock.desktop
+ln PiClock.desktop ~/Desktop
+mkdir ~/.config/autostart
+ln PiClock.desktop ~/.config/autostart
+```
+This puts the a PiClock icon on your desktop.  It also runs it when
+the desktop starts.
+
 ## Autostart Method 2
 To have it auto start on boot we need to do one more thing, edit the
-crontab file as follows: (it will automatically start nano)
+crontab file as follows: (it will automatically start nano)  (NOT as root)
 ```
 crontab -e
 ```

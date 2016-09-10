@@ -1,14 +1,21 @@
-cd /home/pi/PiClock
+cd $HOME/PiClock
 pkill -HUP -f PyQtPiClock.py
 cd Clock
-export DISPLAY=:0.0
-# create a new log file name, max of 7 log files
-lc=`expr $(cat log.count 2>/dev/null) + 1`
-if [ "$lc" -gt "7" ]
+if [ "$DISPLAY" = "" ]
 then
-  lc=1
+	export DISPLAY=:0
 fi
-echo $lc >log.count
-lf="PyQtPiClock.$lc.log"
+# the main app
+cd Clock
+# create a new log file name, max of 7 log files
+echo "Rotating log files...."
+rm PyQtPiClock.7.log >/dev/null 2>&1
+mv PyQtPiClock.6.log PyQtPiClock.7.log >/dev/null 2>&1
+mv PyQtPiClock.5.log PyQtPiClock.6.log >/dev/null 2>&1
+mv PyQtPiClock.4.log PyQtPiClock.5.log >/dev/null 2>&1
+mv PyQtPiClock.3.log PyQtPiClock.4.log >/dev/null 2>&1
+mv PyQtPiClock.2.log PyQtPiClock.3.log >/dev/null 2>&1
+mv PyQtPiClock.1.log PyQtPiClock.2.log >/dev/null 2>&1
 # start the clock
-python -u PyQtPiClock.py $1 >$lf 2>&1
+echo "Starting PiClock...."
+python -u PyQtPiClock.py $1 >PyQtPiClock.1.log 2>&1 &

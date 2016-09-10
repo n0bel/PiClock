@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=PiClock
+Comment=
+Exec=/bin/sh -c "/bin/sh ~/PiClock/startup.sh -m 15"
+StartupNotify=false
+Terminal=false
+Hidden=false
+Icon=orage_globaltime
+Path=~/PiClock
