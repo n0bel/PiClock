@@ -255,15 +255,20 @@ Weather Underground api keys are created at this link:
 http://www.wunderground.com/weather/api/ Here too, it'll ask you for an
 Application (maybe PiClock?) that you're using the api key with.
 
-A _Google Maps api key is not required_, unless you pull a large volume of maps.
-This *can* occur if you're continually pulling maps because you're restarting
+## Optional Google Maps API key
+
+A Google Maps api key is _not required_, unless you pull a large volume of maps.
+Most everyone can leave this key empty.  
+
+You only need a key if you're continually pulling maps because you're restarting
 the clock often durning development.   The maps are pulled once at the start.
 
 If you want a key, this is how its done. Google Maps api keys are created at this link:
 https://console.developers.google.com/flows/enableapi?apiid=maps_backend&keyType=CLIENT_SIDE
 You'll require a google user and password.  After that it'll require
 you create a "project" (maybe PiClock for a project name?)
-It will also ask about Client Ids, which you can skip (just clock ok/create)
+It will also ask about Client Ids, which you can skip (just clock ok/create).  You need to 
+then activate the key.
 
 
 
