@@ -24,7 +24,7 @@ def tick():
     global hourpixmap2, minpixmap2, secpixmap2
     global lastmin,lastday,lasttimestr
     global clockrect
-    global datex, datex2, datey2
+    global datex, datex2, datey2, pdy
 
     if Config.DateLocale != "":
         try:
@@ -96,6 +96,11 @@ def tick():
                 ts.width(),
                 ts.height()
             )
+            
+    dy = "{0:%I:%M %p}".format(now)
+    if dy != pdy:
+        pdy = dy
+        datey2.setText(dy)
         
     if now.day != lastday:
         lastday = now.day
@@ -109,7 +114,6 @@ def tick():
         ds = "{0:%A %B} {0.day}<sup>{1}</sup> {0.year}".format(now,sup)
         datex.setText(ds)
         datex2.setText(ds)
-        datey2.setText("{0:%I:%M %p}".format(now))
  
 
     
@@ -653,10 +657,11 @@ except AttributeError:
 
 
 lastmin = -1
-lastday = -1;
+lastday = -1
+pdy = ""
 lasttimestr = ""
 weatherplayer = None
-lastkeytime = 0;
+lastkeytime = 0
 lastapiget = time.time()
 
 app = QtGui.QApplication(sys.argv)
