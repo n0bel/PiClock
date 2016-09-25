@@ -325,16 +325,22 @@ You'll need to be on the desktop, in a terminal program.
 
 ```
 cd PiClock
-sh startup.sh -n
+sh startup.sh -n -s
 ```
 Your screen should be covered by the PiClock  YAY!
 
-There may be some output on the terminal screen as startup.sh executes.
+There will be some output on the terminal screen as startup.sh executes.
 If everything works, it can be ignored.  If for some reason the clock
 doesn't work, or maps are missing, etc the output may give a reason
 or reasons, which usually reference something to do with the config
-file (Config.py)  Also PiClock/Clock contail PyQtPiClock.[1-7].log, which
-can also help you find issues.
+file (Config.py)  
+
+# Logs
+The -s option causes no log files to be created, but
+instead logs to your terminal screen.  If -s is omitted, logs are
+created in PiClock/Clock as PyQtPiClock.[1-7].log, which can also help
+you find issues.  -s is normally omitted when started from the desktop icon
+or from crontab.  Logs are then created for debugging auto starts.
 
 ### First Use
 
