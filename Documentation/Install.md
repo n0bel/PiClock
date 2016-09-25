@@ -335,7 +335,7 @@ doesn't work, or maps are missing, etc the output may give a reason
 or reasons, which usually reference something to do with the config
 file (Config.py)  
 
-# Logs
+### Logs
 The -s option causes no log files to be created, but
 instead logs to your terminal screen.  If -s is omitted, logs are
 created in PiClock/Clock as PyQtPiClock.[1-7].log, which can also help
