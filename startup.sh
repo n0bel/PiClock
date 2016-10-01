@@ -22,23 +22,22 @@ if [ "$1" = "-n" -o "$1" = "--no-sleep" -o "$1" = "--no-delay" ]
 then
 	MSG=""
 	DELAY=""
-	shift 1
 fi
 if [ "$1" = "-d" -o "$1" = "--delay" ]
 then
 	MSG="echo Waiting $2 seconds before starting"
 	DELAY="sleep $2"
-	shift 2
 fi
 if [ "$1" = "-m" -o "$1" = "--message-delay" ]
 then
 	MSG="echo Waiting $2 seconds for response before starting"
-	DELAY="xmessage -buttons Now:0,Cancel:1 -default Now -timeout $2 Starting PiClock in $2 seconds"
-	shift 2
+	#DELAY="xmessage -buttons Now:0,Cancel:1 -default Now -timeout $2 Starting PiClock in $2 seconds"
+	DELAY='zenity --question --title PiClock --ok-label=Now --cancel-label=Cancel --timeout '$2' --text "Starting PiClock in '$2' seconds" >/dev/null 2>&1'
 fi
 
 $MSG
-$DELAY
+echo $DELAY
+eval $DELAY
 if [ $? -eq 1 ]
 then
 	
@@ -46,7 +45,8 @@ then
 	exit 0
 fi
 
-xmessage -timeout 5 Starting PiClock....... &
+#xmessage -timeout 5 Starting PiClock....... &
+zenity --info --timeout 3 --text "Starting PiClock......." >/dev/null 2>&1 &
 
 # stop screen blanking
 echo "Disabling screen blanking...."
@@ -109,21 +109,15 @@ fi
 
 # the main app
 cd Clock
-if [ "$1" = "-s" -o "$1" = "--log-to-screen" ]
-then
- echo "Starting PiClock with log to screen...."
- python -u PyQtPiClock.py
-else
- # create a new log file name, max of 7 log files
- echo "Rotating log files...."
- rm PyQtPiClock.7.log >/dev/null 2>&1
- mv PyQtPiClock.6.log PyQtPiClock.7.log >/dev/null 2>&1
- mv PyQtPiClock.5.log PyQtPiClock.6.log >/dev/null 2>&1
- mv PyQtPiClock.4.log PyQtPiClock.5.log >/dev/null 2>&1
- mv PyQtPiClock.3.log PyQtPiClock.4.log >/dev/null 2>&1
- mv PyQtPiClock.2.log PyQtPiClock.3.log >/dev/null 2>&1
- mv PyQtPiClock.1.log PyQtPiClock.2.log >/dev/null 2>&1
- # start the clock
- echo "Starting PiClock with log to Clock/PyQtPiCLock.1.log...."
- python -u PyQtPiClock.py >PyQtPiClock.1.log 2>&1
-fi
+# create a new log file name, max of 7 log files
+echo "Rotating log files...."
+rm PyQtPiClock.7.log >/dev/null 2>&1
+mv PyQtPiClock.6.log PyQtPiClock.7.log >/dev/null 2>&1
+mv PyQtPiClock.5.log PyQtPiClock.6.log >/dev/null 2>&1
+mv PyQtPiClock.4.log PyQtPiClock.5.log >/dev/null 2>&1
+mv PyQtPiClock.3.log PyQtPiClock.4.log >/dev/null 2>&1
+mv PyQtPiClock.2.log PyQtPiClock.3.log >/dev/null 2>&1
+mv PyQtPiClock.1.log PyQtPiClock.2.log >/dev/null 2>&1
+# start the clock
+echo "Starting PiClock...."
+python -u PyQtPiClock.py >PyQtPiClock.1.log 2>&1
