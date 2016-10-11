@@ -16,6 +16,7 @@ picture showing the hookup for the PiClock.*
 
 This hardware guide directly supports the following
 
+* Raspsbery Pi Revision 2 Model B
 * Raspberry Pi Revision 2 Model B
 * Raspberry Pi Model B+
 * Raspberry Pi 2 Model B
