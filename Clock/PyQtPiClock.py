@@ -1,5 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-                 # NOQA
 
 import sys
 import os
@@ -21,8 +20,8 @@ from PyQt4.QtNetwork import QNetworkRequest
 from subprocess import Popen
 
 sys.dont_write_bytecode = True
-from GoogleMercatorProjection import getCorners
-import ApiKeys
+from GoogleMercatorProjection import getCorners             # NOQA
+import ApiKeys                                              # NOQA
 
 
 def tick():
@@ -434,7 +433,9 @@ class Radar(QtGui.QLabel):
             marks.append(str(marker['location'].lat) +
                          ',' + str(marker['location'].lng))
             urlp.append('markers=' + '|'.join(marks))
-        return 'http://maps.googleapis.com/maps/api/staticmap?' + '&'.join(urlp)
+
+        return 'http://maps.googleapis.com/maps/api/staticmap?' + \
+            '&'.join(urlp)
 
     def radarurl(self, radar, rect):
         # wuprefix = 'http://api.wunderground.com/api/';
