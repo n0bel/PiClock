@@ -696,6 +696,9 @@ class myMain(QtGui.QWidget):
             if event.key() == Qt.Key_Right:
                 nextframe(1)
 
+    def mousePressEvent(self, event):
+        if type(event) == QtGui.QMouseEvent:
+            nextframe(1)
 
 configname = 'Config'
 
