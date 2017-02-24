@@ -1,4 +1,4 @@
-from GoogleMercatorProjection import LatLng
+from GoogleMercatorProjection import LatLng     # NOQA
 from PyQt4.QtGui import QColor
 
 
@@ -89,7 +89,7 @@ LSnow = " Snow: "
 # RADAR
 # By default, primary_location entered will be the
 #  center and marker of all radar images.
-# To update centers/markers, change radar sections below the desired lat/lon as:
+# To update centers/markers,change radar sections below the desired lat/lon as:
 # -FROM-
 # primary_location,
 # -TO-
