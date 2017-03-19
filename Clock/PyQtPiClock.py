@@ -126,7 +126,7 @@ def tempfinished():
     global tempreply, temp
     if tempreply.error() != QNetworkReply.NoError:
         return
-    tempstr = str(tempreply.readAll())
+    tempstr = bytes(tempreply.readAll()).decode("utf-8")
     tempdata = json.loads(tempstr)
     if tempdata['temp'] == '':
         return
@@ -167,8 +167,8 @@ def wxfinished():
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc
 
-    wxstr = bytes(wxreply.readAll())
-    print(wxstr)
+    wxstr = bytes(wxreply.readAll()).decode("utf-8")
+    # print(wxstr)
     wxdata = json.loads(wxstr)
     f = wxdata['current_observation']
     iconurl = f['icon_url']
