@@ -2,7 +2,7 @@
 
 ## Introduction
 
-I'm going to assume you know how to connect your Raspberry Pi, Power supply, Monitor, 
+I'm going to assume you know how to connect your Raspberry Pi, Power supply, Monitor,
 keyboard/mouse and Wifi or Wired Ethernet.
 
 What follows is the details of various optional hardware you can add to your Raspi
@@ -20,6 +20,10 @@ This hardware guide directly supports the following
 * Raspberry Pi Revision 2 Model B
 * Raspberry Pi Model B+
 * Raspberry Pi 2 Model B
+* Raspberry Pi 3 Model B
+* Raspberry Pi Zero
+* Raspberry Pi Zero 1.3
+* Raspberry Pi Zero W
 
 Changes can be made, alternate pins (grounds/gpios) can be used to support
 other models, but this is left as an exercise for the reader.
@@ -32,7 +36,7 @@ Here's one: http://www.raspberry-pi-geek.com/Archive/2014/03/Controlling-your-Pi
 
 One thing to note is that most of these use GPIO18 (header pin 12).  The Install instructions I've provided
 require the use of **GPIO3 (header pin 5)**.  I've found this more convenient, usually sharing the connector
-with the DS18B20 temperature probe on GPIO4 (header pin 7). 
+with the DS18B20 temperature probe on GPIO4 (header pin 7).
 
 ```
 Raspi Header Pin           TSOP4838 Pin
@@ -89,7 +93,7 @@ sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
  * GPIO24 (header pin 18) is mapped to F2 (which toggles the NOAA stream)
  * GPIO25 (header pin 22) is mapped to UP (which does nothing yet)
  * A convinient ground is on header pin 20.
- 
+
 ![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/gpiobuttons.jpg)
 
 
@@ -98,6 +102,3 @@ sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
 For those that want to work from a schematic, I threw together a simple one
 
 ![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/Hardware_Schematic.png)
-
-
-

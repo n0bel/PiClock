@@ -2,14 +2,14 @@
 
 This version of the instructions is for setting up just the clock
 itself, ignoring all the other options.   It also assumes you have
-some OS already setup.   So this is useful for setting up the 
+some OS already setup.   So this is useful for setting up the
 clock on a desktop OS.
 
 # Prerequisites
 
 The minium requirements for a PiClock is pretty simple
-* Python 2.7+ (but not 3)
-* Python Qt4, known as PyQt4
+* Python 3.6+
+* Python Qt5, known as PyQt5
 * git (as an alternative to git, you can pull the zip file from git hub
 (download button on the right side of the github project) then unzip it
 onto your system )
@@ -30,11 +30,11 @@ https://github.com/n0bel/PiClock/archive/master.zip, then unzip it.
 
 ### Configure the PiClock api keys
 
-The first is to set API keys for Weather Underground and Google Maps.  
+The first is to set API keys for Weather Underground and Google Maps.
 These are both free, unless you have large volume.
 The PiClock usage is well below the maximums  imposed by the free api keys.
 
-Weather Underground api keys are created at this link: 
+Weather Underground api keys are created at this link:
 http://www.wunderground.com/weather/api/ Here too, it'll ask you for an
 Application (maybe PiClock?) that you're using the api key with.
 
@@ -67,7 +67,7 @@ googleapi = ''  #Empty string, the key is optional -- if you pull a small volume
 
 ### Configure your PiClock
 here's were you tell PiClock where your weather should come from, and the
-radar map centers and markers. 
+radar map centers and markers.
 
 ```
 cd PiClock
@@ -107,7 +107,7 @@ file (Config.py)
   * The space bar or right or left arrows will change the page.
   * F2 will start and stop the NOAA weather radio stream
   * F4 will close the clock
-  
+
 
 ### Updating to newer/updated versions
 Since we pulled the software from github originally, it can be updated
