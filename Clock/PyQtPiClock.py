@@ -48,7 +48,7 @@ def tick():
         angle = now.second * 6
         ts = secpixmap.size()
         secpixmap2 = secpixmap.transformed(
-            QtGui.QMatrix().scale(
+            QtGui.QTransform().scale(
                 float(clockrect.width()) / ts.height(),
                 float(clockrect.height()) / ts.height()
             ).rotate(angle),
@@ -67,7 +67,7 @@ def tick():
             angle = now.minute * 6
             ts = minpixmap.size()
             minpixmap2 = minpixmap.transformed(
-                QtGui.QMatrix().scale(
+                QtGui.QTransform().scale(
                     float(clockrect.width()) / ts.height(),
                     float(clockrect.height()) / ts.height()
                 ).rotate(angle),
@@ -85,7 +85,7 @@ def tick():
             angle = ((now.hour % 12) + now.minute / 60.0) * 30.0
             ts = hourpixmap.size()
             hourpixmap2 = hourpixmap.transformed(
-                QtGui.QMatrix().scale(
+                QtGui.QTransform().scale(
                     float(clockrect.width()) / ts.height(),
                     float(clockrect.height()) / ts.height()
                 ).rotate(angle),
