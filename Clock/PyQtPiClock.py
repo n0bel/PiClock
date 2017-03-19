@@ -315,14 +315,14 @@ def wxfinished():
 def getwx():
     global wxurl
     global wxreply
-    print "getting current and forecast:" + time.ctime()
+    print("getting current and forecast:" + time.ctime())
     wxurl = Config.wuprefix + ApiKeys.wuapi + \
         '/conditions/astronomy/hourly10day/forecast10day/lang:' + \
         Config.wuLanguage + '/q/'
     wxurl += str(Config.wulocation.lat) + ',' + \
         str(Config.wulocation.lng) + '.json'
     wxurl += '?r=' + str(random.random())
-    print wxurl
+    print(wxurl)
     r = QUrl(wxurl)
     r = QNetworkRequest(r)
     wxreply = manager.get(r)
@@ -379,10 +379,10 @@ class Radar(QtGui.QLabel):
         except KeyError:
             pass
         self.baseurl = self.mapurl(radar, rect, False)
-        print "google map base url: " + self.baseurl
+        print("google map base url: " + self.baseurl)
         self.mkurl = self.mapurl(radar, rect, True)
         self.wxurl = self.radarurl(radar, rect)
-        print "radar url: " + self.wxurl
+        print("radar url: " + self.wxurl)
         QtGui.QLabel.__init__(self, parent)
         self.interval = Config.radar_refresh * 60
         self.lastwx = 0
@@ -517,18 +517,18 @@ class Radar(QtGui.QLabel):
 
     def wxfinished(self):
         if self.wxreply.error() != QNetworkReply.NoError:
-            print "get radar error " + self.myname + ":" + \
-                str(self.wxreply.error())
+            print("get radar error " + self.myname + ":" +
+                  str(self.wxreply.error()))
             self.lastwx = 0
             return
-        print "radar map received:" + self.myname + ":" + time.ctime()
+        print("radar map received:" + self.myname + ":" + time.ctime())
         self.wxmovie.stop()
         self.wxdata = QtCore.QByteArray(self.wxreply.readAll())
         self.wxbuff = QtCore.QBuffer(self.wxdata)
         self.wxbuff.open(QtCore.QIODevice.ReadOnly)
         mov = QMovie(self.wxbuff, 'GIF')
-        print "radar map frame count:" + self.myname + ":" + \
-            str(mov.frameCount()) + ":r" + str(self.retries)
+        print("radar map frame count:" + self.myname + ":" +
+              str(mov.frameCount()) + ":r" + str(self.retries))
         if mov.frameCount() > 2:
             self.lastwx = time.time()
             self.retries = 0
@@ -563,7 +563,7 @@ class Radar(QtGui.QLabel):
             lastapiget = time.time()
         else:
             i = lastapiget - time.time()
-        print "get radar api call spacing oneshot get i=" + str(i)
+        print("get radar api call spacing oneshot get i=" + str(i))
         QtCore.QTimer.singleShot(i * 1000, self.getwx2)
 
     def getwx2(self):
@@ -573,7 +573,7 @@ class Radar(QtGui.QLabel):
                 return
         except Exception:
             pass
-        print "getting radar map " + self.myname + ":" + time.ctime()
+        print("getting radar map " + self.myname + ":" + time.ctime())
         self.wxreq = QNetworkRequest(
             QUrl(self.wxurl + '&rrrand=' + str(time.time())))
         self.wxreply = manager.get(self.wxreq)
@@ -604,7 +604,7 @@ class Radar(QtGui.QLabel):
             self.timer, QtCore.SIGNAL("timeout()"), self.getwx)
 
     def wxstart(self):
-        print "wxstart for " + self.myname
+        print("wxstart for " + self.myname)
         if (self.lastwx == 0 or (self.lastwx + self.interval) < time.time()):
             self.getwx()
         # random 1 to 10 seconds added to refresh interval to spread the
@@ -615,7 +615,7 @@ class Radar(QtGui.QLabel):
         QtCore.QTimer.singleShot(1000, self.wxmovie.start)
 
     def wxstop(self):
-        print "wxstop for " + self.myname
+        print("wxstop for " + self.myname)
         self.timer.stop()
         self.wxmovie.stop()
 
@@ -700,13 +700,14 @@ class myMain(QtGui.QWidget):
         if type(event) == QtGui.QMouseEvent:
             nextframe(1)
 
+
 configname = 'Config'
 
 if len(sys.argv) > 1:
     configname = sys.argv[1]
 
 if not os.path.isfile(configname + ".py"):
-    print "Config file not found %s" % configname + ".py"
+    print("Config file not found %s" % configname + ".py")
     exit(1)
 
 Config = __import__(configname)
