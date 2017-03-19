@@ -1,5 +1,5 @@
-# Install Instructions for PiClock 
-## For Raspbian Jessie 
+# Install Instructions for PiClock²
+## For Raspbian Jessie
 
 PiClock and this install guide are based on Raspian Jessie
 released on https://www.raspberrypi.org/downloads/ It will work with many
@@ -10,18 +10,18 @@ What follows is a step by step guide.  If you start with a new clean raspbian
 image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
- 
+
 ### Download Raspbian Jessie and put it on an SD Card
 
 The image and instructions for doing this are on the following page:
-https://www.raspberrypi.org/downloads/  
+https://www.raspberrypi.org/downloads/
 
 ### First boot and configure
 A keyboard and mouse are really handy at this point.
 When you first boot your Pi, you'll be presented with the desktop.
 Navigate to Menu->Preferences->Raspberry Pi Configuration.
 Just change the Items below.
- - General Tab
+ - System Tab
   - Change User Password -- this will set the password for the use pi,
      for ssh logins.
   - Hostname: (Maybe set this to PiClock?)
@@ -30,6 +30,7 @@ Just change the Items below.
   - Underscan: (Initally leave as default, but if your monitor has extra black area on the border, or bleeds off the edge, then change this)
  - Interfaces
   - 1-Wire Enable (for the inside temperature, DS18B20 if you're using it)
+  - SSH Enable (not stricly required, but helpful to log into your Pi from SSH)
  - Internationalization Tab
    - Set Locale.
     - Set Language  -- if you set language and country here, the date will automaticly be in your language
@@ -39,17 +40,28 @@ Just change the Items below.
   - Set Timezone.
     -  You'll want this to be correct, or the clock will be wrong.
   - Set Keyboard
-    -  Generally not needed, but good to check if you like the default
+    -  The Default is UK
   - Set WiFi Country (may not always show up)
 
 Finish and let it reboot.
 
-I've found that sometimes on reboot, Jessie doesn't go back to desktop mode.  
-If this is the case, 
+I've found that sometimes on reboot, Jessie doesn't go back to desktop mode.
+If this is the case,
 ```
 sudo raspi-config
-``` 
+```
 and change the boot option to Desktop/Auto-login
+
+### Get connected to the internet
+
+Either connect to your wired network, or setup wifi and verify you have
+internet access from the Pi.   Wifi is setup using the icon next to the speaker icon.
+
+```
+ping github.com
+```
+(remember ctrl-c aborts programs, like breaking out of ping, which will
+go on forever)
 
 ### editing config.txt
 
@@ -58,9 +70,9 @@ Log into your Pi, (either on the screen or via ssh)
 use nano to edit the boot config file
 ```
 sudo nano /boot/config.txt
-``` 
+```
 Be sure the lines
-``` 
+```
 dtoverlay=lirc-rpi,gpio_in_pin=3,gpio_out_pin=2
 dtoverlay=w1-gpio,gpiopin=4
 ```
@@ -87,18 +99,7 @@ reboot
 sudo reboot
 ```
 
-### Get connected to the internet
-
-Either connect to your wired network, or setup wifi and verify you have
-internet access from the Pi
-
-```
-ping github.com
-```
-(remember ctrl-c aborts programs, like breaking out of ping, which will
-go on forever)
-
-### Get all the software that PiClock needs.
+### Get all the software that PiClock² needs.
 
 Become super user! (root)  (trumpets play in the background) (ok, maybe
 just in my head)
@@ -111,7 +112,7 @@ apt-get update
 ```
 then get qt4 for python
 ```
-apt-get install python-qt4
+apt-get install python-pyqt4
 ```
 you may need to confirm some things, like:
 After this operation, 44.4 MB of additional disk space will be used.
@@ -130,15 +131,15 @@ apt-get install unclutter
 
 ### Get the DS18B20 Temperature driver for Python (optional)
 
-(you must still be root [super user]) 
+(you must still be root [super user])
 ```
 git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
-python setup.py install
+python3 setup.py install
 ```
 
 ### Get Lirc driver for IR remote (optional)
 
-(you must still be root [super user]) 
+(you must still be root [super user])
 ```
 apt-get install lirc
 ```
@@ -169,7 +170,7 @@ MODULES="lirc_rpi"
 
 ### Get mpg123 (optional to play NOAA weather radio streams)
 
-(you must still be root [super user]) 
+(you must still be root [super user])
 ```
 apt-get install mpg123
 ```
@@ -181,12 +182,16 @@ a reboot
 reboot
 ```
 
-### Get the PiClock software
+### Get the PiClock² software
 Log into your Pi, (either on the screen or via ssh) (NOT as root)
 You'll be in the home directory of the user pi (/home/pi) by default,
 and this is where we want to be.
 ```
 git clone https://github.com/n0bel/PiClock.git
+```
+The PiClock² is on the dev branch.
+```
+git checkout dev
 ```
 Once that is done, you'll have a new directory called PiClock
 A few commands are needed if you intend to use gpio buttons
@@ -198,7 +203,7 @@ cd ../..
 ```
 
 ### Set up Lirc (IR Remote)
-If you're using the recommended IR Key Fob, 
+If you're using the recommended IR Key Fob,
 https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain
 you can copy the lircd.conf file included in the distribution as follows:
 ```
@@ -211,7 +216,7 @@ The software expects 7 keys.   KEY_F1, KEY_F2, KEY_F3, KEY_UP, KEY_DOWN, KEY_RIG
 and KEY_LEFT.   Lirc takes these keys and injects them into linix as if they
 were typed from a keyboard.   PyQPiClock.py then simply looks for normal keyboard
 events.   Therefore of course, if you have a usb keyboard attached, those keys
-work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV. 
+work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV.
 
 You should (must) verify your IR codes.   I've included a program called IRCodes.pl
 which will verify that your lircd.conf is setup correctly.
@@ -228,13 +233,13 @@ Yes, I reverted to perl.. I may redo it in Python one day.
 If you're using the recommended key fob remote, they come randomly programmed from
 the supplier.   To program them you press and hold the mute button (the middle one)
 while watching the screen scroll through codes.
-When the screen shows 
+When the screen shows
 ```
 ************ KEY_F2
 ```
 STOP! then try the other keys, be sure they all report KEY_UP, KEY_DOWN correctly.
 If not press and hold the mute button again, waiting for the asterisks and KEY_F2,
-then STOP again, try the other keys.   Repeat the process until you have all the 
+then STOP again, try the other keys.   Repeat the process until you have all the
 keys working.
 
 Ctrl-C to abort perl.
@@ -245,20 +250,20 @@ sudo reboot
 ```
 
 
-### Configure the PiClock api keys
+### Configure the PiClock² api keys
 
-The first is to set API keys for Weather Underground and Google Maps.  
+The first is to set API keys for Weather Underground and Google Maps.
 These are both free, unless you have large volume.
-The PiClock usage is well below the maximums  imposed by the free api keys.
+The PiClock² usage is well below the maximums  imposed by the free api keys.
 
-Weather Underground api keys are created at this link: 
+Weather Underground api keys are created at this link:
 http://www.wunderground.com/weather/api/ Here too, it'll ask you for an
 Application (maybe PiClock?) that you're using the api key with.
 
 ## Optional Google Maps API key
 
 A Google Maps api key is _not required_, unless you pull a large volume of maps.
-Most everyone can leave this key empty.  
+Most everyone can leave this key empty.
 
 You only need a key if you're continually pulling maps because you're restarting
 the clock often durning development.   The maps are pulled once at the start.
@@ -267,7 +272,7 @@ If you want a key, this is how its done. Google Maps api keys are created at thi
 https://console.developers.google.com/flows/enableapi?apiid=maps_backend&keyType=CLIENT_SIDE
 You'll require a google user and password.  After that it'll require
 you create a "project" (maybe PiClock for a project name?)
-It will also ask about Client Ids, which you can skip (just clock ok/create).  You need to 
+It will also ask about Client Ids, which you can skip (just clock ok/create).  You need to
 then activate the key.
 
 
@@ -289,9 +294,9 @@ wuapi = 'YOUR WEATHER UNDERGROUND API KEY'
 googleapi = ''  #Empty string, the key is optional -- if you pull a small volume, you'll be ok
 ```
 
-### Configure your PiClock
-here's were you tell PiClock where your weather should come from, and the
-radar map centers and markers. 
+### Configure your PiClock²
+here's were you tell PiClock² where your weather should come from, and the
+radar map centers and markers.
 
 ```
 cd PiClock
@@ -327,13 +332,13 @@ You'll need to be on the desktop, in a terminal program.
 cd PiClock
 sh startup.sh -n -s
 ```
-Your screen should be covered by the PiClock  YAY!
+Your screen should be covered by the PiClock²  YAY!
 
 There will be some output on the terminal screen as startup.sh executes.
 If everything works, it can be ignored.  If for some reason the clock
 doesn't work, or maps are missing, etc the output may give a reason
 or reasons, which usually reference something to do with the config
-file (Config.py)  
+file (Config.py)
 
 ### Logs
 The -s option causes no log files to be created, but
@@ -347,7 +352,7 @@ or from crontab.  Logs are then created for debugging auto starts.
   * The space bar or right or left arrows will change the page.
   * F2 will start and stop the NOAA weather radio stream
   * F4 will close the clock
-  
+
 If you're using the temperature feature AND you have multiple temperature sensors,
 you'll see the clock display: 000000283872:74.6 00000023489:65.4 or something similar.
 Note the numbers exactly.   Use F4 to stop the clock,
@@ -396,7 +401,7 @@ startup.sh has a few options:
 * -d X or --delay X			Delay X seconds before starting the clock
 * -m X or --message-delay X 	Delay X seconds while displaying a message on the desktop
 
-Startup also looks at the various optional PiClock items (Buttons, Temperature, NeoPixel, etc)
+Startup also looks at the various optional PiClock² items (Buttons, Temperature, NeoPixel, etc)
 and only starts those things that are configured to run.   It also checks if they are already
 running, and refrains from starting them again if they are.
 
@@ -421,7 +426,7 @@ The 8 there means 8am, to switch to the normal config, and the 21 means switch t
 More info on crontab can be found here: https://en.wikipedia.org/wiki/Cron
 
 ### Setting the Pi to auto reboot every day
-This is optional but some may want their PiClock to reboot every day.  I do this with mine,
+This is optional but some may want their PiClock² to reboot every day.  I do this with mine,
 but it is probably not needed.
 ```
 sudo crontab -e
@@ -460,4 +465,3 @@ cd PiClock/Buttons
 rm gpio-keys
 make gpio-keys
 ```
-
