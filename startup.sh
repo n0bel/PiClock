@@ -44,7 +44,7 @@ $MSG
 eval $DELAY
 if [ $? -eq 1 ]
 then
-	
+
 	echo "PiClock Cancelled"
 	exit 0
 fi
@@ -88,7 +88,7 @@ echo "Checking for GPIO Buttons..."
 # gpio button to keyboard input
 if [ -x Button/gpio-keys ]
 then
-	pgrep -f gpio-keys 
+	pgrep -f gpio-keys
 	if [ $? -eq 1 ]
 	then
 		echo "Starting gpio-keys Service..."
@@ -113,20 +113,5 @@ fi
 
 # the main app
 cd Clock
-if [ "$1" = "-s" -o "$1" = "--screen-log" ]
-then
-  echo "Starting PiClock.... logging to screen."
-  python -u PyQtPiClock.py
-else
-  # create a new log file name, max of 7 log files
-  echo "Rotating log files...."
-  rm PyQtPiClock.7.log >/dev/null 2>&1
-  mv PyQtPiClock.6.log PyQtPiClock.7.log >/dev/null 2>&1
-  mv PyQtPiClock.5.log PyQtPiClock.6.log >/dev/null 2>&1
-  mv PyQtPiClock.4.log PyQtPiClock.5.log >/dev/null 2>&1
-  mv PyQtPiClock.3.log PyQtPiClock.4.log >/dev/null 2>&1
-  mv PyQtPiClock.2.log PyQtPiClock.3.log >/dev/null 2>&1
-  mv PyQtPiClock.1.log PyQtPiClock.2.log >/dev/null 2>&1
-  echo "Starting PiClock.... logging to Clock/PyQtPiClock.1.log "
-  python -u PyQtPiClock.py >PyQtPiClock.1.log 2>&1
-fi
+echo "Starting PiClock.... logging to screen and PyQtPiCLock.log."
+python3 -u PyQtPiClock.py
