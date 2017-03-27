@@ -27,17 +27,26 @@ The power usage I've measured is about 35watts with a 19" HDMI Monitor,
 27 LEDs and the Pi. The LEDs contributed 3 or so watts, and I think the
 Pi is about 2-3 Watts normally.
 
-This is the basic PiClock, with some options added. |PiClock Picture|
+This is the basic PiClock, with some options added.
+
+.. figure:: ../Pictures/20150307_222711.jpg
+   :alt: PiClock Picture
 
 I chose to remove the plastic frame from my monitor and mount the Pi
 directly on it, as well as tap power from the display's power supply.
-|PiClock Pi Mounting|
 
-I've made it work on multiple platforms and form factors. |PiClock Pi
-Mounting|
+.. figure:: ../Pictures/20141222_220127.jpg
+   :alt: PiClock Picture 2
+
+I've made it work on multiple platforms and form factors.
+
+.. figure:: ../Pictures/20150404_165441_Fotor_Collage.jpg
+   :alt: PiClock Platforms
 
 And I've made some for friends and family with different customizations.
-|PiClock Pi Mounting|
+
+.. figure:: ../Pictures/20150326_225305_Fotor_Collage.jpg
+   :alt: PiClock Platforms
 
 List of materials
 -----------------
@@ -74,21 +83,18 @@ Optional things
 What else?
 ----------
 
-The Hardware guide (
-https://github.com/n0bel/PiClock/blob/master/Documentation/Hardware.rst )
-gives more details about how to wire/connect the various extras.
+The `Hardware guide <Hardware.rst>`_ gives more details about how to
+wire/connect the various extras.
 
-The Install guide (
-https://github.com/n0bel/PiClock/blob/master/Documentation/Install.rst )
-steps through all the things that you need to do to a stock Raspbian
-image to make the PiClock work.
+The `Install guide <Install.rst>`_ steps through all the things that you
+need to do to a stock Raspbian image to make the PiClock work.
 
 Not a Pi Person?
 ----------------
 
 If you want to use the PiClock on your desktop (not your Pi), I've
-created instructinos for that
-https://github.com/n0bel/PiClock/blob/master/Documentation/Install-Clock-Only.rst
+created instructions for that as well: `Install-Clock-Only
+ <Install-Clock-Only.rst>`_
 
 History
 -------
@@ -131,8 +137,3 @@ https://www.facebook.com/pages/Kevin-N0BEL/946361588712436
 And of course I tweet https://twitter.com/KevinN0BEL, Pin
 https://www.pinterest.com/kevinuhir/, Instagram
 https://instagram.com/kevin_n0bel/, and hack https://hackaday.io/n0bel
-
-.. |PiClock Picture| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150307_222711.jpg
-.. |PiClock Pi Mounting| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20141222_220127.jpg
-.. |PiClock Pi Mounting| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150404_165441_Fotor_Collage.jpg
-.. |PiClock Pi Mounting| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150326_225305_Fotor_Collage.jpg

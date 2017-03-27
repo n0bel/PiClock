@@ -529,7 +529,7 @@ name, so perhaps Config-Night.py might be appropriate. For a dimmer
 display use Config-Example-Bedside.py as a guide.
 
 Now we'll tell our friend cron to run the switcher script (switcher.sh)
-on day/night cycles. Run the cron editor: (should *not* be roor)
+on day/night cycles. Run the cron editor: (should *not* be root)
 
 ::
 
