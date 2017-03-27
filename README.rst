@@ -19,7 +19,7 @@ The early days and evolution of it are chronicled on my blog
 http://n0bel.net/v1/index.php/projects/raspberry-pi-clock
 
 If you want to build your own, I'd suggest starting with the overview
-https://github.com/n0bel/PiClock/blob/master/Documentation/Overview.rst
+https:Documentation/Overview.rst
 
 If you want to use the PiClock on your desktop (not your Pi), I'd
 suggest using these instructions.
