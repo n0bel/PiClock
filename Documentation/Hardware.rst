@@ -51,7 +51,8 @@ with the DS18B20 temperature probe on GPIO4 (header pin 7).
     Gnd   Pin 9                  Pin 1
     GPIO3 Pin 5                  Pin 3
 
-|PiClock Picture|
+.. figure:: tsop4838.jpg
+   :alt: tsop4838 Picture
 
 Inside Temperature ( DS18B20 )
 ------------------------------
@@ -67,7 +68,8 @@ http://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the-
     Gnd   Pin 9                  Pin 1
     GPIO4 Pin 7                  Pin 2
 
-|PiClock Picture|
+.. figure:: ds18b20.jpg
+   :alt: ds18b20 Picture
 
 WS2818b RGB LED AmbiLight strip
 -------------------------------
@@ -90,7 +92,8 @@ botther. Meh... Your milage may vary. The data pin of the WS2818b string
 should be connected to GPIO18, header pin 12. Note the markings on the
 LED strip since they all are not pinned the same.
 
-|PiClock Picture|
+.. figure:: NeoPixel.jpg
+   :alt: NeoPixel Picture
 
 GPIO Buttons
 ------------
@@ -111,7 +114,8 @@ which GPIO they are located on.
 -  GPIO25 (header pin 22) is mapped to UP (which does nothing yet)
 -  A convinient ground is on header pin 20.
 
-|PiClock Picture|
+.. figure:: gpiobuttons.jpg
+   :alt: gpiobuttons Picture
 
 Schematic of all connections
 ----------------------------
@@ -119,11 +123,11 @@ Schematic of all connections
 For those that want to work from a schematic, I threw together a simple
 one
 
-|PiClock Picture|
+.. figure:: Hardware_Schematic.png
+   :alt: Hardware_Schematic Picture
 
 .. |PiClock Picture| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/tsop4838.jpg
 .. |PiClock Picture| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/ds18b20.jpg
 .. |PiClock Picture| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/NeoPixel.jpg
 .. |PiClock Picture| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/gpiobuttons.jpg
 .. |PiClock Picture| image:: https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/Hardware_Schematic.png
-
