@@ -63,3 +63,12 @@ docs/_build/
 target/
 
 Thumbs.db
+
+# PyCharm directory
+.idea
+
+# Virtual Environment
+.venv
+
+# Cache directory
+Clock/.cache
