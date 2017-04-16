@@ -3,7 +3,8 @@
 # and makes them available as a json response
 # see TempNames.py for sensor id to name mapping
 #
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from w1thermsensor import W1ThermSensor
 import json
 import time
@@ -17,11 +18,11 @@ lock = Lock()
 
 PORT_NUMBER = 48213
 
-# This class will handles any incoming request from
-# the browser
-
 
 class myHandler(BaseHTTPRequestHandler):
+    '''
+    This class handles incoming HTTP requests
+    '''
 
     def do_OPTIONS(self):
         self.send_response(200, "ok")
@@ -46,23 +47,23 @@ class myHandler(BaseHTTPRequestHandler):
                 s['temp'] = "%.1f" % temps[k]
             s['temps'][sensorname(k)] = "%.1f" % temps[k]
         lock.release()
-        self.wfile.write(json.dumps(s))
+        self.wfile.write(bytes(json.dumps(s), 'UTF-8'))
 
 
-def sensorname(str):
+def sensorname(sensor_name):
     try:
-        return sensornames[str]
+        return sensornames[sensor_name]
     except KeyError:
-        return 'temp-' + str
+        return 'temp-{}'.format(str)
 
 
 def t_http():
     try:
         server = HTTPServer(('0.0.0.0', PORT_NUMBER), myHandler)
-        print 'Started httpserver on port ', PORT_NUMBER
+        print('Started httpserver on port {}'.format(PORT_NUMBER))
         server.serve_forever()
     except:
-        server.close()
+        print('Failed to start http server')
 
 
 def t_udp():
@@ -82,7 +83,7 @@ def t_udp():
         temps[addr] = tempf
         temptimes[addr] = time.time()
         lock.release()
-        print 'udp>' + addr + ':' + str(tempf)
+        print('udp>{}:{}'.format(addr, str(tempf)))
 
 
 def t_temp():
@@ -91,7 +92,7 @@ def t_temp():
             lock.acquire()
             temps[sensor.id] = sensor.get_temperature(W1ThermSensor.DEGREES_F)
             temptimes[sensor.id] = time.time()
-            print 'hwr>' + sensor.id + ':' + str(temps[sensor.id])
+            print('hwr>{}:{}'.format(sensor.id, str(temps[sensor.id])))
             lock.release()
 
         lock.acquire()
@@ -103,7 +104,7 @@ def t_temp():
         for t in todelete:
             temptimes.pop(t, None)
             temps.pop(t, None)
-            print "del>" + t
+            print("del>{}".format(t))
         lock.release()
 
         time.sleep(120)
