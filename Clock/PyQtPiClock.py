@@ -13,6 +13,7 @@ import re
 import logging
 import logging.handlers
 
+
 from PyQt5 import QtGui, QtNetwork, QtWidgets
 from PyQt5.QtGui import QPixmap, QMovie, QBrush, QColor, QPainter
 from PyQt5.QtCore import Qt, QUrl, QTimer, QSize, QRect, QBuffer, QIODevice, QByteArray
@@ -25,10 +26,7 @@ import ApiKeys                                              # NOQA
 
 
 def tick():
-    global hourpixmap, minpixmap, secpixmap
-    global hourpixmap2, minpixmap2, secpixmap2
-    global lastmin, lastday, lasttimestr
-    global clockrect
+    global clockrect, clockface, lastday
     global datex, datex2, datey2, pdy
 
     if Config.DateLocale != "":
@@ -38,70 +36,8 @@ def tick():
             pass
 
     now = datetime.datetime.now()
-    if Config.digital:
-        timestr = Config.digitalformat.format(now)
-        if Config.digitalformat.find("%I") > -1:
-            if timestr[0] == '0':
-                timestr = timestr[1:99]
-        if lasttimestr != timestr:
-            clockface.setText(timestr.lower())
-        lasttimestr = timestr
-    else:
-        angle = now.second * 6
-        ts = secpixmap.size()
-        secpixmap2 = secpixmap.transformed(
-            QtGui.QTransform().scale(
-                float(clockrect.width()) / ts.height(),
-                float(clockrect.height()) / ts.height()
-            ).rotate(angle),
-            Qt.SmoothTransformation
-        )
-        sechand.setPixmap(secpixmap2)
-        ts = secpixmap2.size()
-        sechand.setGeometry(
-            clockrect.center().x() - ts.width() / 2,
-            clockrect.center().y() - ts.height() / 2,
-            ts.width(),
-            ts.height()
-        )
-        if now.minute != lastmin:
-            lastmin = now.minute
-            angle = now.minute * 6
-            ts = minpixmap.size()
-            minpixmap2 = minpixmap.transformed(
-                QtGui.QTransform().scale(
-                    float(clockrect.width()) / ts.height(),
-                    float(clockrect.height()) / ts.height()
-                ).rotate(angle),
-                Qt.SmoothTransformation
-            )
-            minhand.setPixmap(minpixmap2)
-            ts = minpixmap2.size()
-            minhand.setGeometry(
-                clockrect.center().x() - ts.width() / 2,
-                clockrect.center().y() - ts.height() / 2,
-                ts.width(),
-                ts.height()
-            )
-
-            angle = ((now.hour % 12) + now.minute / 60.0) * 30.0
-            ts = hourpixmap.size()
-            hourpixmap2 = hourpixmap.transformed(
-                QtGui.QTransform().scale(
-                    float(clockrect.width()) / ts.height(),
-                    float(clockrect.height()) / ts.height()
-                ).rotate(angle),
-                Qt.SmoothTransformation
-            )
-            hourhand.setPixmap(hourpixmap2)
-            ts = hourpixmap2.size()
-            hourhand.setGeometry(
-                clockrect.center().x() - ts.width() / 2,
-                clockrect.center().y() - ts.height() / 2,
-                ts.width(),
-                ts.height()
-            )
-
+    # Update the clock
+    clockface.update(now)
     dy = "{0:%I:%M %p}".format(now)
     if dy != pdy:
         pdy = dy
@@ -869,10 +805,8 @@ if __name__ == '__main__':
             Config.LRain = " Rain: "
             Config.LSnow = " Snow: "
 
-        lastmin = -1
         lastday = -1
         pdy = ""
-        lasttimestr = ""
         weatherplayer = None
         lastkeytime = 0
         lastapiget = time.time()
@@ -944,70 +878,15 @@ if __name__ == '__main__':
             Config.squares2 +
             ") 0 0 0 0 stretch stretch;}")
 
+        # Set the clock type
         if not Config.digital:
-            clockface = QtWidgets.QFrame(frame1)
-            clockface.setObjectName("clockface")
-            clockrect = QRect(
-                width / 2 - height * .4,
-                height * .45 - height * .4,
-                height * .8,
-                height * .8)
-            clockface.setGeometry(clockrect)
-            clockface.setStyleSheet(
-                "#clockface { background-color: transparent; " +
-                "border-image: url(" +
-                Config.clockface +
-                ") 0 0 0 0 stretch stretch;}")
+            from clockfaces.Analog import Analog
+            clockface = Analog(Config, frame1)
 
-            hourhand = QtWidgets.QLabel(frame1)
-            hourhand.setObjectName("hourhand")
-            hourhand.setStyleSheet(
-                "#hourhand { background-color: transparent; }")
-
-            minhand = QtWidgets.QLabel(frame1)
-            minhand.setObjectName("minhand")
-            minhand.setStyleSheet(
-                "#minhand { background-color: transparent; }")
-
-            sechand = QtWidgets.QLabel(frame1)
-            sechand.setObjectName("sechand")
-            sechand.setStyleSheet(
-                "#sechand { background-color: transparent; }")
-
-            hourpixmap = QtGui.QPixmap(Config.hourhand)
-            hourpixmap2 = QtGui.QPixmap(Config.hourhand)
-            minpixmap = QtGui.QPixmap(Config.minhand)
-            minpixmap2 = QtGui.QPixmap(Config.minhand)
-            secpixmap = QtGui.QPixmap(Config.sechand)
-            secpixmap2 = QtGui.QPixmap(Config.sechand)
         else:
-            clockface = QtWidgets.QLabel(frame1)
-            clockface.setObjectName("clockface")
-            clockrect = QRect(
-                width / 2 - height * .4,
-                height * .45 - height * .4,
-                height * .8,
-                height * .8)
-            clockface.setGeometry(clockrect)
-            dcolor = QColor(Config.digitalcolor).darker(0).name()
-            lcolor = QColor(Config.digitalcolor).lighter(120).name()
-            clockface.setStyleSheet(
-                "#clockface { background-color: transparent; " +
-                " font-family:sans-serif;" +
-                " font-weight: light; color: " +
-                lcolor +
-                "; background-color: transparent; font-size: " +
-                str(int(Config.digitalsize * xscale)) +
-                "px; " +
-                Config.fontattr +
-                "}")
-            clockface.setAlignment(Qt.AlignCenter)
-            clockface.setGeometry(clockrect)
-            glow = QtWidgets.QGraphicsDropShadowEffect()
-            glow.setOffset(0)
-            glow.setBlurRadius(50)
-            glow.setColor(QColor(dcolor))
-            clockface.setGraphicsEffect(glow)
+            from clockfaces.Digital import Digital
+            clockface = Digital(Config, frame1)
+
 
         radar1rect = QRect(3 * xscale, 344 * yscale,
                            300 * xscale, 275 * yscale)
