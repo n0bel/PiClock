@@ -15,7 +15,7 @@ import logging.handlers
 
 from PyQt5 import QtGui, QtNetwork, QtWidgets
 from PyQt5.QtGui import QPixmap, QMovie, QBrush, QColor, QPainter
-from PyQt5.QtCore import Qt, QUrl, QTimer, QSize, QRect, QBuffer, QIODevice
+from PyQt5.QtCore import Qt, QUrl, QTimer, QSize, QRect, QBuffer, QIODevice, QByteArray
 from PyQt5.QtNetwork import QNetworkRequest, QNetworkReply
 from subprocess import Popen
 
@@ -163,13 +163,21 @@ def gettemp():
     tempreply.finished.connect(tempfinished)
 
 
-def wxfinished():
-    global wxreply, wxdata
+def wxfinished(read_cache=False):
+    global wxreply, wxdata, cache_dir
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc
 
-    wxstr = bytes(wxreply.readAll()).decode("utf-8")
+    wxcache = os.path.join(cache_dir, 'wxdata.json')
+    wxstr = ''
+    if read_cache:
+        wxstr = open(wxcache, 'r').read()
+    else:
+        wxstr = bytes(wxreply.readAll()).decode("utf-8")
+        with open(wxcache, 'w') as f:
+            f.write(wxstr)
+
     # logging.info(wxstr)
     wxdata = json.loads(wxstr)
     f = wxdata['current_observation']
@@ -316,18 +324,44 @@ def wxfinished():
 def getwx():
     global wxurl
     global wxreply
+    global cache_dir
+
     logging.info("getting current and forecast:" + time.ctime())
-    wxurl = Config.wuprefix + ApiKeys.wuapi + \
-        '/conditions/astronomy/hourly10day/forecast10day/lang:' + \
-        Config.wuLanguage + '/q/'
-    wxurl += str(Config.wulocation.lat) + ',' + \
-        str(Config.wulocation.lng) + '.json'
-    wxurl += '?r=' + str(random.random())
-    logging.info(wxurl)
-    r = QUrl(wxurl)
-    r = QNetworkRequest(r)
-    wxreply = manager.get(r)
-    wxreply.finished.connect(wxfinished)
+    wxcache = os.path.join(cache_dir, 'wxdata.json')
+    if os.path.exists(wxcache):
+        mtime = os.stat(wxcache).st_mtime
+        cur_time = time.time()
+        refresh_time = (Config.weather_refresh - 1) * 60
+        # if this was written within the current refresh minus 1 minute
+        if mtime > (cur_time - refresh_time):
+            logging.info("using wxcache weather data")
+            wxfinished(read_cache=True)
+        else:
+            # cache is out of range
+            wxurl = Config.wuprefix + ApiKeys.wuapi + \
+                    '/conditions/astronomy/hourly10day/forecast10day/lang:' + \
+                    Config.wuLanguage + '/q/'
+            wxurl += str(Config.wulocation.lat) + ',' + \
+                     str(Config.wulocation.lng) + '.json'
+            wxurl += '?r=' + str(random.random())
+            logging.info(wxurl)
+            r = QUrl(wxurl)
+            r = QNetworkRequest(r)
+            wxreply = manager.get(r)
+            wxreply.finished.connect(wxfinished)
+    else:
+        # used when required to create cache file
+        wxurl = Config.wuprefix + ApiKeys.wuapi + \
+            '/conditions/astronomy/hourly10day/forecast10day/lang:' + \
+            Config.wuLanguage + '/q/'
+        wxurl += str(Config.wulocation.lat) + ',' + \
+            str(Config.wulocation.lng) + '.json'
+        wxurl += '?r=' + str(random.random())
+        logging.info(wxurl)
+        r = QUrl(wxurl)
+        r = QNetworkRequest(r)
+        wxreply = manager.get(r)
+        wxreply.finished.connect(wxfinished)
 
 
 def getallwx():
@@ -405,6 +439,12 @@ class Radar(QtWidgets.QLabel):
         self.wmk.setGeometry(0, 0, rect.width(), rect.height())
 
         self.wxmovie = QMovie()
+
+        piclock_dir = os.path.dirname(os.path.abspath(__file__))
+        cache_dir = os.path.join(piclock_dir, '.cache')
+        cache_filename = "{}.gif".format(self.myname)
+        self.cache_file = os.path.join(cache_dir, cache_filename)
+
 
     def mapurl(self, radar, rect, markersonly):
         # 'https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&center='+rcenter.lat+','+rcenter.lng+'&zoom='+rzoom+'&size=300x275'+markersr;
@@ -516,15 +556,26 @@ class Radar(QtWidgets.QLabel):
         painter.end()
         self.wmk.setPixmap(self.mkpixmap)
 
-    def wxfinished(self):
-        if self.wxreply.error() != QNetworkReply.NoError:
-            logging.info("get radar error " + self.myname + ":" +
-                         str(self.wxreply.error()))
-            self.lastwx = 0
-            return
-        logging.info("radar map received:" + self.myname + ":" + time.ctime())
+    def wxfinished(self, read_cache=False):
+
+        if not read_cache:
+            if self.wxreply.error() != QNetworkReply.NoError:
+                logging.info("get radar error " + self.myname + ":" +
+                            str(self.wxreply.error()))
+                self.lastwx = 0
+                return
+            logging.info("radar map received:" + self.myname + ":" + time.ctime())
+
         self.wxmovie.stop()
-        self.wxdata = self.wxreply.readAll()
+        # read cache if called for, else write to cache
+        if read_cache:
+            cache_data = open(self.cache_file, 'rb').read()
+            self.wxdata = QByteArray(cache_data)
+        else:
+            self.wxdata = self.wxreply.readAll()
+            with open(self.cache_file, 'wb') as f:
+                f.write(self.wxdata)
+
         self.wxbuff = QBuffer(self.wxdata)
         self.wxbuff.open(QIODevice.ReadOnly)
         mov = QMovie(self.wxbuff, b'GIF')
@@ -575,10 +626,25 @@ class Radar(QtWidgets.QLabel):
         except Exception:
             pass
         logging.info("getting radar map " + self.myname + ":" + time.ctime())
-        self.wxreq = QNetworkRequest(
-            QUrl(self.wxurl + '&rrrand=' + str(time.time())))
-        self.wxreply = manager.get(self.wxreq)
-        self.wxreply.finished.connect(self.wxfinished)
+
+        if os.path.exists(self.cache_file):
+            mtime = os.stat(self.cache_file).st_mtime
+            cur_time = time.time()
+            refresh_time = (Config.radar_refresh - 1) * 60
+            # if this was written within the current refresh minus 1 minute
+            if mtime > (cur_time - refresh_time):
+                logging.info("using cached radar images")
+                self.wxfinished(read_cache=True)
+            else:
+                self.wxreq = QNetworkRequest(
+                    QUrl(self.wxurl + '&rrrand=' + str(time.time())))
+                self.wxreply = manager.get(self.wxreq)
+                self.wxreply.finished.connect(self.wxfinished)
+        else:
+            self.wxreq = QNetworkRequest(
+                QUrl(self.wxurl + '&rrrand=' + str(time.time())))
+            self.wxreply = manager.get(self.wxreq)
+            self.wxreply.finished.connect(self.wxfinished)
 
     def getbase(self):
         global manager
@@ -716,8 +782,13 @@ if __name__ == '__main__':
     errh = logging.StreamHandler(sys.stderr)
     fileh.setFormatter(fmt)
     logger.addHandler(errh)
-
     logger.setLevel(logging.DEBUG)
+
+    # setup cache
+    piclock_dir = os.path.dirname(os.path.abspath(__file__))
+    cache_dir = os.path.join(piclock_dir, '.cache')
+    if not os.path.isdir(cache_dir):
+        os.mkdir(cache_dir)
 
     try:
         configname = 'Config'
