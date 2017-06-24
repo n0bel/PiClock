@@ -315,7 +315,9 @@ second page of the display (here's a post of about that:
 https://www.facebook.com/permalink.php?story_fbid=1371576642857593&id=946361588712436&substory_index=0 )
 
 The second thing to change is your NOAA weather radio stream url.  You can
-find it here: http://www.wunderground.com/wxradio/
+find it here: http://noaaweatherradio.org/  They don't put the .mp3 urls 
+where they are easily accessable, so you need to use your browser to "View Page Source"
+in order to find the proper .mp3 url.
 
 At this point, I'd not recommend many other changes until you have tested
 and gotten it running.
