@@ -9,10 +9,10 @@ the composite output as well, but this is not a design goal.  The main
 program (Clock/PyQtPiClock.py) will also run on Windows, Mac, and Linux,
 as long as python 2.7+ and PyQt4 is installed.
 
-The Weather data comes from Weather Underground using their API 
+The weather data comes from Weather Underground using their API 
 ( http://www.wunderground.com/weather/api/ ).   The maps are from
-Google Maps API.   **You must get an API Key from weather
-underground in order to make this work.**  It is free for low
+Mapbox API.   **You must get an API Key from Weather
+Underground and Mapbox in order to make this work.**  It is free for low
 usage such as this application.
 
 The PiClock can be customized with several supported additional things:

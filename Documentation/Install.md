@@ -245,34 +245,23 @@ sudo reboot
 ```
 
 
-### Configure the PiClock api keys
+### Configure the PiClock API keys
 
-The first is to set API keys for Weather Underground and Google Maps.  
+The first is to set API keys for Weather Underground and Mapbox.  
 These are both free, unless you have large volume.
-The PiClock usage is well below the maximums  imposed by the free api keys.
+The PiClock usage is well below the maximums imposed by the free API keys.
 
-Weather Underground api keys are created at this link: 
-http://www.wunderground.com/weather/api/ Here too, it'll ask you for an
-Application (maybe PiClock?) that you're using the api key with.
+Weather Underground API keys are created at this link: 
+http://www.wunderground.com/weather/api/ Here, it'll ask you for a
+project name (maybe PiClock?) with which you're using the API key.
 
-## Optional Google Maps API key
-
-A Google Maps api key is _not required_, unless you pull a large volume of maps.
-Most everyone can leave this key empty.  
-
-You only need a key if you're continually pulling maps because you're restarting
-the clock often durning development.   The maps are pulled once at the start.
-
-If you want a key, this is how its done. Google Maps api keys are created at this link:
-https://console.developers.google.com/flows/enableapi?apiid=maps_backend&keyType=CLIENT_SIDE
-You'll require a google user and password.  After that it'll require
-you create a "project" (maybe PiClock for a project name?)
-It will also ask about Client Ids, which you can skip (just clock ok/create).  You need to 
-then activate the key.
+Mapbox API keys, or access tokens, are created at this link: 
+https://www.mapbox.com/studio/account/tokens/ Here too, it'll ask you for a
+project name (maybe PiClock?) with which you're using the API key.
 
 
 
-Now that you have your api keys...
+Now that you have your API keys...
 
 ```
 cd PiClock
@@ -280,13 +269,13 @@ cd Clock
 cp ApiKeys-example.py ApiKeys.py
 nano ApiKeys.py
 ```
-Put your api keys in the file as indicated
+Put your API keys in the file as indicated
 ```
 #change this to your API keys
 # Weather Underground API key
 wuapi = 'YOUR WEATHER UNDERGROUND API KEY'
-# Google Maps API key
-googleapi = ''  #Empty string, the key is optional -- if you pull a small volume, you'll be ok
+# Mapbox API key
+mapboxapi = 'YOUR MAPBOX ACCESS TOKEN'
 ```
 
 ### Configure your PiClock
@@ -309,7 +298,7 @@ care not to disturb the format while changing the data.
 The first thing is to change the primary_coordinates to yours.  That is really
 all that is manditory.  Further customization of the radar maps can be done in
 the Radar section.  There you can customize where your radar images are centered
-and where the markers appear on those images.  Markers are those little red
+and where the markers appear on those images.  Markers are those little blue
 location pointers.  Radar1 and 2 show on the first page, and 3 and 4 show on the
 second page of the display (here's a post of about that:
 https://www.facebook.com/permalink.php?story_fbid=1371576642857593&id=946361588712436&substory_index=0 )
