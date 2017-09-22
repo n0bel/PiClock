@@ -20,8 +20,8 @@ from PyQt4.QtNetwork import QNetworkRequest
 from subprocess import Popen
 
 sys.dont_write_bytecode = True
-from GoogleMercatorProjection import getCorners             # NOQA
-import ApiKeys                                              # NOQA
+from MercatorProjection import getCorners             # NOQA
+import ApiKeys                                        # NOQA
 
 
 def tick():
@@ -102,7 +102,10 @@ def tick():
                 ts.height()
             )
 
-    dy = "{0:%I:%M %p}".format(now)
+    dy = Config.digitalformat2.format(now)
+    if Config.digitalformat2.find("%I") > -1:
+        if dy[0] == '0':
+            dy = dy[1:99]
     if dy != pdy:
         pdy = dy
         datey2.setText(dy)
@@ -120,8 +123,9 @@ def tick():
         if Config.DateLocale != "":
             sup = ""
         ds = "{0:%A %B} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
+        ds2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
         datex.setText(ds)
-        datex2.setText(ds)
+        datex2.setText(ds2)
 
 
 def tempfinished():
@@ -191,38 +195,49 @@ def wxfinished():
     if Config.metric:
         temper.setText(str(f['temp_c']) + u'°C')
         temper2.setText(str(f['temp_c']) + u'°C')
-        press.setText(Config.LPressure +
-                      f['pressure_mb'] + ' ' + f['pressure_trend'])
+        pressure_trend = f['pressure_trend']
+        if (pressure_trend == '0'):
+            pressure_trend = ''
+        press.setText(Config.LPressure + f['pressure_mb'] + 'mb ' + pressure_trend)
         humidity.setText(Config.LHumidity + f['relative_humidity'])
         wd = f['wind_dir']
         if Config.wind_degrees:
             wd = str(f['wind_degrees']) + u'°'
         wind.setText(Config.LWind +
                      wd + ' ' +
-                     str(f['wind_kph']) +
+                     str(f['wind_kph']) + 'kph' +
                      Config.Lgusting +
                      str(f['wind_gust_kph']))
-        wind2.setText(Config.LFeelslike + str(f['feelslike_c']))
+        wind2.setText(Config.LFeelslike + str(f['feelslike_c']) + u'°C')
+        precip_1hr_metric = f['precip_1hr_metric']
+        if (precip_1hr_metric == '--'):
+            precip_1hr_metric = '0.0'
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
             int(f['local_epoch']))) +
-            Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
+            Config.LPrecip1hr + precip_1hr_metric + 'mm ' +
             Config.LToday + f['precip_today_metric'] + 'mm')
     else:
         temper.setText(str(f['temp_f']) + u'°F')
         temper2.setText(str(f['temp_f']) + u'°F')
-        press.setText(Config.LPressure +
-                      f['pressure_in'] + ' ' + f['pressure_trend'])
+        pressure_trend = f['pressure_trend']
+        if (pressure_trend == '0'):
+            pressure_trend = ''
+        press.setText(Config.LPressure + f['pressure_in'] + 'in ' + pressure_trend)
         humidity.setText(Config.LHumidity + f['relative_humidity'])
         wd = f['wind_dir']
         if Config.wind_degrees:
             wd = str(f['wind_degrees']) + u'°'
         wind.setText(Config.LWind + wd + ' ' +
-                     str(f['wind_mph']) + Config.Lgusting +
+                     str(f['wind_mph']) + 'mph' +
+                     Config.Lgusting +
                      str(f['wind_gust_mph']))
-        wind2.setText(Config.LFeelslike + str(f['feelslike_f']))
+        wind2.setText(Config.LFeelslike + str(f['feelslike_f']) + u'°F')
+        precip_1hr_in = f['precip_1hr_in']
+        if (precip_1hr_in == '-9999.00'):
+            precip_1hr_in = '0.00'
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
             int(f['local_epoch']))) +
-            Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
+            Config.LPrecip1hr + precip_1hr_in + 'in ' +
             Config.LToday + f['precip_today_in'] + 'in')
 
     bottom.setText(Config.LSunRise +
@@ -243,8 +258,7 @@ def wxfinished():
         if (re.search('/nt_', iconurl)):
             icp = 'n_'
         icon = fl.findChild(QtGui.QLabel, "icon")
-        wxiconpixmap = QtGui.QPixmap(
-            Config.icons + "/" + icp + f['icon'] + ".png")
+        wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + icp + f['icon'] + ".png")
         icon.setPixmap(wxiconpixmap.scaled(
             icon.width(),
             icon.height(),
@@ -318,7 +332,7 @@ def getwx():
     print "getting current and forecast:" + time.ctime()
     wxurl = Config.wuprefix + ApiKeys.wuapi + \
         '/conditions/astronomy/hourly10day/forecast10day/lang:' + \
-        Config.wuLanguage + '/q/'
+        Config.wuLanguage + '/pws:' + str(Config.wuPWS) + '/q/'
     wxurl += str(Config.wulocation.lat) + ',' + \
         str(Config.wulocation.lng) + '.json'
     wxurl += '?r=' + str(random.random())
@@ -379,8 +393,9 @@ class Radar(QtGui.QLabel):
         except KeyError:
             pass
         self.baseurl = self.mapurl(radar, rect, False)
-        print "google map base url: " + self.baseurl
+        print "map base url: " + self.baseurl
         self.mkurl = self.mapurl(radar, rect, True)
+        print "map overlay url: " + self.mkurl
         self.wxurl = self.radarurl(radar, rect)
         print "radar url: " + self.wxurl
         QtGui.QLabel.__init__(self, parent)
@@ -405,37 +420,53 @@ class Radar(QtGui.QLabel):
 
         self.wxmovie = QMovie()
 
-    def mapurl(self, radar, rect, markersonly):
-        # 'https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&center='+rcenter.lat+','+rcenter.lng+'&zoom='+rzoom+'&size=300x275'+markersr;
+    def mapurl(self, radar, rect, overlayonly):
         urlp = []
 
-        if len(ApiKeys.googleapi) > 0:
-            urlp.append('key=' + ApiKeys.googleapi)
-        urlp.append(
-            'center=' + str(radar['center'].lat) +
-            ',' + str(radar['center'].lng))
+        if overlayonly:
+            urlp.append(str(radar['overlay']))
+        else:
+            urlp.append(str(radar['basemap']))
+
+        urlp.append('/static')
+
+        if overlayonly:
+            mkrCount = 0
+            for marker in radar['markers']:
+                if len(marker['shape']) > 0:
+                    mkrCount += 1
+                    marks = []
+                    if mkrCount == 1:
+                        marks.append('/' + marker['shape'])
+                    elif mkrCount > 1:
+                        marks.append(',' + marker['shape'])
+                    if len(marker['symbol']) > 0:
+                        marks.append('-' + marker['symbol'])
+                    if len(marker['color']) > 0:
+                        marks.append('+' + marker['color'])
+                    marks.append('(' + str(marker['location'].lng) +
+                                 ',' + str(marker['location'].lat) + ')')
+                    urlp.append(''.join(marks))
+
+        urlp.append('/' + str(radar['center'].lng) +
+            ',' + str(radar['center'].lat) + ',')
         zoom = radar['zoom']
         rsize = rect.size()
+
         if rsize.width() > 640 or rsize.height() > 640:
             rsize = QtCore.QSize(rsize.width() / 2, rsize.height() / 2)
             zoom -= 1
-        urlp.append('zoom=' + str(zoom))
-        urlp.append('size=' + str(rsize.width()) + 'x' + str(rsize.height()))
-        if markersonly:
-            urlp.append('style=visibility:off')
-        else:
-            urlp.append('maptype=hybrid')
-        for marker in radar['markers']:
-            marks = []
-            for opts in marker:
-                if opts != 'location':
-                    marks.append(opts + ':' + marker[opts])
-            marks.append(str(marker['location'].lat) +
-                         ',' + str(marker['location'].lng))
-            urlp.append('markers=' + '|'.join(marks))
 
-        return 'http://maps.googleapis.com/maps/api/staticmap?' + \
-            '&'.join(urlp)
+        urlp.append(str(zoom))
+        urlp.append('/' + str(rsize.width()) + 'x' + str(rsize.height()) + '?')
+        urlp.append('access_token=' + ApiKeys.mapboxapi)
+
+        # hide Mapbox attribution on base map / bottom layer (its visible by default on overlay map / top layer)
+        if not overlayonly:
+            urlp.append('&attribution=false&logo=false')
+
+        return 'https://api.mapbox.com/styles/v1/' + \
+            ''.join(urlp)
 
     def radarurl(self, radar, rect):
         # wuprefix = 'http://api.wunderground.com/api/';
@@ -768,11 +799,11 @@ except AttributeError:
     Config.LWind = "Wind "
     Config.Lgusting = " gusting "
     Config.LFeelslike = "Feels like "
-    Config.LPrecip1hr = " Precip 1hr:"
+    Config.LPrecip1hr = " Precip 1hr: "
     Config.LToday = "Today: "
-    Config.LSunRise = "Sun Rise:"
+    Config.LSunRise = "Sun Rise: "
     Config.LSet = " Set: "
-    Config.LMoonPhase = " Moon Phase:"
+    Config.LMoonPhase = " Moon Phase: "
     Config.LInsideTemp = "Inside Temp "
     Config.LRain = " Rain: "
     Config.LSnow = " Snow: "
@@ -821,7 +852,7 @@ frames.append(frame1)
 frame2 = QtGui.QFrame(w)
 frame2.setObjectName("frame2")
 frame2.setGeometry(0, 0, width, height)
-frame2.setStyleSheet("#frame2 { background-color: blue; border-image: url(" +
+frame2.setStyleSheet("#frame2 { background-color: black; border-image: url(" +
                      Config.background + ") 0 0 0 0 stretch stretch;}")
 frame2.setVisible(False)
 frames.append(frame2)
@@ -829,7 +860,7 @@ frames.append(frame2)
 # frame3 = QtGui.QFrame(w)
 # frame3.setObjectName("frame3")
 # frame3.setGeometry(0,0,width,height)
-# frame3.setStyleSheet("#frame3 { background-color: blue; border-image:
+# frame3.setStyleSheet("#frame3 { background-color: black; border-image:
 #       url("+Config.background+") 0 0 0 0 stretch stretch;}")
 # frame3.setVisible(False)
 # frames.append(frame3)
@@ -920,8 +951,7 @@ objradar2 = Radar(frame1, Config.radar2, radar2rect, "radar2")
 radar3rect = QtCore.QRect(13 * xscale, 50 * yscale, 700 * xscale, 700 * yscale)
 objradar3 = Radar(frame2, Config.radar3, radar3rect, "radar3")
 
-radar4rect = QtCore.QRect(726 * xscale, 50 * yscale,
-                          700 * xscale, 700 * yscale)
+radar4rect = QtCore.QRect(726 * xscale, 50 * yscale, 700 * xscale, 700 * yscale)
 objradar4 = Radar(frame2, Config.radar4, radar4rect, "radar4")
 
 
