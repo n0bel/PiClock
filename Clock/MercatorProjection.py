@@ -1,6 +1,7 @@
 # http://stackoverflow.com/questions/12507274/how-to-get-bounds-of-a-google-static-map
 import math
-MERCATOR_RANGE = 256
+#MERCATOR_RANGE = 256  # Use for Google Maps
+MERCATOR_RANGE = 512  # Use for Mapbox
 
 
 def bound(value, opt_min, opt_max):
