@@ -384,8 +384,9 @@ crontab -e
 ```
 and add the following line:
 ```
-@reboot sh /home/pi/PiClock/startup.sh
+@reboot flock -w 0 /tmp/PiClock.lock -c sh /home/pi/PiClock/startup.sh
 ```
+The use of the flock command and lock file here prevents cron from launching any additional instances of the startup script and running through all of your Weather Underground or Google API allotments.
 save the file
 and reboot to test
 ```
