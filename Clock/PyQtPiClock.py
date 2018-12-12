@@ -700,6 +700,7 @@ class myMain(QtGui.QWidget):
         if type(event) == QtGui.QMouseEvent:
             nextframe(1)
 
+
 configname = 'Config'
 
 if len(sys.argv) > 1:

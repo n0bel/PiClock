@@ -8,7 +8,7 @@ Clock/Config.py
 
 # From testing
 Clock/log.count
-Clock/*.log
+Clock/*.log*
 
 # Distribution / packaging
 .Python
