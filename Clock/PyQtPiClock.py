@@ -617,7 +617,7 @@ class Radar(QtGui.QLabel):
         timestamp = "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
                      self.getTime))
         painter.setPen(QColor(255, 255, 255, 255))
-        painter.setFont(QFont("sans-serif", 10))
+        painter.setFont(QFont("Arial", 10))
         painter.drawText(3, 12, timestamp)
         painter.end()
         self.tileQimages = []
