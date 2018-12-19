@@ -621,7 +621,7 @@ class Radar(QtGui.QLabel):
         painter.drawText(3, 12, timestamp)
         painter.end()
         self.tileQimages = []
-        ii = QPixmap(ii)
+        ii = QPixmap(ii2)
         self.frameImages.append({"time": self.getTime, "image": ii})
 
     def mapurl(self, radar, rect, markersonly):
