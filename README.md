@@ -1,7 +1,7 @@
 # PiClock
 A Fancy Clock built around a monitor and a Raspberry Pi
 
-## NOTE: Currently may be buggy.  Just switched from WU to DarkSky and RainView.  Read along at #103
+## NOTE: Currently may be buggy.  Just switched from WU to DarkSky and RainView.  Read along at https://github.com/n0bel/PiClock/issues/103
 
 ![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150307_222711.jpg)
 
