@@ -554,7 +554,7 @@ class Radar(QtGui.QLabel):
         self.frameImages = newf
         firstt = t - self.anim * 600
         for tt in range(firstt, t+1, 600):
-            print "get... " + str(tt)
+            print "get... " + str(tt) + " " + self.myname
             gotit = False
             for f in self.frameImages:
                 if f["time"] == tt:
@@ -717,6 +717,7 @@ class Radar(QtGui.QLabel):
         self.getmk()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.rtick)
+        self.lastget = time.time() - self.interval + random.uniform(3, 10)
 
     def wxstart(self):
         print "wxstart for " + self.myname
