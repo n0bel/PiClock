@@ -595,19 +595,25 @@ class Radar(QtGui.QLabel):
 
     def combineTiles(self):
         global radar1
-        ii = QImage(self.rect.width(), self.rect.height(),
+        ii = QImage(self.tilesWidth*256, self.tilesHeight*256,
                     QImage.Format_ARGB32)
         painter = QPainter()
         painter.begin(ii)
         i = 0
         xo = self.cornerTiles["NW"]["X"]
-        xo = (int(xo) - xo)*256
+        xo = int((int(xo) - xo)*256)
         yo = self.cornerTiles["NW"]["Y"]
-        yo = (int(yo) - yo)*256
+        yo = int((int(yo) - yo)*256)
         for y in range(0, self.totalHeight, 256):
             for x in range(0, self.totalWidth, 256):
-                painter.drawImage(x+xo, y+yo, self.tileQimages[i])
+                painter.drawImage(x, y, self.tileQimages[i])
                 i += 1
+        ii2 = QImage(self.rect.width(), self.rect.height(),
+                     QImage.Format_ARGB32)
+        painter.end()
+        painter.begin(ii2)
+        painter.drawImage(0, 0, ii, -xo, -yo,
+                          self.rect.width(), self.rect.height())
         timestamp = "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
                      self.getTime))
         painter.setPen(QColor(255, 255, 255, 255))
