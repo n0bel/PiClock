@@ -574,7 +574,7 @@ class Radar(QtGui.QLabel):
                 tileurl = "https://tilecache.rainviewer.com/v2/radar/%d/%s" \
                     % (t, tt)
                 self.tileurls.append(tileurl)
-        print self.tileurls[i]
+        print self.myname + " " + str(self.getIndex) + " " + self.tileurls[i]
         self.tilereq = QNetworkRequest(QUrl(self.tileurls[i]))
         self.tilereply = manager.get(self.tilereq)
         QtCore.QObject.connect(self.tilereply, QtCore.SIGNAL(
@@ -599,6 +599,8 @@ class Radar(QtGui.QLabel):
                     QImage.Format_ARGB32)
         painter = QPainter()
         painter.begin(ii)
+        painter.setPen(QColor(255, 255, 255, 255))
+        painter.setFont(QFont("Arial", 10))
         i = 0
         xo = self.cornerTiles["NW"]["X"]
         xo = int((int(xo) - xo)*256)
@@ -607,14 +609,16 @@ class Radar(QtGui.QLabel):
         for y in range(0, self.totalHeight, 256):
             for x in range(0, self.totalWidth, 256):
                 painter.drawImage(x, y, self.tileQimages[i])
+                # painter.drawRect(x, y, 255, 255)
+                # painter.drawText(x+3, y+12, self.tiletails[i])
                 i += 1
         painter.end()
         painter = None
+        self.tileQimages = []
         ii2 = ii.copy(-xo, -yo, self.rect.width(), self.rect.height())
+        ii = None
         painter2 = QPainter()
         painter2.begin(ii2)
-        painter2.drawImage(0, 0, ii, -xo, -yo,
-                           self.rect.width(), self.rect.height())
         timestamp = "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
                      self.getTime))
         painter2.setPen(QColor(255, 255, 255, 255))
@@ -622,9 +626,10 @@ class Radar(QtGui.QLabel):
         painter2.drawText(3, 12, timestamp)
         painter2.end()
         painter2 = None
-        self.tileQimages = []
         ii3 = QPixmap(ii2)
+        ii2 = None
         self.frameImages.append({"time": self.getTime, "image": ii3})
+        ii3 = None
 
     def mapurl(self, radar, rect, markersonly):
         # 'https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&center='+rcenter.lat+','+rcenter.lng+'&zoom='+rzoom+'&size=300x275'+markersr;
