@@ -608,21 +608,23 @@ class Radar(QtGui.QLabel):
             for x in range(0, self.totalWidth, 256):
                 painter.drawImage(x, y, self.tileQimages[i])
                 i += 1
-        ii2 = QImage(self.rect.width(), self.rect.height(),
-                     QImage.Format_ARGB32)
         painter.end()
-        painter.begin(ii2)
-        painter.drawImage(0, 0, ii, -xo, -yo,
-                          self.rect.width(), self.rect.height())
+        painter = None
+        ii2 = ii.copy(-xo, -yo, self.rect.width(), self.rect.height())
+        painter2 = QPainter()
+        painter2.begin(ii2)
+        painter2.drawImage(0, 0, ii, -xo, -yo,
+                           self.rect.width(), self.rect.height())
         timestamp = "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
                      self.getTime))
-        painter.setPen(QColor(255, 255, 255, 255))
-        painter.setFont(QFont("Arial", 10))
-        painter.drawText(3, 12, timestamp)
-        painter.end()
+        painter2.setPen(QColor(255, 255, 255, 255))
+        painter2.setFont(QFont("Arial", 10))
+        painter2.drawText(3, 12, timestamp)
+        painter2.end()
+        painter2 = None
         self.tileQimages = []
-        ii = QPixmap(ii2)
-        self.frameImages.append({"time": self.getTime, "image": ii})
+        ii3 = QPixmap(ii2)
+        self.frameImages.append({"time": self.getTime, "image": ii3})
 
     def mapurl(self, radar, rect, markersonly):
         # 'https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&center='+rcenter.lat+','+rcenter.lng+'&zoom='+rzoom+'&size=300x275'+markersr;
