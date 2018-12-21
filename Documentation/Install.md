@@ -1,20 +1,20 @@
-# Install Instructions for PiClock 
-## For Raspbian Jessie 
+# Install Instructions for PiClock
+## For Raspbian Jessie
 
 PiClock and this install guide are based on Raspian Jessie
-released on https://www.raspberrypi.org/downloads/ It will work with many
-raspbian versions, but you may have to add more packages, etc.  That exercise
-is left for the reader.
+last released on https://downloads.raspberrypi.org/raspbian/images/raspbian-2017-07-05/
+It will work with many raspbian versions, but you may have to add more packages,
+etc.  That exercise is left for the reader.
 
 What follows is a step by step guide.  If you start with a new clean raspbian
 image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
- 
+
 ### Download Raspbian Jessie and put it on an SD Card
 
 The image and instructions for doing this are on the following page:
-https://www.raspberrypi.org/downloads/  
+https://www.raspberrypi.org/downloads/
 
 ### First boot and configure
 A keyboard and mouse are really handy at this point.
@@ -44,11 +44,11 @@ Just change the Items below.
 
 Finish and let it reboot.
 
-I've found that sometimes on reboot, Jessie doesn't go back to desktop mode.  
-If this is the case, 
+I've found that sometimes on reboot, Jessie doesn't go back to desktop mode.
+If this is the case,
 ```
 sudo raspi-config
-``` 
+```
 and change the boot option to Desktop/Auto-login
 
 ### editing config.txt
@@ -58,9 +58,9 @@ Log into your Pi, (either on the screen or via ssh)
 use nano to edit the boot config file
 ```
 sudo nano /boot/config.txt
-``` 
+```
 Be sure the lines
-``` 
+```
 dtoverlay=lirc-rpi,gpio_in_pin=3,gpio_out_pin=2
 dtoverlay=w1-gpio,gpiopin=4
 ```
@@ -130,7 +130,7 @@ apt-get install unclutter
 
 ### Get the DS18B20 Temperature driver for Python (optional)
 
-(you must still be root [super user]) 
+(you must still be root [super user])
 ```
 git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
 python setup.py install
@@ -138,7 +138,7 @@ python setup.py install
 
 ### Get Lirc driver for IR remote (optional)
 
-(you must still be root [super user]) 
+(you must still be root [super user])
 ```
 apt-get install lirc
 ```
@@ -169,7 +169,7 @@ MODULES="lirc_rpi"
 
 ### Get mpg123 (optional to play NOAA weather radio streams)
 
-(you must still be root [super user]) 
+(you must still be root [super user])
 ```
 apt-get install mpg123
 ```
@@ -198,7 +198,7 @@ cd ../..
 ```
 
 ### Set up Lirc (IR Remote)
-If you're using the recommended IR Key Fob, 
+If you're using the recommended IR Key Fob,
 https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain
 you can copy the lircd.conf file included in the distribution as follows:
 ```
@@ -211,7 +211,7 @@ The software expects 7 keys.   KEY_F1, KEY_F2, KEY_F3, KEY_UP, KEY_DOWN, KEY_RIG
 and KEY_LEFT.   Lirc takes these keys and injects them into linix as if they
 were typed from a keyboard.   PyQPiClock.py then simply looks for normal keyboard
 events.   Therefore of course, if you have a usb keyboard attached, those keys
-work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV. 
+work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV.
 
 You should (must) verify your IR codes.   I've included a program called IRCodes.pl
 which will verify that your lircd.conf is setup correctly.
@@ -228,13 +228,13 @@ Yes, I reverted to perl.. I may redo it in Python one day.
 If you're using the recommended key fob remote, they come randomly programmed from
 the supplier.   To program them you press and hold the mute button (the middle one)
 while watching the screen scroll through codes.
-When the screen shows 
+When the screen shows
 ```
 ************ KEY_F2
 ```
 STOP! then try the other keys, be sure they all report KEY_UP, KEY_DOWN correctly.
 If not press and hold the mute button again, waiting for the asterisks and KEY_F2,
-then STOP again, try the other keys.   Repeat the process until you have all the 
+then STOP again, try the other keys.   Repeat the process until you have all the
 keys working.
 
 Ctrl-C to abort perl.
@@ -247,29 +247,35 @@ sudo reboot
 
 ### Configure the PiClock api keys
 
-The first is to set API keys for Weather Underground and Google Maps.  
+The first is to set API keys for DarkSky and Google Maps.
 These are both free, unless you have large volume.
-The PiClock usage is well below the maximums  imposed by the free api keys.
+The PiClock usage is well below the maximums imposed by the no cost api keys.
 
-Weather Underground api keys are created at this link: 
-http://www.wunderground.com/weather/api/ Here too, it'll ask you for an
-Application (maybe PiClock?) that you're using the api key with.
+DarkSky api keys are created at this link:
+https://darksky.net/dev
 
-## Optional Google Maps API key
+## Google Maps API key
 
-A Google Maps api key is _not required_, unless you pull a large volume of maps.
-Most everyone can leave this key empty.  
+A Google Maps api key is _required_.  (Requires credit card which won't be
+charged unless usage is great.)
 
-You only need a key if you're continually pulling maps because you're restarting
-the clock often durning development.   The maps are pulled once at the start.
+An intro to Google static maps api keys are created at this link:
+https://developers.google.com/maps/documentation/maps-static/intro
+You'll require a google user and password.  It'll also require a credit card.
+The credit card should not be charged, because my reading of https://cloud.google.com/maps-platform/pricing/sheet/ the $200.00 credit will
+apply, and your charges incurred will be for 31 map pulls per month will be
+$0.62 , if you reboot daily.
+You'll be required to create a "project" (maybe PiClock for a project name?)
+You need to then activate the key.
 
-If you want a key, this is how its done. Google Maps api keys are created at this link:
-https://console.developers.google.com/flows/enableapi?apiid=maps_backend&keyType=CLIENT_SIDE
-You'll require a google user and password.  After that it'll require
-you create a "project" (maybe PiClock for a project name?)
-It will also ask about Client Ids, which you can skip (just clock ok/create).  You need to 
-then activate the key.
-
+_Protect your API keys._  You'd be surprised how many pastebin's are out
+there with valid API keys, because of people not being careful.   If you post
+your keys somewhere, your usage will skyrocket, and your bill as well.  Google
+has the ability to add referer, device and ip requirements on your api key.  It
+can also allow you to limit an api key to specific applications only (static-maps)
+in this case.   Also you might consider disabling all the other APIs on your
+project dashboard.   Under the Billing section of things you can set up budgets
+and alerts.  (Set to like $1.00)
 
 
 Now that you have your api keys...
@@ -283,15 +289,15 @@ nano ApiKeys.py
 Put your api keys in the file as indicated
 ```
 #change this to your API keys
-# Weather Underground API key
-wuapi = 'YOUR WEATHER UNDERGROUND API KEY'
+# DarkSky API key
+dsapi = 'YOUR DARKSKY API KEY'
 # Google Maps API key
-googleapi = ''  #Empty string, the key is optional -- if you pull a small volume, you'll be ok
+googleapi = 'YOUR GOOGLE API KEY'
 ```
 
 ### Configure your PiClock
 here's were you tell PiClock where your weather should come from, and the
-radar map centers and markers. 
+radar map centers and markers.
 
 ```
 cd PiClock
@@ -315,7 +321,7 @@ second page of the display (here's a post of about that:
 https://www.facebook.com/permalink.php?story_fbid=1371576642857593&id=946361588712436&substory_index=0 )
 
 The second thing to change is your NOAA weather radio stream url.  You can
-find it here: http://noaaweatherradio.org/  They don't put the .mp3 urls 
+find it here: http://noaaweatherradio.org/  They don't put the .mp3 urls
 where they are easily accessable, so you need to use your browser to "View Page Source"
 in order to find the proper .mp3 url.
 
@@ -335,7 +341,7 @@ There will be some output on the terminal screen as startup.sh executes.
 If everything works, it can be ignored.  If for some reason the clock
 doesn't work, or maps are missing, etc the output may give a reason
 or reasons, which usually reference something to do with the config
-file (Config.py)  
+file (Config.py)
 
 ### Logs
 The -s option causes no log files to be created, but
@@ -349,7 +355,7 @@ or from crontab.  Logs are then created for debugging auto starts.
   * The space bar or right or left arrows will change the page.
   * F2 will start and stop the NOAA weather radio stream
   * F4 will close the clock
-  
+
 If you're using the temperature feature AND you have multiple temperature sensors,
 you'll see the clock display: 000000283872:74.6 00000023489:65.4 or something similar.
 Note the numbers exactly.   Use F4 to stop the clock,
@@ -462,4 +468,3 @@ cd PiClock/Buttons
 rm gpio-keys
 make gpio-keys
 ```
-
