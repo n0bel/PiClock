@@ -251,15 +251,17 @@ The first is to set API keys for DarkSky and Google Maps.
 These are both free, unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost api keys.
 
+#### DarkSky api keys
+
 DarkSky api keys are created at this link:
 https://darksky.net/dev
 
-## Google Maps API key
+#### Google Maps API key
 
 A Google Maps api key is _required_.  (Requires credit card which won't be
 charged unless usage is great.)
 
-An intro to Google static maps api keys are created at this link:
+An intro to Google static maps api keys, and a link to creating your account and ApiKeys:
 https://developers.google.com/maps/documentation/maps-static/intro
 You'll require a google user and password.  It'll also require a credit card.
 The credit card should not be charged, because my reading of https://cloud.google.com/maps-platform/pricing/sheet/ the $200.00 credit will

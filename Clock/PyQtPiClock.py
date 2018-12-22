@@ -397,9 +397,9 @@ def getwx():
     wxurl = 'https://api.darksky.net/forecast/' + \
         ApiKeys.dsapi + \
         '/'
-    wxurl += str(Config.wulocation.lat) + ',' + \
-        str(Config.wulocation.lng)
-    wxurl += '?units=us&lang=' + Config.wuLanguage.lower()
+    wxurl += str(Config.location.lat) + ',' + \
+        str(Config.location.lng)
+    wxurl += '?units=us&lang=' + Config.Language.lower()
     wxurl += '&r=' + str(random.random())
     print wxurl
     r = QUrl(wxurl)
@@ -828,6 +828,11 @@ Config = __import__(configname)
 # define default values for new/optional config variables.
 
 try:
+    Config.location
+except AttributeError:
+    Config.location = Config.wulocation
+
+try:
     Config.metric
 except AttributeError:
     Config.metric = 0
@@ -874,9 +879,14 @@ except AttributeError:
     Config.digital = 0
 
 try:
+    Config.Language
+except AttributeError:
+    Config.Language = Config.wuLanguage
+
+try:
     Config.LPressure
 except AttributeError:
-    Config.wuLanguage = "EN"
+    Config.Language = "EN"
     Config.LPressure = "Pressure "
     Config.LHumidity = "Humidity "
     Config.LWind = "Wind "

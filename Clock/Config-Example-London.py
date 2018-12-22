@@ -7,8 +7,7 @@ from PyQt4.QtGui import QColor
 # completed under the RADAR section
 primary_coordinates = 51.5286416, -0.1015987  # Change to your Lat/Lon
 
-wuprefix = 'http://api.wunderground.com/api/'
-wulocation = LatLng(primary_coordinates[0], primary_coordinates[1])
+location = LatLng(primary_coordinates[0], primary_coordinates[1])
 primary_location = LatLng(primary_coordinates[0], primary_coordinates[1])
 noaastream = '???'
 background = 'images/london-at-night-wallpapers.jpg'
@@ -58,9 +57,9 @@ dimcolor = QColor('#000000')
 dimcolor.setAlpha(0)
 
 # Language Specific wording
-# Weather Undeground Language code
-#  (https://www.wunderground.com/weather/api/d/docs?d=language-support&MR=1)
-wuLanguage = "EN"
+# DarkSky Language code
+#  (https://darksky.net/dev/docs under lang=)
+Language = "EN"
 
 # The Python Locale for date/time (locale.setlocale)
 #  '' for default Pi Setting

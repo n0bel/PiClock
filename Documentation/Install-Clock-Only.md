@@ -2,7 +2,7 @@
 
 This version of the instructions is for setting up just the clock
 itself, ignoring all the other options.   It also assumes you have
-some OS already setup.   So this is useful for setting up the 
+some OS already setup.   So this is useful for setting up the
 clock on a desktop OS.
 
 # Prerequisites
@@ -30,23 +30,38 @@ https://github.com/n0bel/PiClock/archive/master.zip, then unzip it.
 
 ### Configure the PiClock api keys
 
-The first is to set API keys for Weather Underground and Google Maps.  
+The first is to set API keys for DarkSky and Google Maps.
 These are both free, unless you have large volume.
-The PiClock usage is well below the maximums  imposed by the free api keys.
+The PiClock usage is well below the maximums imposed by the no cost api keys.
 
-Weather Underground api keys are created at this link: 
-http://www.wunderground.com/weather/api/ Here too, it'll ask you for an
-Application (maybe PiClock?) that you're using the api key with.
+#### DarkSky api keys
 
-A _Google Maps api key is not required_, unless you pull a large volume of maps.
-This *can* occur if you're continually pulling maps because you're restarting
-the clock often durning development.   The maps are pulled once at the start.
+DarkSky api keys are created at this link:
+https://darksky.net/dev
 
-If you want a key, this is how its done. Google Maps api keys are created at this link:
-https://console.developers.google.com/flows/enableapi?apiid=maps_backend&keyType=CLIENT_SIDE
-You'll require a google user and password.  After that it'll require
-you create a "project" (maybe PiClock for a project name?)
-It will also ask about Client Ids, which you can skip (just clock ok/create)
+#### Google Maps API key
+
+A Google Maps api key is _required_.  (Requires credit card which won't be
+charged unless usage is great.)
+
+An intro to Google static maps api keys, and a link to creating your account and ApiKeys:
+https://developers.google.com/maps/documentation/maps-static/intro
+You'll require a google user and password.  It'll also require a credit card.
+The credit card should not be charged, because my reading of https://cloud.google.com/maps-platform/pricing/sheet/ the $200.00 credit will
+apply, and your charges incurred will be for 31 map pulls per month will be
+$0.62 , if you reboot daily.
+You'll be required to create a "project" (maybe PiClock for a project name?)
+You need to then activate the key.
+
+_Protect your API keys._  You'd be surprised how many pastebin's are out
+there with valid API keys, because of people not being careful.   If you post
+your keys somewhere, your usage will skyrocket, and your bill as well.  Google
+has the ability to add referer, device and ip requirements on your api key.  It
+can also allow you to limit an api key to specific applications only (static-maps)
+in this case.   Also you might consider disabling all the other APIs on your
+project dashboard.   Under the Billing section of things you can set up budgets
+and alerts.  (Set to like $1.00)
+
 
 Now that you have your api keys...
 
@@ -59,15 +74,15 @@ cp ApiKeys-example.py ApiKeys.py
 Put your api keys in the file as indicated
 ```
 #change this to your API keys
-# Weather Underground API key
-wuapi = 'YOUR WEATHER UNDERGROUND API KEY'
+# DarkSky API key
+dsapi = 'YOUR DARKSKY API KEY'
 # Google Maps API key
-googleapi = ''  #Empty string, the key is optional -- if you pull a small volume, you'll be ok
+googleapi = 'YOUR GOOGLE API KEY'
 ```
 
 ### Configure your PiClock
 here's were you tell PiClock where your weather should come from, and the
-radar map centers and markers. 
+radar map centers and markers.
 
 ```
 cd PiClock
@@ -107,7 +122,7 @@ file (Config.py)
   * The space bar or right or left arrows will change the page.
   * F2 will start and stop the NOAA weather radio stream
   * F4 will close the clock
-  
+
 
 ### Updating to newer/updated versions
 Since we pulled the software from github originally, it can be updated

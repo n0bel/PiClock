@@ -9,11 +9,10 @@ the composite output as well, but this is not a design goal.  The main
 program (Clock/PyQtPiClock.py) will also run on Windows, Mac, and Linux,
 as long as python 2.7+ and PyQt4 is installed.
 
-The Weather data comes from Weather Underground using their API 
-( http://www.wunderground.com/weather/api/ ).   The maps are from
-Google Maps API.   **You must get an API Key from weather
-underground in order to make this work.**  It is free for low
-usage such as this application.
+The Weather data comes from DarkSky using their API
+( http://darksky.net/dev/ ).   The maps are from Google Maps API.
+ **You must get API Keys from DarkSky and Google in order to make this work.**
+ It is free for low usage such as this application.
 
 The PiClock can be customized with several supported additional things:
   * RGB LED strips (NeoPixel) to create an ambilight effect
@@ -48,8 +47,8 @@ So what do you need to build a PiClock?
     you'll probably need a switching down regulator to 5v)  Remember
     the Pi likes something that can source up to 2A.
   * A USB Keyboard and Mouse for setup (if you want something small
-    and semi-permanent, I've had good luck with this: 
-    https://www.google.com/search?q=iPazzPort+2.4G+Mini+Wireless+Keyboard 
+    and semi-permanent, I've had good luck with this:
+    https://www.google.com/search?q=iPazzPort+2.4G+Mini+Wireless+Keyboard
     I like the one with the mousepad on the side)
   * USB Wifi or Internet Connection
 
@@ -82,7 +81,7 @@ https://github.com/n0bel/PiClock/blob/master/Documentation/Install-Clock-Only.md
 It all started one Satuday afternoon when I was feeling bored.  My super duper radio
 controlled clock ( you know those AccuRite clocks) was WRONG!.    Apparently the
 daylight savings time adjustment was coded to the pre-2007 dates.   I was going
-to go get something new.. when I spotted an unused monitor in the corner of my 
+to go get something new.. when I spotted an unused monitor in the corner of my
 livingroom...  My eyes flicked back and forth between it and the wall.  I had
 recently been playing with a Raspberry Pi Model B, and of course the idea was born.
 
@@ -106,8 +105,7 @@ Qt4 and its Python wrapper PyQt4 is what I finally chose.
 
 The details of this evolution are on my blog http://n0bel.net/v1/index.php/projects/raspberry-pi-clock
 as well as newer postings and updates.   Some of my friends have been treated (subjected)
-to more timely updates via my public facebook page https://www.facebook.com/pages/Kevin-N0BEL/946361588712436 
+to more timely updates via my public facebook page https://www.facebook.com/pages/Kevin-N0BEL/946361588712436
 
 And of course I tweet https://twitter.com/KevinN0BEL, Pin https://www.pinterest.com/kevinuhir/,
 Instagram https://instagram.com/kevin_n0bel/, and hack https://hackaday.io/n0bel
-
