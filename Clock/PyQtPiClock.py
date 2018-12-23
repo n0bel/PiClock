@@ -300,11 +300,9 @@ def wxfinished():
             Qt.IgnoreAspectRatio,
             Qt.SmoothTransformation))
         wx = fl.findChild(QtGui.QLabel, "wx")
-        wx.setText(f['summary'])
         day = fl.findChild(QtGui.QLabel, "day")
         day.setText("{0:%A %I:%M%p}".format(datetime.datetime.fromtimestamp(
             int(f['time']))))
-        wx2 = fl.findChild(QtGui.QLabel, "wx2")
         s = ''
         pop = 0
         ptype = ''
@@ -335,7 +333,8 @@ def wxfinished():
                     s += Config.LRain + '%.0f' % paccum + 'in '
             s += '%.0f' % (f['temperature']) + u'°F'
 
-        wx2.setText(s)
+        wx.setStyleSheet("#wx { font-size: " + str(int(25 * xscale)) + "px; }")
+        wx.setText(f['summary'] + "\n" + s)
 
     for i in range(3, 9):
         f = wxdata['daily']['data'][i - 3]
@@ -348,11 +347,9 @@ def wxfinished():
             Qt.IgnoreAspectRatio,
             Qt.SmoothTransformation))
         wx = fl.findChild(QtGui.QLabel, "wx")
-        wx.setText(f['summary'])
         day = fl.findChild(QtGui.QLabel, "day")
         day.setText("{0:%A}".format(datetime.datetime.fromtimestamp(
             int(f['time']))))
-        wx2 = fl.findChild(QtGui.QLabel, "wx2")
         s = ''
         pop = 0
         ptype = ''
@@ -385,7 +382,8 @@ def wxfinished():
             s += '%.0f' % f['temperatureHigh'] + '/' + \
                  '%.0f' % f['temperatureLow']
 
-        wx2.setText(s)
+        wx.setStyleSheet("#wx { font-size: " + str(int(19 * xscale)) + "px; }")
+        wx.setText(f['summary'] + ' ' + s)
 
 
 def getwx():
@@ -1273,15 +1271,10 @@ for i in range(0, 9):
 
     wx = QtGui.QLabel(lab)
     wx.setStyleSheet("#wx { background-color: transparent; }")
-    wx.setGeometry(100 * xscale, 10 * yscale, 200 * xscale, 20 * yscale)
+    wx.setGeometry(100 * xscale, 5 * yscale, 200 * xscale, 120 * yscale)
+    wx.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+    wx.setWordWrap(True)
     wx.setObjectName("wx")
-
-    wx2 = QtGui.QLabel(lab)
-    wx2.setStyleSheet("#wx2 { background-color: transparent; }")
-    wx2.setGeometry(100 * xscale, 30 * yscale, 200 * xscale, 100 * yscale)
-    wx2.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-    wx2.setWordWrap(True)
-    wx2.setObjectName("wx2")
 
     day = QtGui.QLabel(lab)
     day.setStyleSheet("#day { background-color: transparent; }")
