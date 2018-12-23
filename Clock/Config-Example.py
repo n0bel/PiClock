@@ -83,7 +83,14 @@ LMoonPhase = " Moon Phase:"
 LInsideTemp = "Inside Temp "
 LRain = " Rain: "
 LSnow = " Snow: "
-
+Lmoon1 = 'New Moon'
+Lmoon2 = 'Waxing Crescent'
+Lmoon3 = 'First Quarter'
+Lmoon4 = 'Waxing Gibbous'
+Lmoon5 = 'Full Moon'
+Lmoon6 = 'Waning Gibbous'
+Lmoon7 = 'Third Quarter'
+Lmoon8 = 'Waning Crecent'
 
 # RADAR
 # By default, primary_location entered will be the

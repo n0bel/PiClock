@@ -85,6 +85,14 @@ LMoonPhase = " Mond Phase:"
 LInsideTemp = "Innen Temp "
 LRain = " Regen: "
 LSnow = " Schnee: "
+Lmoon1 = 'Neumond'
+Lmoon2 = 'Zunehmender Sichelmond'
+Lmoon3 = 'Zunehmender Halbmond'
+Lmoon4 = 'Zunehmender Dreiviertelmond'
+Lmoon5 = 'Vollmond '
+Lmoon6 = 'Abnehmender Dreiviertelmond'
+Lmoon7 = 'Abnehmender Halbmond'
+Lmoon8 = 'Abnehmender Sichelmond'
 
 # RADAR
 # By default, primary_location entered will be the
