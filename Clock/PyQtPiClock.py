@@ -230,6 +230,7 @@ def wxfinished():
     global wxicon2, temper2, wxdesc, attribution
 
     attribution.setText("DarkSky.net")
+    attribution2.setText("DarkSky.net")
 
     wxstr = str(wxreply.readAll())
     wxdata = json.loads(wxstr)
@@ -1163,22 +1164,36 @@ datey2.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
 datey2.setGeometry(800 * xscale, 840 * yscale, 640 * xscale, 100)
 
 attribution = QtGui.QLabel(frame1)
-attribution.setObjectName("wxdesc")
-attribution.setStyleSheet("#wxdesc { background-color: transparent; color: " +
+attribution.setObjectName("attribution")
+attribution.setStyleSheet("#attribution { " +
+                          " background-color: transparent; color: " +
                           Config.textcolor +
                           "; font-size: " +
-                          str(int(10 * xscale)) +
+                          str(int(12 * xscale)) +
                           "px; " +
                           Config.fontattr +
                           "}")
 attribution.setAlignment(Qt.AlignTop)
-attribution.setGeometry(3 * xscale, 3 * yscale, 100 * xscale, 100)
+attribution.setGeometry(6 * xscale, 3 * yscale, 100 * xscale, 100)
 
 ypos = -25
 wxicon = QtGui.QLabel(frame1)
 wxicon.setObjectName("wxicon")
 wxicon.setStyleSheet("#wxicon { background-color: transparent; }")
 wxicon.setGeometry(75 * xscale, ypos * yscale, 150 * xscale, 150 * yscale)
+
+attribution2 = QtGui.QLabel(frame2)
+attribution2.setObjectName("attribution2")
+attribution2.setStyleSheet("#attribution2 { " +
+                           "background-color: transparent; color: " +
+                           Config.textcolor +
+                           "; font-size: " +
+                           str(int(12 * xscale)) +
+                           "px; " +
+                           Config.fontattr +
+                           "}")
+attribution2.setAlignment(Qt.AlignTop)
+attribution2.setGeometry(6 * xscale, 880 * yscale, 100 * xscale, 100)
 
 wxicon2 = QtGui.QLabel(frame2)
 wxicon2.setObjectName("wxicon2")
