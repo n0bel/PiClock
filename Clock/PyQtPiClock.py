@@ -169,31 +169,24 @@ def heightm(f):
 
 
 def phase(f):
-    # Determine moon phase upon the decimal part of the lunation number
-    # Darksky points in their doc to URL:
-    # https://en.wikipedia.org/wiki/Lunation_Number
-    # the values here are mid-values halfway between these ranges:
-    # 0 for new moon, 0.25 for first quarter moon, 0.5 for full moon, and 0.75 for last quarter moon.
+    pp = Config.Lmoon1         # 'New Moon'
     if   (f > 0.9375):
-            pp = 'New Moon'
+            pp = Config.Lmoon1 # 'New Moon'
     elif (f > 0.8125):
-            pp = 'Waning Crecent'
+            pp = Config.Lmoon8 # 'Waning Crecent'
     elif (f > 0.6875):
-            pp = 'Third Quarter'
-    elif (f > 0.5625):  ## BUG: was duplicate IF
-            pp = 'Waning Gibbous'
+            pp = Config.Lmoon7 # 'Third Quarter'
+    elif (f > 0.5625):  
+            pp = Config.Lmoon6 # 'Waning Gibbous'
     elif (f > 0.4375):
-            pp = 'Full Moon'
+            pp = Config.Lmoon5 # 'Full Moon'
     elif (f > 0.3125):
-            pp = 'Waxing Gibbous'
+            pp = Config.Lmoon4 # 'Waxing Gibbous'
     elif (f > 0.1875):
-            pp = 'First Quarter'
-    elif (f > 0.0625):  ## BUG: Zero added for this if was 0.625
-            pp = 'Waxing Crescent'
-    else:
-            pp = 'New Moon'
+            pp = Config.Lmoon3 # 'First Quarter'
+    elif (f > 0.0625):  
+            pp = Config.Lmoon2 # 'Waxing Crescent'
     return pp
-
 
 def bearing(f):
     wd = 'N'
@@ -904,6 +897,26 @@ except AttributeError:
     Config.LInsideTemp = "Inside Temp "
     Config.LRain = " Rain: "
     Config.LSnow = " Snow: "
+
+try:
+    Config.Lmoon1
+    Config.Lmoon2
+    Config.Lmoon3
+    Config.Lmoon4
+    Config.Lmoon5
+    Config.Lmoon6
+    Config.Lmoon7
+    Config.Lmoon8
+except AttributeError:
+    Config.Lmoon1 = 'New Moon'
+    Config.Lmoon2 = 'Waxing Crescent'
+    Config.Lmoon3 = 'First Quarter'
+    Config.Lmoon4 = 'Waxing Gibbous'
+    Config.Lmoon5 = 'Full Moon'
+    Config.Lmoon6 = 'Waning Gibbous'
+    Config.Lmoon7 = 'Third Quarter'
+    Config.Lmoon8 = 'Waning Crecent'    
+
 #
 
 
