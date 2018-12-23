@@ -20,7 +20,7 @@ from PyQt4.QtNetwork import QNetworkRequest
 from subprocess import Popen
 
 sys.dont_write_bytecode = True
-from GoogleMercatorProjection import getCorners, getTileXY, LatLng  # NOQA
+from GoogleMercatorProjection import getCorners, getPoint, getTileXY, LatLng  # NOQA
 import ApiKeys                                              # NOQA
 
 
@@ -227,7 +227,9 @@ def wxfinished():
     global wxreply, wxdata
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
-    global wxicon2, temper2, wxdesc
+    global wxicon2, temper2, wxdesc, attribution
+
+    attribution.setText("DarkSky.net")
 
     wxstr = str(wxreply.readAll())
     wxdata = json.loads(wxstr)
@@ -455,14 +457,14 @@ class Radar(QtGui.QLabel):
         self.anim = 5
         self.zoom = radar["zoom"]
         self.point = radar["center"]
+        self.radar = radar
         try:
             if radar["satellite"]:
                 self.satellite = 1
         except KeyError:
             pass
-        self.baseurl = self.mapurl(radar, rect, False)
-        print "google map base url: " + self.baseurl
-        self.mkurl = self.mapurl(radar, rect, True)
+        self.baseurl = self.mapurl(radar, rect)
+        print "map base url: " + self.baseurl
         QtGui.QLabel.__init__(self, parent)
         self.interval = Config.radar_refresh * 60
         self.lastwx = 0
@@ -619,11 +621,16 @@ class Radar(QtGui.QLabel):
         ii = None
         painter2 = QPainter()
         painter2.begin(ii2)
-        timestamp = "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-                     self.getTime))
+        timestamp = "{0:%H:%M} RainView.com".format(
+                    datetime.datetime.fromtimestamp(self.getTime))
+        painter2.setPen(QColor(63, 63, 63, 255))
+        painter2.setFont(QFont("Arial", 8))
+        painter2.setRenderHint(QPainter.TextAntialiasing)
+        painter2.drawText(3-1, 12-1, timestamp)
+        painter2.drawText(3+2, 12+1, timestamp)
         painter2.setPen(QColor(255, 255, 255, 255))
-        painter2.setFont(QFont("Arial", 10))
         painter2.drawText(3, 12, timestamp)
+        painter2.drawText(3+1, 12, timestamp)
         painter2.end()
         painter2 = None
         ii3 = QPixmap(ii2)
@@ -631,10 +638,32 @@ class Radar(QtGui.QLabel):
         self.frameImages.append({"time": self.getTime, "image": ii3})
         ii3 = None
 
-    def mapurl(self, radar, rect, markersonly):
-        # 'https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&center='+rcenter.lat+','+rcenter.lng+'&zoom='+rzoom+'&size=300x275'+markersr;
-        urlp = []
+    def mapurl(self, radar, rect):
+        mb = 0
+        try:
+            mb = Config.usemapbox
+        except:
+            pass
+        if mb:
+            return self.mapboxurl(radar, rect)
+        else:
+            return self.googlemapurl(radar, rect)
 
+    def mapboxurl(self, radar, rect):
+        #  note we're using google maps zoom factor.
+        #  Mapbox equivilant zoom is one less
+        #  They seem to be using 512x512 tiles instead of 256x256
+        return 'https://api.mapbox.com/styles/v1/mapbox/' + \
+               'satellite-streets-v10' + \
+               '/static/' + \
+               str(radar['center'].lng) + ',' + \
+               str(radar['center'].lat) + ',' + \
+               str(radar['zoom']-1) + ',0,0/' + \
+               str(rect.width()) + 'x' + str(rect.height()) + \
+               '?access_token=' + ApiKeys.mbapi
+
+    def googlemapurl(self, radar, rect):
+        urlp = []
         if len(ApiKeys.googleapi) > 0:
             urlp.append('key=' + ApiKeys.googleapi)
         urlp.append(
@@ -647,18 +676,7 @@ class Radar(QtGui.QLabel):
             zoom -= 1
         urlp.append('zoom=' + str(zoom))
         urlp.append('size=' + str(rsize.width()) + 'x' + str(rsize.height()))
-        if markersonly:
-            urlp.append('style=visibility:off')
-        else:
-            urlp.append('maptype=hybrid')
-        for marker in radar['markers']:
-            marks = []
-            for opts in marker:
-                if opts != 'location':
-                    marks.append(opts + ':' + marker[opts])
-            marks.append(str(marker['location'].lat) +
-                         ',' + str(marker['location'].lng))
-            urlp.append('markers=' + '|'.join(marks))
+        urlp.append('maptype=hybrid')
 
         return 'http://maps.googleapis.com/maps/api/staticmap?' + \
             '&'.join(urlp)
@@ -685,6 +703,56 @@ class Radar(QtGui.QLabel):
         else:
             self.setPixmap(self.basepixmap)
 
+        # make marker pixmap
+        self.mkpixmap = QPixmap(self.basepixmap.size())
+        self.mkpixmap.fill(Qt.transparent)
+        br = QBrush(QColor(Config.dimcolor))
+        painter = QPainter()
+        painter.begin(self.mkpixmap)
+        painter.fillRect(0, 0, self.mkpixmap.width(),
+                         self.mkpixmap.height(), br)
+        for marker in self.radar['markers']:
+            pt = getPoint(marker["location"], self.point, self.zoom,
+                          self.rect.width(), self.rect.height())
+            mk2 = QImage()
+            mkfile = 'teardrop'
+            if 'image' in marker:
+                mkfile = marker['image']
+            if os.path.dirname(mkfile) == '':
+                mkfile = os.path.join('markers', mkfile)
+            if os.path.splitext(mkfile)[1] == '':
+                mkfile += '.png'
+            print mkfile
+            mk2.load(mkfile)
+            if mk2.format != QImage.Format_ARGB32:
+                mk2 = mk2.convertToFormat(QImage.Format_ARGB32)
+            mkh = 80  # self.rect.height() / 5
+            if 'size' in marker:
+                if marker['size'] == 'small':
+                    mkh = 64
+                if marker['size'] == 'mid':
+                    mkh = 70
+                if marker['size'] == 'tiny':
+                    mkh = 40
+            if 'color' in marker:
+                c = QColor(marker['color'])
+                (cr, cg, cb, ca) = c.getRgbF()
+                for x in range(0, mk2.width()):
+                    for y in range(0, mk2.height()):
+                        (r, g, b, a) = QColor.fromRgba(
+                                       mk2.pixel(x, y)).getRgbF()
+                        r = r * cr
+                        g = g * cg
+                        b = b * cb
+                        mk2.setPixel(x, y, QColor.fromRgbF(r, g, b, a).rgba())
+            mk2 = mk2.scaledToHeight(mkh, 1)
+            print vars(pt)
+            painter.drawImage(pt.x-mkh/2, pt.y-mkh/2, mk2)
+
+        painter.end()
+
+        self.wmk.setPixmap(self.mkpixmap)
+
     def mkfinished(self):
         if self.mkreply.error() != QNetworkReply.NoError:
             return
@@ -700,7 +768,18 @@ class Radar(QtGui.QLabel):
         painter.begin(self.mkpixmap)
         painter.fillRect(0, 0, self.mkpixmap.width(),
                          self.mkpixmap.height(), br)
+        for marker in self.radar['markers']:
+            pt = getPoint(marker["location"], self.point, self.zoom,
+                          self.rect.width(), self.rect.height())
+            mk2 = QImage()
+            mk2.load('marker/teardrop-dot.png')
+            mkh = 64  # self.rect.height() / 5
+            mk2 = mk2.scaledToHeight(mkh, 1)
+            print vars(pt)
+            painter.drawImage(pt.x-mkh/2, pt.y-mkh/2, mk2)
+
         painter.end()
+
         self.wmk.setPixmap(self.mkpixmap)
 
     def getbase(self):
@@ -721,7 +800,7 @@ class Radar(QtGui.QLabel):
         if interval > 0:
             self.interval = interval
         self.getbase()
-        self.getmk()
+        # self.getmk()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.rtick)
         self.lastget = time.time() - self.interval + random.uniform(3, 10)
@@ -1082,6 +1161,18 @@ datey2.setStyleSheet("#datey2 { font-family:sans-serif; color: " +
                      "}")
 datey2.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
 datey2.setGeometry(800 * xscale, 840 * yscale, 640 * xscale, 100)
+
+attribution = QtGui.QLabel(frame1)
+attribution.setObjectName("wxdesc")
+attribution.setStyleSheet("#wxdesc { background-color: transparent; color: " +
+                          Config.textcolor +
+                          "; font-size: " +
+                          str(int(10 * xscale)) +
+                          "px; " +
+                          Config.fontattr +
+                          "}")
+attribution.setAlignment(Qt.AlignTop)
+attribution.setGeometry(3 * xscale, 3 * yscale, 100 * xscale, 100)
 
 ypos = -25
 wxicon = QtGui.QLabel(frame1)

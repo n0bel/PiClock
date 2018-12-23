@@ -70,7 +70,18 @@ class MercatorProjection:
                                math.pi / 2.0)
         return LatLng(lat, lng)
 
-# pixelCoordinate = worldCoordinate * pow(2,zoomLevel)
+
+def getPoint(point, center, zoom, mapWidth, mapHeight):
+    scale = 2.0**zoom
+    proj = MercatorProjection()
+    centerP = proj.fromLatLngToPoint(center)
+    centerP.x = centerP.x * scale
+    centerP.y = centerP.y * scale
+    subjectP = proj.fromLatLngToPoint(point)
+    subjectP.x = subjectP.x * scale
+    subjectP.y = subjectP.y * scale
+    return Point((subjectP.x - centerP.x) + mapWidth / 2.0,
+                 (subjectP.y - centerP.y) + mapHeight / 2.0)
 
 
 def getCorners(center, zoom, mapWidth, mapHeight):
