@@ -169,24 +169,25 @@ def heightm(f):
 
 
 def phase(f):
-    pp = Config.Lmoon1         # 'New Moon'
-    if   (f > 0.9375):
-            pp = Config.Lmoon1 # 'New Moon'
+    pp = Config.Lmoon1          # 'New Moon'
+    if (f > 0.9375):
+            pp = Config.Lmoon1  # 'New Moon'
     elif (f > 0.8125):
-            pp = Config.Lmoon8 # 'Waning Crecent'
+            pp = Config.Lmoon8  # 'Waning Crecent'
     elif (f > 0.6875):
-            pp = Config.Lmoon7 # 'Third Quarter'
-    elif (f > 0.5625):  
-            pp = Config.Lmoon6 # 'Waning Gibbous'
+            pp = Config.Lmoon7  # 'Third Quarter'
+    elif (f > 0.5625):
+            pp = Config.Lmoon6  # 'Waning Gibbous'
     elif (f > 0.4375):
-            pp = Config.Lmoon5 # 'Full Moon'
+            pp = Config.Lmoon5  # 'Full Moon'
     elif (f > 0.3125):
-            pp = Config.Lmoon4 # 'Waxing Gibbous'
+            pp = Config.Lmoon4  # 'Waxing Gibbous'
     elif (f > 0.1875):
-            pp = Config.Lmoon3 # 'First Quarter'
-    elif (f > 0.0625):  
-            pp = Config.Lmoon2 # 'Waxing Crescent'
+            pp = Config.Lmoon3  # 'First Quarter'
+    elif (f > 0.0625):
+            pp = Config.Lmoon2  # 'Waxing Crescent'
     return pp
+
 
 def bearing(f):
     wd = 'N'
@@ -915,7 +916,7 @@ except AttributeError:
     Config.Lmoon5 = 'Full Moon'
     Config.Lmoon6 = 'Waning Gibbous'
     Config.Lmoon7 = 'Third Quarter'
-    Config.Lmoon8 = 'Waning Crecent'    
+    Config.Lmoon8 = 'Waning Crecent'
 
 #
 
