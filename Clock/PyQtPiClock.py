@@ -169,25 +169,29 @@ def heightm(f):
 
 
 def phase(f):
-    pp = 'New Moon'
-    if (f > 0.625):
-        pp = 'Waxing Crescent'
-    if (f > 0.1875):
-        pp = 'First Quarter'
-    if (f > 0.3125):
-        pp = 'Waxing Gibbous'
-    if (f > 0.4375):
-        pp = 'Full Moon'
-    if (f > 0.5625):
-        pp = 'Waning Gibbous'
-    if (f > 0.5625):
-        pp = 'Waning Gibbous'
-    if (f > 0.6875):
-        pp = 'Third Quarter'
-    if (f > 0.8125):
-        pp = 'Waning Crecent'
-    if (f > 0.9375):
-        pp = 'New Moon'
+    # Determine moon phase upon the decimal part of the lunation number
+    # Darksky points in their doc to URL:
+    # https://en.wikipedia.org/wiki/Lunation_Number
+    # the values here are mid-values halfway between these ranges:
+    # 0 for new moon, 0.25 for first quarter moon, 0.5 for full moon, and 0.75 for last quarter moon.
+    if   (f > 0.9375):
+            pp = 'New Moon'
+    elif (f > 0.8125):
+            pp = 'Waning Crecent'
+    elif (f > 0.6875):
+            pp = 'Third Quarter'
+    elif (f > 0.5625):  ## BUG: was duplicate IF
+            pp = 'Waning Gibbous'
+    elif (f > 0.4375):
+            pp = 'Full Moon'
+    elif (f > 0.3125):
+            pp = 'Waxing Gibbous'
+    elif (f > 0.1875):
+            pp = 'First Quarter'
+    elif (f > 0.0625):  ## BUG: Zero added for this if was 0.625
+            pp = 'Waxing Crescent'
+    else:
+            pp = 'New Moon'
     return pp
 
 
