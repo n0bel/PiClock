@@ -383,11 +383,7 @@ def wxfinished():
                  '%.0f' % f['temperatureLow']
 
         wx.setStyleSheet("#wx { font-size: " + str(int(19 * xscale)) + "px; }")
-<<<<<<< HEAD
         wx.setText(f['summary'] + "\n" + s)
-=======
-        wx.setText(f['summary'] + ' ' + s)
->>>>>>> cd51d43ed2942fc75bb1caa8599151059e2e2c5a
 
 
 def getwx():
