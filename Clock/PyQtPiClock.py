@@ -652,7 +652,7 @@ class Radar(QtGui.QLabel):
         for marker in radar['markers']:
             marks = []
             for opts in marker:
-                if opts != 'location':
+                if opts != 'location' and opts != 'image':
                     marks.append(opts + ':' + marker[opts])
             marks.append(str(marker['location'].lat) +
                          ',' + str(marker['location'].lng))
