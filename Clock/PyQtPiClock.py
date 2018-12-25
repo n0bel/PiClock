@@ -957,12 +957,14 @@ except AttributeError:
 try:
     Config.Language
 except AttributeError:
-    Config.Language = Config.wuLanguage
+    try:
+        Config.Language = Config.wuLanguage
+    except AttributeError:
+        Config.Language = "en"
 
 try:
     Config.LPressure
 except AttributeError:
-    Config.Language = "EN"
     Config.LPressure = "Pressure "
     Config.LHumidity = "Humidity "
     Config.LWind = "Wind "
