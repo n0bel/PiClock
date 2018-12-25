@@ -234,8 +234,8 @@ sudo reboot
 
 ### Configure the PiClock api keys
 
-The first is to set API keys for DarkSky and Mapbox or Google Maps.
-These are both free, unless you have large volume.
+We need to set API keys for DarkSky and Mapbox or Google Maps.
+These are both unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost api keys.
 
 #### DarkSky api keys
@@ -246,7 +246,7 @@ https://darksky.net/dev
 #### Map API Key
 
 You have your choice of Mapbox or Google Maps to get your underlying maps from.
-You only need one or the other (mbkey or googleapi)
+You only need one or the other (mbapi or googleapi)
 
 #### Google Maps API key
 
