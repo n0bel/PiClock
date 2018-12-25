@@ -719,7 +719,6 @@ class Radar(QtGui.QLabel):
                 mkfile = os.path.join('markers', mkfile)
             if os.path.splitext(mkfile)[1] == '':
                 mkfile += '.png'
-            print mkfile
             mk2.load(mkfile)
             if mk2.format != QImage.Format_ARGB32:
                 mk2 = mk2.convertToFormat(QImage.Format_ARGB32)
@@ -743,36 +742,6 @@ class Radar(QtGui.QLabel):
                         b = b * cb
                         mk2.setPixel(x, y, QColor.fromRgbF(r, g, b, a).rgba())
             mk2 = mk2.scaledToHeight(mkh, 1)
-            print vars(pt)
-            painter.drawImage(pt.x-mkh/2, pt.y-mkh/2, mk2)
-
-        painter.end()
-
-        self.wmk.setPixmap(self.mkpixmap)
-
-    def mkfinished(self):
-        if self.mkreply.error() != QNetworkReply.NoError:
-            return
-        self.mkpixmap = QPixmap()
-        self.mkpixmap.loadFromData(self.mkreply.readAll())
-        if self.mkpixmap.size() != self.rect.size():
-            self.mkpixmap = self.mkpixmap.scaled(
-                self.rect.size(),
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation)
-        br = QBrush(QColor(Config.dimcolor))
-        painter = QPainter()
-        painter.begin(self.mkpixmap)
-        painter.fillRect(0, 0, self.mkpixmap.width(),
-                         self.mkpixmap.height(), br)
-        for marker in self.radar['markers']:
-            pt = getPoint(marker["location"], self.point, self.zoom,
-                          self.rect.width(), self.rect.height())
-            mk2 = QImage()
-            mk2.load('marker/teardrop-dot.png')
-            mkh = 64  # self.rect.height() / 5
-            mk2 = mk2.scaledToHeight(mkh, 1)
-            print vars(pt)
             painter.drawImage(pt.x-mkh/2, pt.y-mkh/2, mk2)
 
         painter.end()
@@ -786,18 +755,10 @@ class Radar(QtGui.QLabel):
         QtCore.QObject.connect(self.basereply, QtCore.SIGNAL(
             "finished()"), self.basefinished)
 
-    def getmk(self):
-        global manager
-        self.mkreq = QNetworkRequest(QUrl(self.mkurl))
-        self.mkreply = manager.get(self.mkreq)
-        QtCore.QObject.connect(self.mkreply, QtCore.SIGNAL(
-            "finished()"), self.mkfinished)
-
     def start(self, interval=0):
         if interval > 0:
             self.interval = interval
         self.getbase()
-        # self.getmk()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.rtick)
         self.lastget = time.time() - self.interval + random.uniform(3, 10)
