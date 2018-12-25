@@ -1,8 +1,6 @@
 # PiClock
 A Fancy Clock built around a monitor and a Raspberry Pi
 
-## NOTE: Currently may be buggy.  Just switched from WU to DarkSky and RainView.  Read along at https://github.com/n0bel/PiClock/issues/103
-
 ![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150307_222711.jpg)
 
 This project started out as a way to waste a Saturday afternoon.
@@ -24,5 +22,3 @@ All of the extra hardware (IR Remote, GPIO buttons, Temperature, LEDs) are optio
 https://github.com/n0bel/PiClock/blob/master/Documentation/Install.md
 
 Of course you can jump to the hardware guide anytime https://github.com/n0bel/PiClock/blob/master/Documentation/Hardware.md
-
- 
