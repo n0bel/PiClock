@@ -1,51 +1,58 @@
 # Install Instructions for PiClock
-## For Raspbian Stretch
+## For Raspbian Jessie
 
-PiClock and this install guide are based on Raspian Stretch downloaded from
-https://www.raspberrypi.org/downloads/raspbian/ I suggest using
-"Raspbian Stretch with desktop"  It will work with many raspbian versions,
-but you may have to add more packages, etc.  That exercise is left for the reader.
+PiClock and this install guide are based on Raspian Jessie
+last released on https://downloads.raspberrypi.org/raspbian/images/raspbian-2017-07-05/
+It will work with many raspbian versions, but you may have to add more packages,
+etc.  That exercise is left for the reader.
 
 What follows is a step by step guide.  If you start with a new clean raspbian
 image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
 
-### Download Raspbian Stretch and put it on an SD Card
+### Download Raspbian Jessie and put it on an SD Card
 
-The instructions for doing this are on the following page:
-https://www.raspberrypi.org/documentation/installation/installing-images/README.md
+The image and instructions for doing this are on the following page:
+https://www.raspberrypi.org/downloads/
 
 ### First boot and configure
 A keyboard and mouse are really handy at this point.
 When you first boot your Pi, you'll be presented with the desktop.
-Following this there will be several prompts to set things up, follow
-those prompts and set things as they make sense for you.  Of course
-setting the proper timezone for a clock is key.
-
-Eventually the Pi will reboot, and you'll be back to the desktop.
-We need to configure a few more things.
-
 Navigate to Menu->Preferences->Raspberry Pi Configuration.
 Just change the Items below.
- - System Tab
+ - General Tab
+  - Change User Password -- this will set the password for the use pi,
+     for ssh logins.
   - Hostname: (Maybe set this to PiClock?)
   - Boot: To Desktop
   - Auto Login: Checked
-  - Overscan: (Initally leave as default, but if your monitor has extra
-    black area on the border, or bleeds off the edge, then change this)
+  - Underscan: (Initally leave as default, but if your monitor has extra black area on the border, or bleeds off the edge, then change this)
  - Interfaces
   - 1-Wire Enable (for the inside temperature, DS18B20 if you're using it)
-  - SSH is handy (if you'd like to connect to your clock from another computer)
-  - VNC can be handy  (same reason as ssh)
+ - Internationalization Tab
+   - Set Locale.
+    - Set Language  -- if you set language and country here, the date will automaticly be in your language
+    				-- other settings in Config.py (described later) control the language of the weather data
+    - Set Country
+    - Character Set: UTF-8
+  - Set Timezone.
+    -  You'll want this to be correct, or the clock will be wrong.
+  - Set Keyboard
+    -  Generally not needed, but good to check if you like the default
+  - Set WiFi Country (may not always show up)
 
+Finish and let it reboot.
 
-Click ok, and allow it to reboot.
+I've found that sometimes on reboot, Jessie doesn't go back to desktop mode.
+If this is the case,
+```
+sudo raspi-config
+```
+and change the boot option to Desktop/Auto-login
 
 ### editing config.txt
 
-(Only required if you will be using IR Remote control or DS18B20 temperature
- sensors)
 Log into your Pi, (either on the screen or via ssh)
 
 use nano to edit the boot config file
@@ -82,7 +89,8 @@ sudo reboot
 
 ### Get connected to the internet
 
-Verify you have internet access from the Pi
+Either connect to your wired network, or setup wifi and verify you have
+internet access from the Pi
 
 ```
 ping github.com
@@ -106,13 +114,13 @@ then get qt4 for python
 apt-get install python-qt4
 ```
 you may need to confirm some things, like:
-After this operation, 59.5 MB of additional disk space will be used.
+After this operation, 44.4 MB of additional disk space will be used.
 Do you want to continue [Y/n]? y
 Go ahead, say yes
 
-then get ws281x driver for python (optional for the NeoPixel LED Driver)
+then get libboost for python (optional for the NeoPixel LED Driver)
 ```
-pip install rpi_ws281x
+apt-get install libboost-python1.49.0
 ```
 
 then get unclutter (disables the mouse pointer when there's no activity)
@@ -135,19 +143,28 @@ python setup.py install
 apt-get install lirc
 ```
 
-use nano to edit lirc options file
+use nano to edit lirc hardware file
 ```
-sudo nano /etc/lirc/lirc_options.conf
+sudo nano /etc/lirc/hardware.conf
 ```
-Be sure the uinput line appears as follows
+Be sure the LIRCD_ARGS line appears as follows
 ```
-uinput         = True
+LIRCD_ARGS="--uinput"
 ```
 
-Be sure the driver line appears as follows
+Be sure the DRIVER line appears as follows
 ```
-driver          = default
+DRIVER="default"
+```
 
+Be sure the DEVICE line appears as follows
+```
+DEVICE="/dev/lirc0"
+```
+
+Be sure the MODULES line appears as follows
+```
+MODULES="lirc_rpi"
 ```
 
 ### Get mpg123 (optional to play NOAA weather radio streams)
@@ -167,13 +184,10 @@ reboot
 ### Get the PiClock software
 Log into your Pi, (either on the screen or via ssh) (NOT as root)
 You'll be in the home directory of the user pi (/home/pi) by default,
-and this is where we want to be.  Note that the following command while
-itself not being case sensitive, further operation of PiClock may be
-affected if the upper and lower case of the command is not followed.
+and this is where we want to be.
 ```
 git clone https://github.com/n0bel/PiClock.git
 ```
-(Optional for GPIO keys)
 Once that is done, you'll have a new directory called PiClock
 A few commands are needed if you intend to use gpio buttons
 and the gpio-keys driver to compile it for the latest Raspbian:
@@ -184,12 +198,11 @@ cd ../..
 ```
 
 ### Set up Lirc (IR Remote)
-
 If you're using the recommended IR Key Fob,
 https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain
 you can copy the lircd.conf file included in the distribution as follows:
 ```
-sudo cp IR/lircd.conf /etc/lirc/lircd.conf.d/
+sudo cp IR/lircd.conf /etc/lirc/
 ```
 If you're using something else, you'll need to use irrecord, or load a remote file
 as found on http://lirc.org/
@@ -404,11 +417,6 @@ PyQtPiClock with an alternate config.
 First you need to set up an alternate config.   Config.py is the normal name, so perhaps Config-Night.py
 might be appropriate.  For a dimmer display use Config-Example-Bedside.py as a guide.
 
-First we must make switcher.sh executable (git removes the x flags)
-```
-cd PiClock
-chmod +x switcher.sh
-```
 Now we'll tell our friend cron to run the switcher script (switcher.sh) on day/night cycles.
 Run the cron editor: (should *not* be roor)
 ```
