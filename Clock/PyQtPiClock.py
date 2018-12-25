@@ -999,6 +999,12 @@ except AttributeError:
     Config.Lmoon8 = 'Waning Crecent'
 
 #
+# Check if Mapbox API key is set, and use mapbox if so
+try:
+    if ApiKeys.mbapi[:3].lower() == "pk.":
+        Config.usemapbox = 1
+except AttributeError:
+    pass
 
 
 lastmin = -1

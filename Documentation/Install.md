@@ -234,7 +234,7 @@ sudo reboot
 
 ### Configure the PiClock api keys
 
-The first is to set API keys for DarkSky and Google Maps.
+The first is to set API keys for DarkSky and Mapbox or Google Maps.
 These are both free, unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost api keys.
 
@@ -243,28 +243,41 @@ The PiClock usage is well below the maximums imposed by the no cost api keys.
 DarkSky api keys are created at this link:
 https://darksky.net/dev
 
+#### Map API Key
+
+You have your choice of Mapbox or Google Maps to get your underlying maps from.
+You only need one or the other (mbkey or googleapi)
+
 #### Google Maps API key
 
-A Google Maps api key is _required_.  (Requires credit card which won't be
-charged unless usage is great.)
+A Google Maps api key is required to use Google Maps.
+(Requires credit card which won't be charged unless usage is great.)
 
 An intro to Google static maps api keys, and a link to creating your account and ApiKeys:
 https://developers.google.com/maps/documentation/maps-static/intro
 You'll require a google user and password.  It'll also require a credit card.
-The credit card should not be charged, because my reading of https://cloud.google.com/maps-platform/pricing/sheet/ the $200.00 credit will
+The credit card should not be charged, because my reading of
+https://cloud.google.com/maps-platform/pricing/sheet/ the $200.00 credit will
 apply, and your charges incurred will be for 31 map pulls per month will be
 $0.62 , if you reboot daily.
 You'll be required to create a "project" (maybe PiClock for a project name?)
 You need to then activate the key.
 
 _Protect your API keys._  You'd be surprised how many pastebin's are out
-there with valid API keys, because of people not being careful.   If you post
-your keys somewhere, your usage will skyrocket, and your bill as well.  Google
+there with valid API keys, because of people not being careful.   _If you post
+your keys somewhere, your usage will skyrocket, and your bill as well._  Google
 has the ability to add referer, device and ip requirements on your api key.  It
 can also allow you to limit an api key to specific applications only (static-maps)
 in this case.   Also you might consider disabling all the other APIs on your
 project dashboard.   Under the Billing section of things you can set up budgets
 and alerts.  (Set to like $1.00)
+
+#### Mapbox api keys
+
+Mapbox api keys (access tokens) are created by signing up at this link:
+
+https://www.mapbox.com/signup/
+
 
 
 Now that you have your api keys...
@@ -280,8 +293,11 @@ Put your api keys in the file as indicated
 #change this to your API keys
 # DarkSky API key
 dsapi = 'YOUR DARKSKY API KEY'
-# Google Maps API key
-googleapi = 'YOUR GOOGLE API KEY'
+# Map API keys -- only needs 1 of the following
+# Google Maps API key (if usemapbox is not set in Config)
+googleapi = 'YOUR GOOGLE MAPS API KEY'
+# Mapbox API key (access_token) [if usemapbox is set in Config]
+mbapi = 'YOUR MAPBOX ACCESS TOKEN'
 ```
 
 ### Configure your PiClock
