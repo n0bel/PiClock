@@ -114,6 +114,14 @@ then get ws281x driver for python (optional for the NeoPixel LED Driver)
 ```
 pip install rpi_ws281x
 ```
+Someversions of Raspbian need python-dev to be installed as well, before
+rpi-ws281x can be installed.  If the prevous command fails reporting
+a missing include file, then do this:
+```
+apt-get install python-dev
+```
+Then try the pip command again.
+
 
 then get unclutter (disables the mouse pointer when there's no activity)
 ```
