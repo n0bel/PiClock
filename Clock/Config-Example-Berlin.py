@@ -43,9 +43,7 @@ radar_refresh = 10      # minutes
 weather_refresh = 30    # minutes
 # Wind in degrees instead of cardinal 0 = cardinal, 1 = degrees
 wind_degrees = 0
-# Depreciated: use 'satellite' key in radar section, on a per radar basis
-# if this is used, all radar blocks will get satellite images
-satellite = 0
+
 
 
 # gives all text additional attributes using QT style notation
@@ -105,7 +103,6 @@ Lmoon8 = 'Abnehmender Sichelmond'
 radar1 = {
     'center': primary_location,  # the center of your radar block
     'zoom': 7,  # this is a google maps zoom factor, bigger = smaller area
-    'satellite': 0,    # 1 => show satellite images (colorized IR images)
     'markers': (   # google maps markers can be overlayed
         {
             'location': primary_location,
@@ -119,7 +116,6 @@ radar1 = {
 radar2 = {
     'center': primary_location,
     'zoom': 11,
-    'satellite': 0,
     'markers': (
         {
             'location': primary_location,
@@ -133,7 +129,6 @@ radar2 = {
 radar3 = {
     'center': primary_location,
     'zoom': 7,
-    'satellite': 0,
     'markers': (
         {
             'location': primary_location,
@@ -146,7 +141,6 @@ radar3 = {
 radar4 = {
     'center': primary_location,
     'zoom': 11,
-    'satellite': 0,
     'markers': (
         {
             'location': primary_location,

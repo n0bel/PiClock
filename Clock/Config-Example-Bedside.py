@@ -49,10 +49,6 @@ weather_refresh = 30
 # Wind in degrees instead of cardinal 0 = cardinal, 1 = degrees
 wind_degrees = 0
 
-# Depreciated: use 'satellite' key in radar section, on a per radar basis
-# if this is used, all radar blocks will get satellite images
-satellite = 0
-
 # Font attribute applied globally
 fontattr = 'font-weight: bold; '
 
@@ -100,7 +96,7 @@ LSnow = " Snow: "
 radar1 = {
     'center': primary_location,  # the center of your radar block
     'zoom': 7,  # this is a google maps zoom factor, bigger = smaller area
-    'satellite': 0,  # 1 => show satellite images instead of radar(colorized IR)
+    'style': 'mapbox/cj5l80zrp29942rmtg0zctjto',  # Mapbox calls this Decimal
     'markers': (   # google maps markers can be overlayed
         {
             'location': primary_location,
@@ -114,7 +110,7 @@ radar1 = {
 radar2 = {
     'center': primary_location,
     'zoom': 11,
-    'satellite': 0,
+    'style': 'mapbox/cj5l80zrp29942rmtg0zctjto',  # Mapbox calls this Decimal
     'markers': (
         {
             'location': primary_location,
@@ -128,7 +124,7 @@ radar2 = {
 radar3 = {
     'center': primary_location,
     'zoom': 7,
-    'satellite': 0,
+    'style': 'mapbox/cj5l80zrp29942rmtg0zctjto',  # Mapbox calls this Decimal
     'markers': (
         {
             'location': primary_location,
@@ -141,7 +137,7 @@ radar3 = {
 radar4 = {
     'center': primary_location,
     'zoom': 11,
-    'satellite': 0,
+    'style': 'mapbox/cj5l80zrp29942rmtg0zctjto',  # Mapbox calls this Decimal
     'markers': (
         {
             'location': primary_location,

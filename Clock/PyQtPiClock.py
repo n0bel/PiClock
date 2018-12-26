@@ -455,16 +455,10 @@ class Radar(QtGui.QLabel):
         global xscale, yscale
         self.myname = myname
         self.rect = rect
-        self.satellite = Config.satellite
         self.anim = 5
         self.zoom = radar["zoom"]
         self.point = radar["center"]
         self.radar = radar
-        try:
-            if radar["satellite"]:
-                self.satellite = 1
-        except KeyError:
-            pass
         self.baseurl = self.mapurl(radar, rect)
         print "map base url: " + self.baseurl
         QtGui.QLabel.__init__(self, parent)
@@ -655,8 +649,11 @@ class Radar(QtGui.QLabel):
         #  note we're using google maps zoom factor.
         #  Mapbox equivilant zoom is one less
         #  They seem to be using 512x512 tiles instead of 256x256
-        return 'https://api.mapbox.com/styles/v1/mapbox/' + \
-               'satellite-streets-v10' + \
+        style = 'mapbox/satellite-streets-v10'
+        if 'style' in radar:
+            style = radar['style']
+        return 'https://api.mapbox.com/styles/v1/' + \
+               style + \
                '/static/' + \
                str(radar['center'].lng) + ',' + \
                str(radar['center'].lat) + ',' + \
@@ -692,18 +689,7 @@ class Radar(QtGui.QLabel):
             self.basepixmap = self.basepixmap.scaled(self.rect.size(),
                                                      Qt.KeepAspectRatio,
                                                      Qt.SmoothTransformation)
-        if self.satellite:
-            p = QPixmap(self.basepixmap.size())
-            p.fill(Qt.transparent)
-            painter = QPainter()
-            painter.begin(p)
-            painter.setOpacity(0.6)
-            painter.drawPixmap(0, 0, self.basepixmap)
-            painter.end()
-            self.basepixmap = p
-            self.wwx.setPixmap(self.basepixmap)
-        else:
-            self.setPixmap(self.basepixmap)
+        self.setPixmap(self.basepixmap)
 
         # make marker pixmap
         self.mkpixmap = QPixmap(self.basepixmap.size())
@@ -909,11 +895,6 @@ try:
     Config.wind_degrees
 except AttributeError:
     Config.wind_degrees = 0
-
-try:
-    Config.satellite
-except AttributeError:
-    Config.satellite = 0
 
 try:
     Config.digital
