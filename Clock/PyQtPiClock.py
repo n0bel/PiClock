@@ -281,15 +281,20 @@ def wxfinished():
 # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
 # Config.LToday + f['precip_today_in'] + 'in')
 
-    bottom.setText(Config.LSunRise +
-                   "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
+    bottomText = ""
+    if "sunriseTime" in wxdata["daily"]["data"][0]:
+        bottomText += (Config.LSunRise +
+                       "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
                         wxdata["daily"]["data"][0]["sunriseTime"])) +
-                   Config.LSet +
-                   "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-                        wxdata["daily"]["data"][0]["sunsetTime"])) +
-                   Config.LMoonPhase +
-                   phase(wxdata["daily"]["data"][0]["moonPhase"])
-                   )
+                       Config.LSet +
+                       "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
+                        wxdata["daily"]["data"][0]["sunsetTime"])))
+
+    if "moonPhase" in wxdata["daily"]["data"][0]:
+        bottomText += (Config.LMoonPhase +
+                       phase(wxdata["daily"]["data"][0]["moonPhase"]))
+
+    bottom.setText(bottomText)
 
     for i in range(0, 3):
         f = wxdata['hourly']['data'][i * 3 + 2]
