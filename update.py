@@ -49,3 +49,10 @@ if (os.path.isfile(apikeysFileName)):
         apikeys.close()
     else:
         print "No changes made to " + apikeysFileName
+
+    try:
+        from rpi_ws281x import *    # NOQA
+    except:
+        print "NeoAmbi.py now uses rpi-ws281x/rpi-ws281x-python"
+        print "Please install it as follows:"
+        print "sudo pip install rpi_ws281x"
