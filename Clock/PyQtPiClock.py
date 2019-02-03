@@ -468,7 +468,7 @@ class SS(QtGui.QLabel):
 
     def start(self, interval):
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.switchImage)
+        self.timer.timeout.connect(self.runSS) #####
         self.timer.start(1000 * interval + random.uniform(1, 10))
 
     def stop(self):
@@ -477,11 +477,15 @@ class SS(QtGui.QLabel):
             self.timer = None
         except Exception:
             pass
+            
+    def runSS(self): ####
+        self.getImageFiles(Config.slides)
+        self.switchImage()
 
     def switchImage(self):
         if self.imgList:
             if not self.pause:
-                if self.count == len(self.imgList): self.count = 0
+                if self.count >= len(self.imgList): self.count = 0
                 self.showImage(self.imgList[self.count])
                 self.count += 1
                 # if animFlag: count += 1
@@ -496,6 +500,7 @@ class SS(QtGui.QLabel):
                 QtCore.Qt.SmoothTransformation))
 
     def getImageFiles(self, path):
+        self.imgList = [] ####
         try:
             dirContent = os.listdir(path)
         except OSError:
@@ -901,6 +906,8 @@ class myMain(QtGui.QWidget):
                 nextframe(-1)
             if event.key() == Qt.Key_Right:
                 nextframe(1)
+            if event.key() == Qt.Key_F8:
+                objImage1.playPause()
             if event.key() == Qt.Key_F9:
                 if foreGround.isVisible():  foreGround.hide()
                 else:   foreGround.show()
