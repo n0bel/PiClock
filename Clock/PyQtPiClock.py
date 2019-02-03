@@ -447,7 +447,70 @@ def qtstart():
     temptimer = QtCore.QTimer()
     temptimer.timeout.connect(gettemp)
     temptimer.start(1000 * 10 * 60 + random.uniform(1000, 10000))
+    
+    if Config.useSlideShow:
+        objImage1.start(Config.slideTime)
 
+class SS(QtGui.QLabel):
+    def __init__(self, parent, rect, myname):
+        self.myname = myname
+        self.rect = rect
+        QtGui.QLabel.__init__(self, parent)
+        self.pause = False
+        self.count = 0
+        self.imgList = []
+        self.getImageFiles(Config.slides)
+
+        self.setObjectName("slideShow")
+        self.setGeometry(rect)
+        self.setStyleSheet("#slideShow { background-color: transparent; }")
+        self.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
+
+    def start(self, interval):
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.switchImage)
+        self.timer.start(1000 * interval + random.uniform(1, 10))
+
+    def stop(self):
+        try:
+            self.timer.stop()
+            self.timer = None
+        except Exception:
+            pass
+
+    def switchImage(self):
+        if self.imgList:
+            if not self.pause:
+                if self.count == len(self.imgList): self.count = 0
+                self.showImage(self.imgList[self.count])
+                self.count += 1
+                # if animFlag: count += 1
+                # else: self._count -= 1
+
+    def showImage(self, image):
+        image = QtGui.QImage(image)
+        bg = QtGui.QPixmap.fromImage(image)
+        self.setPixmap(bg.scaled(
+                self.size(),
+                QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation))
+
+    def getImageFiles(self, path):
+        try:
+            dirContent = os.listdir(path)
+        except OSError:
+            print("path '%s' doesn't exists." % path)
+
+        for each in dirContent:
+            fullFile = os.path.join(path, each)
+            if os.path.isfile(fullFile) and (fullFile.lower().endswith('png') or fullFile.lower().endswith('jpg')):
+                self.imgList.append(fullFile)
+
+    def playPause(self):
+        if not self.pause:
+            self.pause = True
+        else:
+            self.pause = False
 
 class Radar(QtGui.QLabel):
 
@@ -785,6 +848,8 @@ def myquit(a=0, b=0):
     ctimer.stop()
     wxtimer.stop()
     temptimer.stop()
+    if Config.UseSlideShow:
+        objImage1.stop()
 
     QtCore.QTimer.singleShot(30, realquit)
 
@@ -992,6 +1057,10 @@ frame1.setGeometry(0, 0, width, height)
 frame1.setStyleSheet("#frame1 { background-color: black; border-image: url(" +
                      Config.background + ") 0 0 0 0 stretch stretch;}")
 frames.append(frame1)
+
+if Config.useSlideShow:
+    imgRect = QtCore.QRect(0, 0, width, height)
+    objImage1 = SS(frame1, imgRect, "image1")
 
 frame2 = QtGui.QFrame(w)
 frame2.setObjectName("frame2")
