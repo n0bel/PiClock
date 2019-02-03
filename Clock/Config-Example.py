@@ -10,7 +10,7 @@ primary_coordinates = 44.9764016, -93.2486732  # Change to your Lat/Lon
 location = LatLng(primary_coordinates[0], primary_coordinates[1])
 primary_location = LatLng(primary_coordinates[0], primary_coordinates[1])
 noaastream = 'http://www.urberg.net:8000/tim273/edina'
-background = 'images/clockbackground-kevin.png'
+background = 'images/clockbackground-kevin.png' 
 squares1 = 'images/squares1-kevin.png'
 squares2 = 'images/squares2-kevin.png'
 icons = 'icons-lightblue'
@@ -20,6 +20,10 @@ hourhand = 'images/hourhand.png'
 minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
+# SlideShow
+useSlideShow = True
+slideTime = 5       # in seconds
+slides = 'images/slideshow'
 
 digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
 
