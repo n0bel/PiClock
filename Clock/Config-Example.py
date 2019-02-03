@@ -24,6 +24,7 @@ sechand = 'images/sechand.png'
 useSlideShow = True
 slideTime = 5       # in seconds
 slides = 'images/slideshow'
+slideBGColor = "#000"
 
 digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
 
