@@ -463,7 +463,7 @@ class SS(QtGui.QLabel):
 
         self.setObjectName("slideShow")
         self.setGeometry(rect)
-        self.setStyleSheet("#slideShow { background-color: transparent; }")
+        self.setStyleSheet("#slideShow { background-color: " + Config.slideBGColor + "; }")
         self.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
 
     def start(self, interval):
@@ -848,7 +848,7 @@ def myquit(a=0, b=0):
     ctimer.stop()
     wxtimer.stop()
     temptimer.stop()
-    if Config.UseSlideShow:
+    if Config.useSlideShow:
         objImage1.stop()
 
     QtCore.QTimer.singleShot(30, realquit)
