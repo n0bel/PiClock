@@ -482,7 +482,7 @@ Backup your changes first!
 
 Also, if you're using gpio-keys, you may need to remake it:
 ```
-cd PiClock/Buttons
+cd PiClock/Button
 rm gpio-keys
 make gpio-keys
 ```
