@@ -9,6 +9,8 @@ import time
 import json
 import locale
 import random
+import urllib
+import re
 
 from PyQt4 import QtGui, QtCore, QtNetwork
 from PyQt4.QtGui import QPixmap, QBrush, QColor
@@ -447,29 +449,34 @@ def qtstart():
     temptimer = QtCore.QTimer()
     temptimer.timeout.connect(gettemp)
     temptimer.start(1000 * 10 * 60 + random.uniform(1000, 10000))
-    
-    if Config.useSlideShow:
-        objImage1.start(Config.slideTime)
+
+    if Config.use_slideshow:
+        objimage1.start(Config.slide_time)
+
 
 class SS(QtGui.QLabel):
     def __init__(self, parent, rect, myname):
         self.myname = myname
         self.rect = rect
         QtGui.QLabel.__init__(self, parent)
+
         self.pause = False
         self.count = 0
-        self.imgList = []
-        self.getImageFiles(Config.slides)
+        self.img_list = []
+        self.img_inc = 1
+
+        self.get_images()
 
         self.setObjectName("slideShow")
         self.setGeometry(rect)
-        self.setStyleSheet("#slideShow { background-color: " + Config.slideBGColor + "; }")
+        self.setStyleSheet("#slideShow { background-color: " + Config.slide_bg_color + "; }")
         self.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
 
     def start(self, interval):
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.runSS) #####
+        self.timer.timeout.connect(self.run_ss)
         self.timer.start(1000 * interval + random.uniform(1, 10))
+        self.run_ss()
 
     def stop(self):
         try:
@@ -477,30 +484,45 @@ class SS(QtGui.QLabel):
             self.timer = None
         except Exception:
             pass
-            
-    def runSS(self): ####
-        self.getImageFiles(Config.slides)
-        self.switchImage()
 
-    def switchImage(self):
-        if self.imgList:
+    def run_ss(self):
+        self.get_images()
+        self.switch_image()
+
+    def switch_image(self):
+        if self.img_list:
             if not self.pause:
-                if self.count >= len(self.imgList): self.count = 0
-                self.showImage(self.imgList[self.count])
-                self.count += 1
-                # if animFlag: count += 1
-                # else: self._count -= 1
+                self.count += self.img_inc
+                if self.count >= len(self.img_list):
+                    self.count = 0
+                self.showImage(self.img_list[self.count])
+                self.img_inc = 1
 
     def showImage(self, image):
         image = QtGui.QImage(image)
+
         bg = QtGui.QPixmap.fromImage(image)
         self.setPixmap(bg.scaled(
                 self.size(),
                 QtCore.Qt.KeepAspectRatio,
                 QtCore.Qt.SmoothTransformation))
 
-    def getImageFiles(self, path):
-        self.imgList = [] ####
+    def get_images(self):
+        self.get_local(Config.slides)
+
+    def play_pause(self):
+        if not self.pause:
+            self.pause = True
+        else:
+            self.pause = False
+
+    def prev_next(self, direction):
+        self.img_inc = direction
+        self.timer.cancel()
+        self.switch_image()
+        self.timer.start()
+
+    def get_local(self, path):
         try:
             dirContent = os.listdir(path)
         except OSError:
@@ -509,13 +531,8 @@ class SS(QtGui.QLabel):
         for each in dirContent:
             fullFile = os.path.join(path, each)
             if os.path.isfile(fullFile) and (fullFile.lower().endswith('png') or fullFile.lower().endswith('jpg')):
-                self.imgList.append(fullFile)
+                self.img_list.append(fullFile)
 
-    def playPause(self):
-        if not self.pause:
-            self.pause = True
-        else:
-            self.pause = False
 
 class Radar(QtGui.QLabel):
 
@@ -853,8 +870,8 @@ def myquit(a=0, b=0):
     ctimer.stop()
     wxtimer.stop()
     temptimer.stop()
-    if Config.useSlideShow:
-        objImage1.stop()
+    if Config.use_slideshow:
+        objimage1.stop()
 
     QtCore.QTimer.singleShot(30, realquit)
 
@@ -906,11 +923,6 @@ class myMain(QtGui.QWidget):
                 nextframe(-1)
             if event.key() == Qt.Key_Right:
                 nextframe(1)
-            if event.key() == Qt.Key_F8:
-                objImage1.playPause()
-            if event.key() == Qt.Key_F9:
-                if foreGround.isVisible():  foreGround.hide()
-                else:   foreGround.show()
 
     def mousePressEvent(self, event):
         if type(event) == QtGui.QMouseEvent:
@@ -1068,9 +1080,9 @@ frame1.setStyleSheet("#frame1 { background-color: black; border-image: url(" +
                      Config.background + ") 0 0 0 0 stretch stretch;}")
 frames.append(frame1)
 
-if Config.useSlideShow:
+if Config.use_slideshow:
     imgRect = QtCore.QRect(0, 0, width, height)
-    objImage1 = SS(frame1, imgRect, "image1")
+    objimage1 = SS(frame1, imgRect, "image1")
 
 frame2 = QtGui.QFrame(w)
 frame2.setObjectName("frame2")
