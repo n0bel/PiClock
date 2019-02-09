@@ -923,13 +923,13 @@ class myMain(QtGui.QWidget):
                 nextframe(-1)
             if event.key() == Qt.Key_Right:
                 nextframe(1)
-            if event.key() == Qt.Key_F6: # Previous Image
+            if event.key() == Qt.Key_F6:  # Previous Image
                 objimage1.prev_next(-1)
-            if event.key() == Qt.Key_F7: # Next Image
+            if event.key() == Qt.Key_F7:  # Next Image
                 objimage1.prev_next(1)
-            if event.key() == Qt.Key_F8: # Play/Pause
+            if event.key() == Qt.Key_F8:  # Play/Pause
                 objimage1.play_pause()
-            if event.key() == Qt.Key_F9: # Foreground Toggle
+            if event.key() == Qt.Key_F9:  # Foreground Toggle
                 if foreGround.isVisible():
                     foreGround.hide()
                 else:
