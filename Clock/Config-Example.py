@@ -21,12 +21,12 @@ minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
 # SlideShow
-useSlideShow = True
-slideTime = 5       # in seconds
-slides = 'images/slideshow'
-slideBGColor = "#000"
+use_slideshow = True        # True to enable, False to disable
+slide_time = 5              # in seconds, 3600 per hour
+slides = 'images/slideshow' #the path to your local images
+slide_bg_color = "#000"     #https://htmlcolorcodes.com/ default is black #000
 
-digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
+digital = 0                 # 1 = Digtal Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
