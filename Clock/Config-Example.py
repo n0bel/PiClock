@@ -21,7 +21,7 @@ minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
 # SlideShow
-use_slideshow = True        # True to enable, False to disable
+use_slideshow = 1           # 1 to enable, 0 to disable
 slide_time = 5              # in seconds, 3600 per hour
 slides = 'images/slideshow' #the path to your local images
 slide_bg_color = "#000"     #https://htmlcolorcodes.com/ default is black #000
