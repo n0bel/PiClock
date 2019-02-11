@@ -495,10 +495,10 @@ class SS(QtGui.QLabel):
                 self.count += self.img_inc
                 if self.count >= len(self.img_list):
                     self.count = 0
-                self.showImage(self.img_list[self.count])
+                self.show_image(self.img_list[self.count])
                 self.img_inc = 1
 
-    def showImage(self, image):
+    def show_image(self, image):
         image = QtGui.QImage(image)
 
         bg = QtGui.QPixmap.fromImage(image)
@@ -518,7 +518,7 @@ class SS(QtGui.QLabel):
 
     def prev_next(self, direction):
         self.img_inc = direction
-        self.timer.cancel()
+        self.timer.stop()
         self.switch_image()
         self.timer.start()
 
