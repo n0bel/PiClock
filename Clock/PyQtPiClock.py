@@ -9,8 +9,8 @@ import time
 import json
 import locale
 import random
-import urllib
-import re
+# import urllib
+# import re
 
 from PyQt4 import QtGui, QtCore, QtNetwork
 from PyQt4.QtGui import QPixmap, QBrush, QColor
