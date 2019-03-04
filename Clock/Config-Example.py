@@ -92,7 +92,8 @@ Lmoon8 = 'Waning Crecent'
 # RADAR
 # By default, primary_location entered will be the
 #  center and marker of all radar images.
-# To update centers/markers, change radar sections below the desired lat/lon as:
+# To update centers/markers, change radar sections
+# below the desired lat/lon as:
 # -FROM-
 # primary_location,
 # -TO-
@@ -101,6 +102,10 @@ radar1 = {
     'center': primary_location,  # the center of your radar block
     'zoom': 7,  # this is a maps zoom factor, bigger = smaller area
     'style': 'mapbox/satellite-streets-v10',  # optional style (mapbox only)
+    'color': 6,  # rainviewer radar color style:
+                 # https://www.rainviewer.com/api.html#colorSchemes
+    'smooth': 1,  # rainviewer radar smoothing
+    'snow': 1,  # rainviewer radar show snow as different color
     'markers': (   # google maps markers can be overlayed
         {
             'location': primary_location,
