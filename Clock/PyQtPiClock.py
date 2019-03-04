@@ -508,7 +508,20 @@ class Radar(QtGui.QLabel):
                            int(self.cornerTiles["NE"]["X"])+1):
                 tile = {"X": x, "Y": y}
                 self.tiles.append(tile)
-                tail = "/256/%d/%d/%d.png?color=3" % (self.zoom, x, y)
+                if 'color' not in radar:
+                    radar['color'] = 6
+                if 'smooth' not in radar:
+                    radar['smooth'] = 1
+                if 'snow' not in radar:
+                    radar['snow'] = 1
+                tail = "/256/%d/%d/%d/%d/%d_%d.png" % (self.zoom, x, y,
+                                                       radar['color'],
+                                                       radar['smooth'],
+                                                       radar['snow'])
+                if 'oldcolor' in radar:
+                    tail = "/256/%d/%d/%d.png?color=%d" % (self.zoom, x, y,
+                                                           radar['color']
+                                                           )
                 self.tiletails.append(tail)
         for x in range(int(self.cornerTiles["NW"]["X"]),
                        int(self.cornerTiles["NE"]["X"])+1):
@@ -617,7 +630,7 @@ class Radar(QtGui.QLabel):
         ii = None
         painter2 = QPainter()
         painter2.begin(ii2)
-        timestamp = "{0:%H:%M} RainView.com".format(
+        timestamp = "{0:%H:%M} rainvewer.com".format(
                     datetime.datetime.fromtimestamp(self.getTime))
         painter2.setPen(QColor(63, 63, 63, 255))
         painter2.setFont(QFont("Arial", 8))
