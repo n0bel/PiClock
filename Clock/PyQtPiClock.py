@@ -263,7 +263,7 @@ def wxfinished():
                      Config.Lgusting +
                      '%.1f' % (speedm(f['windGust'])) + 'kmh')
         wind2.setText(Config.LFeelslike +
-                     '%.1f' % (tempm(f['apparentTemperature'])) + u'°C')
+                      '%.1f' % (tempm(f['apparentTemperature'])) + u'°C')
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
             int(f['time']))))
 # Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
@@ -276,13 +276,13 @@ def wxfinished():
         wd = bearing(f['windBearing'])
         if Config.wind_degrees:
             wd = str(f['windBearing']) + u'°'
-        wind.setText(Config.LWind + 
+        wind.setText(Config.LWind +
                      wd + ' ' +
                      '%.1f' % (f['windSpeed']) + 'mph' +
                      Config.Lgusting +
                      '%.1f' % (f['windGust']) + 'mph')
-        wind2.setText(Config.LFeelslike + 
-                     '%.1f' % (f['apparentTemperature']) + u'°F')
+        wind2.setText(Config.LFeelslike +
+                      '%.1f' % (f['apparentTemperature']) + u'°F')
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
             int(f['time']))))
 # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
@@ -752,7 +752,8 @@ class Radar(QtGui.QLabel):
                             r = r * cr
                             g = g * cg
                             b = b * cb
-                            mk2.setPixel(x, y, QColor.fromRgbF(r, g, b, a).rgba())
+                            mk2.setPixel(x, y, QColor.fromRgbF(r, g, b, a)
+                                         .rgba())
                 mk2 = mk2.scaledToHeight(mkh, 1)
                 painter.drawImage(pt.x-mkh/2, pt.y-mkh/2, mk2)
 
@@ -965,6 +966,11 @@ except AttributeError:
     Config.Lmoon6 = 'Waning Gibbous'
     Config.Lmoon7 = 'Third Quarter'
     Config.Lmoon8 = 'Waning Crecent'
+
+try:
+    Config.digitalformat2
+except AttributeError:
+    Config.digitalformat2 = "{0:%H:%M:%S}"
 
 #
 # Check if Mapbox API key is set, and use mapbox if so
