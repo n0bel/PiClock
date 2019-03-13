@@ -720,7 +720,7 @@ class Radar(QtGui.QLabel):
         painter.fillRect(0, 0, self.mkpixmap.width(),
                          self.mkpixmap.height(), br)
         for marker in self.radar['markers']:
-            if marker['visible'] == 1:
+            if 'visible' not in marker or marker['visible'] == 1:
                 pt = getPoint(marker["location"], self.point, self.zoom,
                               self.rect.width(), self.rect.height())
                 mk2 = QImage()
