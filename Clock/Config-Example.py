@@ -10,7 +10,7 @@ primary_coordinates = 44.9764016, -93.2486732  # Change to your Lat/Lon
 location = LatLng(primary_coordinates[0], primary_coordinates[1])
 primary_location = LatLng(primary_coordinates[0], primary_coordinates[1])
 noaastream = 'http://www.urberg.net:8000/tim273/edina'
-background = 'images/clockbackground-kevin.png' 
+background = 'images/clockbackground-kevin.png'
 squares1 = 'images/squares1-kevin.png'
 squares2 = 'images/squares2-kevin.png'
 icons = 'icons-lightblue'
@@ -21,17 +21,18 @@ minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
 # SlideShow
-use_slideshow = 1           # 1 to enable, 0 to disable
-slide_time = 5              # in seconds, 3600 per hour
-slides = 'images/slideshow' #the path to your local images
-slide_bg_color = "#000"     #https://htmlcolorcodes.com/ default is black #000
+useslideshow = 0             # 1 to enable, 0 to disable
+slide_time = 305              # in seconds, 3600 per hour
+slides = 'images/slideshow'   # the path to your local images
+slide_bg_color = "#000"       # https://htmlcolorcodes.com/  black #000
 
 digital = 0                 # 1 = Digtal Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
-digitalformat = "{0:%I:%M\n%S %p}"  # The format of the digital time on primary screen
+digitalformat = "{0:%I:%M\n%S %p}"  # Format of the digital clock face
 digitalsize = 200
+
 # The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg
 # ( specifications of the time string are documented here:
@@ -42,7 +43,7 @@ digitalsize = 200
 #  The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
 
-digitalformat2 = "{0:%H:%M:%S}"  # The format of the digital time on secondary screen
+digitalformat2 = "{0:%H:%M:%S}"  # Format of the digital time on second screen
 
 usemapbox = 0   # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
 metric = 0  # 0 = English, 1 = Metric
@@ -115,7 +116,7 @@ radar1 = {
     'snow': 1,  # rainviewer radar show snow as different color
     'markers': (   # google maps markers can be overlayed
         {
-            'visible': 1, # 0 = hide marker, 1 = show marker
+            'visible': 1,  # 0 = hide marker, 1 = show marker
             'location': primary_location,
             'color': 'red',
             'size': 'small',
@@ -129,7 +130,7 @@ radar2 = {
     'center': primary_location,
     'zoom': 11,
     'style': 'mapbox/satellite-streets-v10',
-    'color': 6, 
+    'color': 6,
     'smooth': 1,
     'snow': 1,
     'markers': (
@@ -148,7 +149,7 @@ radar3 = {
     'center': primary_location,
     'zoom': 7,
     'style': 'mapbox/satellite-streets-v10',
-    'color': 6, 
+    'color': 6,
     'smooth': 1,
     'snow': 1,
     'markers': (
@@ -166,7 +167,7 @@ radar4 = {
     'center': primary_location,
     'zoom': 11,
     'style': 'mapbox/satellite-streets-v10',
-    'color': 6, 
+    'color': 6,
     'smooth': 1,
     'snow': 1,
     'markers': (

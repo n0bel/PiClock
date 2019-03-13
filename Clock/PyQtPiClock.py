@@ -457,7 +457,7 @@ def qtstart():
     temptimer.timeout.connect(gettemp)
     temptimer.start(1000 * 10 * 60 + random.uniform(1000, 10000))
 
-    if Config.use_slideshow:
+    if Config.useslideshow:
         objimage1.start(Config.slide_time)
 
 
@@ -476,7 +476,8 @@ class SS(QtGui.QLabel):
 
         self.setObjectName("slideShow")
         self.setGeometry(rect)
-        self.setStyleSheet("#slideShow { background-color: " + Config.slide_bg_color + "; }")
+        self.setStyleSheet("#slideShow { background-color: " +
+                           Config.slide_bg_color + "; }")
         self.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
 
     def start(self, interval):
@@ -537,8 +538,9 @@ class SS(QtGui.QLabel):
 
         for each in dirContent:
             fullFile = os.path.join(path, each)
-            if os.path.isfile(fullFile) and (fullFile.lower().endswith('png') or fullFile.lower().endswith('jpg')):
-                self.img_list.append(fullFile)
+            if os.path.isfile(fullFile) and (fullFile.lower().endswith('png')
+               or fullFile.lower().endswith('jpg')):
+                    self.img_list.append(fullFile)
 
 
 class Radar(QtGui.QLabel):
@@ -892,7 +894,7 @@ def myquit(a=0, b=0):
     ctimer.stop()
     wxtimer.stop()
     temptimer.stop()
-    if Config.use_slideshow:
+    if Config.useslideshow:
         objimage1.stop()
 
     QtCore.QTimer.singleShot(30, realquit)
@@ -1070,6 +1072,12 @@ try:
 except AttributeError:
     Config.digitalformat2 = "{0:%H:%M:%S}"
 
+try:
+    Config.useslideshow
+except AttributeError:
+    Config.useslideshow = 0
+
+
 #
 # Check if Mapbox API key is set, and use mapbox if so
 try:
@@ -1118,7 +1126,7 @@ frame1.setStyleSheet("#frame1 { background-color: black; border-image: url(" +
                      Config.background + ") 0 0 0 0 stretch stretch;}")
 frames.append(frame1)
 
-if Config.use_slideshow:
+if Config.useslideshow:
     imgRect = QtCore.QRect(0, 0, width, height)
     objimage1 = SS(frame1, imgRect, "image1")
 
