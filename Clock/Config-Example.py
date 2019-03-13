@@ -10,7 +10,7 @@ primary_coordinates = 44.9764016, -93.2486732  # Change to your Lat/Lon
 location = LatLng(primary_coordinates[0], primary_coordinates[1])
 primary_location = LatLng(primary_coordinates[0], primary_coordinates[1])
 noaastream = 'http://www.urberg.net:8000/tim273/edina'
-background = 'images/clockbackground-kevin.png'
+background = 'images/clockbackground-kevin.png' 
 squares1 = 'images/squares1-kevin.png'
 squares2 = 'images/squares2-kevin.png'
 icons = 'icons-lightblue'
@@ -20,8 +20,13 @@ hourhand = 'images/hourhand.png'
 minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
+# SlideShow
+use_slideshow = 1           # 1 to enable, 0 to disable
+slide_time = 5              # in seconds, 3600 per hour
+slides = 'images/slideshow' #the path to your local images
+slide_bg_color = "#000"     #https://htmlcolorcodes.com/ default is black #000
 
-digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
+digital = 0                 # 1 = Digtal Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
