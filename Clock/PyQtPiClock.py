@@ -102,7 +102,10 @@ def tick():
                 ts.height()
             )
 
-    dy = "{0:%I:%M %p}".format(now)
+    dy = Config.digitalformat2.format(now)
+    if Config.digitalformat2.find("%I") > -1:
+        if dy[0] == '0':
+            dy = dy[1:99]
     if dy != pdy:
         pdy = dy
         datey2.setText(dy)
@@ -120,8 +123,9 @@ def tick():
         if Config.DateLocale != "":
             sup = ""
         ds = "{0:%A %B} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
+        ds2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
         datex.setText(ds)
-        datex2.setText(ds)
+        datex2.setText(ds2)
 
 
 def tempfinished():
@@ -248,18 +252,18 @@ def wxfinished():
     if Config.metric:
         temper.setText('%.1f' % (tempm(f['temperature'])) + u'°C')
         temper2.setText('%.1f' % (tempm(f['temperature'])) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % f['pressure'])
+        press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mb')
         humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']*100.0))
         wd = bearing(f['windBearing'])
         if Config.wind_degrees:
             wd = str(f['windBearing']) + u'°'
         wind.setText(Config.LWind +
                      wd + ' ' +
-                     '%.1f' % (speedm(f['windSpeed'])) +
+                     '%.1f' % (speedm(f['windSpeed'])) + 'kmh' +
                      Config.Lgusting +
-                     '%.1f' % (speedm(f['windGust'])))
+                     '%.1f' % (speedm(f['windGust'])) + 'kmh')
         wind2.setText(Config.LFeelslike +
-                      '%.1f' % (tempm(f['apparentTemperature'])))
+                     '%.1f' % (tempm(f['apparentTemperature'])) + u'°C')
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
             int(f['time']))))
 # Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
@@ -267,15 +271,18 @@ def wxfinished():
     else:
         temper.setText('%.1f' % (f['temperature']) + u'°F')
         temper2.setText('%.1f' % (f['temperature']) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % pressi(f['pressure']))
+        press.setText(Config.LPressure + '%.2f' % pressi(f['pressure']) + 'in')
         humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']*100.0))
         wd = bearing(f['windBearing'])
         if Config.wind_degrees:
-            wd = str(f['wind_degrees']) + u'°'
-        wind.setText(Config.LWind + wd + ' ' +
-                     '%.1f' % (f['windSpeed']) + Config.Lgusting +
-                     '%.1f' % (f['windGust']))
-        wind2.setText(Config.LFeelslike + '%.1f' % (f['apparentTemperature']))
+            wd = str(f['windBearing']) + u'°'
+        wind.setText(Config.LWind + 
+                     wd + ' ' +
+                     '%.1f' % (f['windSpeed']) + 'mph' +
+                     Config.Lgusting +
+                     '%.1f' % (f['windGust']) + 'mph')
+        wind2.setText(Config.LFeelslike + 
+                     '%.1f' % (f['apparentTemperature']) + u'°F')
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
             int(f['time']))))
 # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
@@ -713,40 +720,41 @@ class Radar(QtGui.QLabel):
         painter.fillRect(0, 0, self.mkpixmap.width(),
                          self.mkpixmap.height(), br)
         for marker in self.radar['markers']:
-            pt = getPoint(marker["location"], self.point, self.zoom,
-                          self.rect.width(), self.rect.height())
-            mk2 = QImage()
-            mkfile = 'teardrop'
-            if 'image' in marker:
-                mkfile = marker['image']
-            if os.path.dirname(mkfile) == '':
-                mkfile = os.path.join('markers', mkfile)
-            if os.path.splitext(mkfile)[1] == '':
-                mkfile += '.png'
-            mk2.load(mkfile)
-            if mk2.format != QImage.Format_ARGB32:
-                mk2 = mk2.convertToFormat(QImage.Format_ARGB32)
-            mkh = 80  # self.rect.height() / 5
-            if 'size' in marker:
-                if marker['size'] == 'small':
-                    mkh = 64
-                if marker['size'] == 'mid':
-                    mkh = 70
-                if marker['size'] == 'tiny':
-                    mkh = 40
-            if 'color' in marker:
-                c = QColor(marker['color'])
-                (cr, cg, cb, ca) = c.getRgbF()
-                for x in range(0, mk2.width()):
-                    for y in range(0, mk2.height()):
-                        (r, g, b, a) = QColor.fromRgba(
-                                       mk2.pixel(x, y)).getRgbF()
-                        r = r * cr
-                        g = g * cg
-                        b = b * cb
-                        mk2.setPixel(x, y, QColor.fromRgbF(r, g, b, a).rgba())
-            mk2 = mk2.scaledToHeight(mkh, 1)
-            painter.drawImage(pt.x-mkh/2, pt.y-mkh/2, mk2)
+            if marker['visible'] == 1:
+                pt = getPoint(marker["location"], self.point, self.zoom,
+                              self.rect.width(), self.rect.height())
+                mk2 = QImage()
+                mkfile = 'teardrop'
+                if 'image' in marker:
+                    mkfile = marker['image']
+                if os.path.dirname(mkfile) == '':
+                    mkfile = os.path.join('markers', mkfile)
+                if os.path.splitext(mkfile)[1] == '':
+                    mkfile += '.png'
+                mk2.load(mkfile)
+                if mk2.format != QImage.Format_ARGB32:
+                    mk2 = mk2.convertToFormat(QImage.Format_ARGB32)
+                mkh = 80  # self.rect.height() / 5
+                if 'size' in marker:
+                    if marker['size'] == 'small':
+                        mkh = 64
+                    if marker['size'] == 'mid':
+                        mkh = 70
+                    if marker['size'] == 'tiny':
+                        mkh = 40
+                if 'color' in marker:
+                    c = QColor(marker['color'])
+                    (cr, cg, cb, ca) = c.getRgbF()
+                    for x in range(0, mk2.width()):
+                        for y in range(0, mk2.height()):
+                            (r, g, b, a) = QColor.fromRgba(
+                                           mk2.pixel(x, y)).getRgbF()
+                            r = r * cr
+                            g = g * cg
+                            b = b * cb
+                            mk2.setPixel(x, y, QColor.fromRgbF(r, g, b, a).rgba())
+                mk2 = mk2.scaledToHeight(mkh, 1)
+                painter.drawImage(pt.x-mkh/2, pt.y-mkh/2, mk2)
 
         painter.end()
 

@@ -25,7 +25,7 @@ digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
-digitalformat = "{0:%I:%M\n%S %p}"  # The format of the time
+digitalformat = "{0:%I:%M\n%S %p}"  # The format of the digital time on primary screen
 digitalsize = 200
 # The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg
@@ -36,6 +36,8 @@ digitalsize = 200
 # digitalsize = 250
 #  The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
+
+digitalformat2 = "{0:%H:%M:%S}"  # The format of the digital time on secondary screen
 
 usemapbox = 0   # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
 metric = 0  # 0 = English, 1 = Metric
@@ -70,13 +72,13 @@ DateLocale = ''
 LPressure = "Pressure "
 LHumidity = "Humidity "
 LWind = "Wind "
-Lgusting = " gusting "
+Lgusting = " gust "
 LFeelslike = "Feels like "
-LPrecip1hr = " Precip 1hr:"
+LPrecip1hr = " Precip 1hr: "
 LToday = "Today: "
-LSunRise = "Sun Rise:"
+LSunRise = "Sun Rise: "
 LSet = " Set: "
-LMoonPhase = " Moon Phase:"
+LMoonPhase = " Moon: "
 LInsideTemp = "Inside Temp "
 LRain = " Rain: "
 LSnow = " Snow: "
@@ -108,6 +110,7 @@ radar1 = {
     'snow': 1,  # rainviewer radar show snow as different color
     'markers': (   # google maps markers can be overlayed
         {
+            'visible': 1, # 0 = hide marker, 1 = show marker
             'location': primary_location,
             'color': 'red',
             'size': 'small',
@@ -120,11 +123,17 @@ radar1 = {
 radar2 = {
     'center': primary_location,
     'zoom': 11,
+    'style': 'mapbox/satellite-streets-v10',
+    'color': 6, 
+    'smooth': 1,
+    'snow': 1,
     'markers': (
         {
+            'visible': 1,
             'location': primary_location,
             'color': 'red',
             'size': 'small',
+            'image': 'teardrop-dot',
         },
     )
 }
@@ -133,11 +142,17 @@ radar2 = {
 radar3 = {
     'center': primary_location,
     'zoom': 7,
+    'style': 'mapbox/satellite-streets-v10',
+    'color': 6, 
+    'smooth': 1,
+    'snow': 1,
     'markers': (
         {
+            'visible': 1,
             'location': primary_location,
             'color': 'red',
             'size': 'small',
+            'image': 'teardrop-dot',
         },
     )
 }
@@ -145,11 +160,17 @@ radar3 = {
 radar4 = {
     'center': primary_location,
     'zoom': 11,
+    'style': 'mapbox/satellite-streets-v10',
+    'color': 6, 
+    'smooth': 1,
+    'snow': 1,
     'markers': (
         {
+            'visible': 1,
             'location': primary_location,
             'color': 'red',
             'size': 'small',
+            'image': 'teardrop-dot',
         },
     )
 }
