@@ -9,8 +9,6 @@ import time
 import json
 import locale
 import random
-# import urllib
-# import re
 
 from PyQt4 import QtGui, QtCore, QtNetwork
 from PyQt4.QtGui import QPixmap, QBrush, QColor
@@ -33,11 +31,11 @@ def tick():
     global clockrect
     global datex, datex2, datey2, pdy
 
-    if Config.DateLocale != "":
-        try:
-            locale.setlocale(locale.LC_TIME, Config.DateLocale)
-        except:
-            pass
+    # if Config.DateLocale != "":  # Too many times and not needed HERE
+    #     try:
+    #         locale.setlocale(locale.LC_TIME, Config.DateLocale)
+    #     except:
+    #         pass
 
     now = datetime.datetime.now()
     if Config.digital:
@@ -124,8 +122,10 @@ def tick():
             sup = 'rd'
         if Config.DateLocale != "":
             sup = ""
-        ds = "{0:%A %B} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
-        ds2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
+        ds = Config.LtopDateformat.format(now, sup)
+        ds = ds.decode('utf-8')
+        ds2 = Config.LtopDateformat2.format(now, sup)
+        ds2 = ds2.decode('utf-8')
         datex.setText(ds)
         datex2.setText(ds2)
 
@@ -159,19 +159,19 @@ def tempfinished():
 
 
 def tempm(f):
-        return (f - 32) / 1.8
+    return (f - 32) / 1.8
 
 
 def speedm(f):
-        return f * 0.621371192
+    return f * 0.621371192
 
 
 def pressi(f):
-        return f * 0.029530
+    return f * 0.029530
 
 
 def heightm(f):
-        return f * 25.4
+    return f * 25.4
 
 
 def phase(f):
@@ -231,7 +231,6 @@ def wxfinished():
     global wxreply, wxdata
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
-    #  duplicate wxdesc into wxdesc2:
     global wxicon2, temper2, wxdesc2, attribution
 
     attribution.setText("DarkSky.net")
@@ -267,8 +266,9 @@ def wxfinished():
                      '%.1f' % (speedm(f['windGust'])) + 'kmh')
         wind2.setText(Config.LFeelslike +
                       '%.1f' % (tempm(f['apparentTemperature'])) + u'°C')
-        wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-            int(f['time']))))
+        wdate.setText(Config.Ltimeformat.format(
+            datetime.datetime.fromtimestamp(
+                int(f['time']))))
 # Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
 # Config.LToday + f['precip_today_metric'] + 'mm')
     else:
@@ -286,7 +286,8 @@ def wxfinished():
                      '%.1f' % (f['windGust']) + 'mph')
         wind2.setText(Config.LFeelslike +
                       '%.1f' % (f['apparentTemperature']) + u'°F')
-        wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
+        wdate.setText(Config.Ltimeformat.format(
+            datetime.datetime.fromtimestamp(
                 int(f['time']))))
 # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
 # Config.LToday + f['precip_today_in'] + 'in')
@@ -294,11 +295,13 @@ def wxfinished():
     bottomText = ""
     if "sunriseTime" in wxdata["daily"]["data"][0]:
         bottomText += (Config.LSunRise +
-                       "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-                        wxdata["daily"]["data"][0]["sunriseTime"])) +
+                       Config.Ltimesunformat.format(
+                           datetime.datetime.fromtimestamp(
+                               wxdata["daily"]["data"][0]["sunriseTime"])) +
                        Config.LSet +
-                       "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-                        wxdata["daily"]["data"][0]["sunsetTime"])))
+                       Config.Ltimesunformat.format(
+                           datetime.datetime.fromtimestamp(
+                               wxdata["daily"]["data"][0]["sunsetTime"])))
 
     if "moonPhase" in wxdata["daily"]["data"][0]:
         bottomText += (Config.LMoonPhase +
@@ -319,8 +322,8 @@ def wxfinished():
             Qt.SmoothTransformation))
         wx = fl.findChild(QtGui.QLabel, "wx")
         day = fl.findChild(QtGui.QLabel, "day")
-        day.setText("{0:%A %I:%M%p}".format(datetime.datetime.fromtimestamp(
-            int(f['time']))))
+        day.setText(Config.Lforecastdaytimeformat.format(
+            datetime.datetime.fromtimestamp(int(f['time']))).decode('utf-8'))
         s = ''
         pop = 0
         ptype = ''
@@ -366,8 +369,8 @@ def wxfinished():
             Qt.SmoothTransformation))
         wx = fl.findChild(QtGui.QLabel, "wx")
         day = fl.findChild(QtGui.QLabel, "day")
-        day.setText("{0:%A}".format(datetime.datetime.fromtimestamp(
-            int(f['time']))))
+        day.setText(Config.Lforecastdayformat.format(
+            datetime.datetime.fromtimestamp(int(f['time']))).decode('utf-8'))
         s = ''
         pop = 0
         ptype = ''
@@ -600,7 +603,7 @@ class Radar(QtGui.QLabel):
             self.totalHeight += 256
             self.tilesHeight += 1
             for x in range(int(self.cornerTiles["NW"]["X"]),
-                           int(self.cornerTiles["NE"]["X"]) + 1):
+                           int(self.cornerTiles["NE"]["X"])+1):
                 tile = {"X": x, "Y": y}
                 self.tiles.append(tile)
                 if 'color' not in radar:
@@ -636,9 +639,7 @@ class Radar(QtGui.QLabel):
             return
         if self.displayedFrame == 0:
             self.ticker += 1
-            # /BL #137 # The time between each frame SET is n times larger 
-            #            than time between each frame
-            if self.ticker < Config.radarSETinterval:
+            if self.ticker < 5:
                 return
         self.ticker = 0
         f = self.frameImages[self.displayedFrame]
@@ -727,9 +728,9 @@ class Radar(QtGui.QLabel):
         ii = None
         painter2 = QPainter()
         painter2.begin(ii2)
-        # typo rainvewer rainviewer:
-        timestamp = "{0:%H:%M} rainviewer.com".format(
+        timestamp = Config.Ltimestampformat.format(
                     datetime.datetime.fromtimestamp(self.getTime))
+        timestamp = timestamp + " RainViewer"
         painter2.setPen(QColor(63, 63, 63, 255))
         painter2.setFont(QFont("Arial", 8))
         painter2.setRenderHint(QPainter.TextAntialiasing)
@@ -749,7 +750,7 @@ class Radar(QtGui.QLabel):
         mb = 0
         try:
             mb = Config.usemapbox
-        except:
+        except AttributeError:
             pass
         if mb:
             return self.mapboxurl(radar, rect)
@@ -869,7 +870,7 @@ class Radar(QtGui.QLabel):
 
     def wxstart(self):
         print "wxstart for " + self.myname
-        self.timer.start(Config.radarIMGinterval)
+        self.timer.start(200)
 
     def wxstop(self):
         print "wxstop for " + self.myname
@@ -979,7 +980,22 @@ if not os.path.isfile(configname + ".py"):
 
 Config = __import__(configname)
 
-# define default values for new/optional config variables.
+
+try:
+    Config.DateLocale
+except AttributeError:
+    Config.DateLocale = ""
+    print("Warn: take default Config.DateLocale:             \t'%s'"
+          % Config.DateLocale)
+
+if Config.DateLocale != "":
+    try:
+        locale.setlocale(locale.LC_TIME, Config.DateLocale)
+    except Exception as e:
+        print("Error: (setlocale.LC_TIME, '%s') fails, reason: %s"
+              % (Config.DateLocale, e))
+        Config.DateLocale = ""
+        pass
 
 try:
     Config.location
@@ -1000,20 +1016,6 @@ try:
     Config.radar_refresh
 except AttributeError:
     Config.radar_refresh = 10    # minutes
-
-try:
-    Config.radarIMGinterval
-except AttributeError:
-    Config.radarIMGinterval = 200    # milliseconds
-    print("Warn: take default Config.radarIMGinterval:             \t'%s'"
-          % Config.radarIMGinterval)
-
-try:
-    Config.radarSETinterval
-except AttributeError:
-    Config.radarSETinterval = 5    # 5 times radarIMGinterval
-    print("Warn: take default Config.radarSETinterval:             \t'%s'"
-          % Config.radarSETinterval)
 
 try:
     Config.fontattr
@@ -1095,6 +1097,54 @@ try:
 except AttributeError:
     Config.useslideshow = 0
 
+try:
+    Config.LtopDateformat
+except AttributeError:
+    Config.LtopDateformat = "{0:%A %B} {0.day}<sup>{1}</sup> {0.year}"
+    print("Warn: take default Config.LtopDateformat:        \t'%s'"
+          % Config.LtopDateformat)
+
+try:
+    Config.LtopDateformat2
+except AttributeError:
+    Config.LtopDateformat2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}"
+    print("Warn: take default Config.LtopDateformat2:       \t'%s'"
+          % Config.LtopDateformat)
+
+try:
+    Config.Ltimeformat
+except AttributeError:
+    Config.Ltimeformat = "{0:%I:%M %p}"
+    print("Warn: take default Config.Ltimeformat:           \t'%s'"
+          % Config.Ltimeformat)
+
+try:
+    Config.Ltimestampformat
+except AttributeError:
+    Config.Ltimestampformat = "{0:%I:%M %p}"
+    print("Warn: take default Config.Ltimestampformat:      \t'%s'"
+          % Config.Ltimestampformat)
+
+try:
+    Config.Ltimesunformat
+except AttributeError:
+    Config.Ltimesunformat = "{0:%I:%M %p}"
+    print("Warn: take default Config.Ltimesunformat:        \t'%s'"
+          % Config.Ltimesunformat)
+
+try:
+    Config.Lforecastdayformat
+except AttributeError:
+    Config.Lforecastdayformat = "{0:%A}"
+    print("Warn: take default Config.Lforecastdayformat:     \t'%s'"
+          % Config.Lforecastdayformat)
+
+try:
+    Config.Lforecastdaytimeformat
+except AttributeError:
+    Config.Lforecastdaytimeformat = "{0:%I:%M %p}"
+    print("Warn: take default Config.Lforecastdaytimeformat: \t'%s'"
+          % Config.Lforecastdaytimeformat)
 
 #
 # Check if Mapbox API key is set, and use mapbox if so
@@ -1114,6 +1164,18 @@ lastkeytime = 0
 lastapiget = time.time()
 
 app = QtGui.QApplication(sys.argv)
+
+# /BL fix #141 START Config.DateLocale does not format forecast date and time
+if Config.DateLocale != "":
+    try:
+        locale.setlocale(locale.LC_TIME, Config.DateLocale)
+    except Exception as e:
+        print("Error: (setlocale.LC_TIME, '%s') fails, reason: %s"
+              % (Config.DateLocale, e))
+        Config.DateLocale = ""
+        pass
+# /BL fix #141 END
+
 desktop = app.desktop()
 rec = desktop.screenGeometry()
 height = rec.height()
@@ -1484,7 +1546,7 @@ for i in range(0, 9):
                       "}")
     lab.setGeometry(1137 * xscale, i * 100 * yscale,
                     300 * xscale, 100 * yscale)
-    
+
     icon = QtGui.QLabel(lab)
     icon.setStyleSheet("#icon { background-color: transparent; }")
     icon.setGeometry(0, 0, 100 * xscale, 100 * yscale)
