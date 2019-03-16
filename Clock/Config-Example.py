@@ -36,9 +36,8 @@ digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
-digitalformat = "{0:%I:%M\n%S %p}"  # Format of the digital clock face
+digitalformat = "{0:%I:%M\n%S %p}"  # Format digital time on primary screen
 digitalsize = 200
-
 # The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg
 # ( specifications of the time string are documented here:
@@ -49,13 +48,30 @@ digitalsize = 200
 #  The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
 
-digitalformat2 = "{0:%H:%M:%S}"  # Format of the digital time on second screen
+digitalformat2 = "{0:%H:%M:%S}"  # Format for digital time on second screen
+
+# Non digital date and time formats
+
+# Date time format primary screen:
+# Locale full dayname and monthname, day of month number{th/rd} full year:
+LtopDateformat = '{0:%A %B} {0.day}<sup>{1}</sup> {0.year}'
+# Date time format second screen:
+# Locale abbreviated day- and monthname, day of month number{th/rd} full year:
+LtopDateformat2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}"
+# the default 12hour clock AM/PM = Time under the top-left weather conditions:
+Ltimeformat = "{0:%I:%M %p}"
+# the default 12hour clock AM/PM = Time Sun-up/down:
+Ltimesunformat = "{0:%I:%M %p}"
+# 24-hour hour and minute = Timestamp of Rainview forecast:
+Ltimestampformat = '{0:%H:%M}'
+Lforecastdaytimeformat = '{0:%I:%M %p}'
+Lforecastdayformat = "{0:%A}"
 
 usemapbox = 0   # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
 metric = 0  # 0 = English, 1 = Metric
 radar_refresh = 10      # minutes
-radarIMGinterval = 200  # interval between each frame of the animations in milliseconds
-radarSETinterval = 5    # interval between animations (n times radarIMGinterval)
+radarIMGinterval = 200  # interval between each frame of animations in msec
+radarSETinterval = 5    # interval between animations (n * radarIMGinterval)
 
 weather_refresh = 30    # minutes
 # Wind in degrees instead of cardinal 0 = cardinal, 1 = degrees
@@ -109,8 +125,8 @@ Lmoon8 = 'Waning Crecent'
 # RADAR
 # By default, primary_location entered will be the
 #  center and marker of all radar images.
-# To update centers/markers, change radar sections
-# below the desired lat/lon as:
+# To update centers/markers,
+#    change radar sections below the desired lat/lon as:
 #    -FROM-
 #    primary_location,
 #    -TO-
@@ -125,7 +141,7 @@ radar1 = {
     'snow': 1,  # rainviewer radar show snow as different color
     'markers': (   # google maps markers can be overlayed
         {
-            'visible': 1, # 0 = hide marker, 1 = show marker
+            'visible': 1,  # 0 = hide marker, 1 = show marker
             'location': primary_location,
             'color': 'red',
             'size': 'small',
@@ -139,7 +155,7 @@ radar2 = {
     'center': primary_location,
     'zoom': 11,
     'style': 'mapbox/satellite-streets-v10',
-    'color': 6, 
+    'color': 6,
     'smooth': 1,
     'snow': 1,
     'markers': (
@@ -158,7 +174,7 @@ radar3 = {
     'center': primary_location,
     'zoom': 7,
     'style': 'mapbox/satellite-streets-v10',
-    'color': 6, 
+    'color': 6,
     'smooth': 1,
     'snow': 1,
     'markers': (
@@ -176,7 +192,7 @@ radar4 = {
     'center': primary_location,
     'zoom': 11,
     'style': 'mapbox/satellite-streets-v10',
-    'color': 6, 
+    'color': 6,
     'smooth': 1,
     'snow': 1,
     'markers': (
