@@ -36,8 +36,9 @@ digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
-digitalformat = "{0:%I:%M\n%S %p}"  # Format digital time on primary screen
+digitalformat = "{0:%I:%M\n%S %p}"  # Format of the digital clock face
 digitalsize = 200
+
 # The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg
 # ( specifications of the time string are documented here:
@@ -48,27 +49,71 @@ digitalsize = 200
 #  The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
 
-digitalformat2 = "{0:%H:%M:%S}"  # Format for digital time on second screen
+digitalformat2 = "{0:%H:%M:%S}"  # Format of the digital time on second screen
 
 # Non digital date and time formats
 
-# Date time format primary screen:
-# Locale full dayname and monthname, day of month number{th/rd} full year:
+# For Date/Time format directives for python2 see the table at the bottom in: 
+# https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
+#
+# For python3 doc see:
+# https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
+
+#     The strings "0:" and "0." refer to the relevant date-time variable
+# Some of them as used here:
+# %A - Weekday as locale’s full name
+# %a - same as %A but abbreviated
+
+# %B - Month as locale’s full name.
+# %b - same as %B but abbreviated
+
+# %H - 24 hour clock
+# %I - 12 hour clock
+# %M - minutes 
+# %p - AM/PM
+# 
+# Date / time format of the digital clock face:
+#     %A   - locale name of weekday
+#     %B   - Month as locale’s full name
+#     day  - Day of the month as a zero-padded decimal number
+#               the {1} adds suffix th or rd
+#     year - 4 num year
+#     Local full dayname and monthname, day of month number{th/rd} year
 LtopDateformat = '{0:%A %B} {0.day}<sup>{1}</sup> {0.year}'
+
 # Date time format second screen:
-# Locale abbreviated day- and monthname, day of month number{th/rd} full year:
+#     Local abbreviated day- and monthname, day of month number{th/rd} year
+#     Same explanation as LtopDateformat only abbreciated
 LtopDateformat2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}"
-# the default 12hour clock AM/PM = Time under the top-left weather conditions:
+
+#     European example might be:
+#     %A   - locale name of weekday
+#     %-d  - day of month no leading zero 
+#     %B   - Month as locale’s full name
+#     year - 4 num year: 
+# LtopDateformat = '{0:%A %-d}{1} {0:%B} {0.year}'
+# and using %a and %b for abbreviated on the second screen:
+# LtopDateformat2 = '{0:%a %-d}{1} {0:%b} {0.year}'
+
+
+# Format for Time under the top-left weather conditions
 Ltimeformat = "{0:%I:%M %p}"
-# the default 12hour clock AM/PM = Time Sun-up/down:
+
+# Format for Time Sun-up/down:
 Ltimesunformat = "{0:%I:%M %p}"
-# 24-hour hour and minute = Timestamp of Rainview forecast:
+
+# Format for Timestamp in Rainview radar images:
 Ltimestampformat = '{0:%H:%M}'
+
+# Format for day/time in forcast boxes on the right:
+#     the first three forecast boxes:
 Lforecastdaytimeformat = '{0:%I:%M %p}'
+#     the bottom forecast boxes:
 Lforecastdayformat = "{0:%A}"
 
 usemapbox = 0   # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
 metric = 0  # 0 = English, 1 = Metric
+
 radar_refresh = 10      # minutes
 radarIMGinterval = 200  # interval between each frame of animations in msec
 radarSETinterval = 5    # interval between animations (n * radarIMGinterval)
