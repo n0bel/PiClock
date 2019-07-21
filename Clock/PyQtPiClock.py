@@ -713,7 +713,8 @@ class Radar(QtGui.QLabel):
         yo = int((int(yo) - yo)*256)
         for y in range(0, self.totalHeight, 256):
             for x in range(0, self.totalWidth, 256):
-                painter.drawImage(x, y, self.tileQimages[i])
+                if self.tileQimages[i].format() == 5:
+                    painter.drawImage(x, y, self.tileQimages[i])
                 # painter.drawRect(x, y, 255, 255)
                 # painter.drawText(x+3, y+12, self.tiletails[i])
                 i += 1
