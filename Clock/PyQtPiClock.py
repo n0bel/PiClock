@@ -227,8 +227,23 @@ def gettemp():
     tempreply.finished.connect(tempfinished)
 
 
+def tidefinished():
+    global tidereply, tidedata
+
+    tidestr = str(tidereply.readAll())
+    tidedata = json.loads(tidestr)
+    print tidedata['predictions']
+    print tidedata['predictions'][0]['t']
+    tide1 = datetime.datetime.strptime(tidedata['predictions'][0]['t'], "%Y-%m-%d %H:%M")
+    tide11 = tide1.strftime("%b %d, %I:%M%p")
+    tide2 = datetime.datetime.strptime(tidedata['predictions'][1]['t'], "%Y-%m-%d %H:%M")
+    tide22 = tide2.strftime("%b %d, %I:%M%p")
+    bottomText = (tidedata['predictions'][0]['type'] + ": " + tide11 + " " + tidedata['predictions'][1]['type'] + ": " + tide22 )
+    bottomText = bottomText.replace("L:", "Low Tide:").replace("H:", "High Tide:")
+    bottom.setText(bottomText)
+
 def wxfinished():
-    global wxreply, wxdata
+    global wxreply, wxdata, tidereply, tidedata
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc, attribution
@@ -237,6 +252,7 @@ def wxfinished():
     attribution2.setText("DarkSky.net")
 
     wxstr = str(wxreply.readAll())
+    print(wxstr)
     wxdata = json.loads(wxstr)
     f = wxdata['currently']
     wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + f['icon'] + ".png")
@@ -303,7 +319,6 @@ def wxfinished():
         bottomText += (Config.LMoonPhase +
                        phase(wxdata["daily"]["data"][0]["moonPhase"]))
 
-    bottom.setText(bottomText)
 
     for i in range(0, 3):
         f = wxdata['hourly']['data'][i * 3 + 2]
@@ -406,6 +421,10 @@ def wxfinished():
 def getwx():
     global wxurl
     global wxreply
+    global tidereply
+    now = datetime.datetime.now()
+    datestr = now.strftime("%Y%m%d %H:%M")
+    tideurl = 'https://tidesandcurrents.noaa.gov/api/datagetter?begin_date='+datestr+'&range=24&station=8720554&product=predictions&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=json&interval=hilo'
     print "getting current and forecast:" + time.ctime()
     wxurl = 'https://api.darksky.net/forecast/' + \
         ApiKeys.dsapi + \
@@ -415,10 +434,16 @@ def getwx():
     wxurl += '?units=us&lang=' + Config.Language.lower()
     wxurl += '&r=' + str(random.random())
     print wxurl
+    print tideurl
     r = QUrl(wxurl)
     r = QNetworkRequest(r)
+    t = QUrl(tideurl)
+    t = QNetworkRequest(t)
     wxreply = manager.get(r)
+    tidereply = manager.get(t)
     wxreply.finished.connect(wxfinished)
+    tidereply.finished.connect(tidefinished)
+
 
 
 def getallwx():
