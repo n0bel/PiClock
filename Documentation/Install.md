@@ -483,7 +483,6 @@ Then this will update to the current version
 ```
 git reset --hard
 ```
-Backup your changes first!
 (This won't bother your Config.py nor ApiKeys.py because they are not tracked in git.
 
 Also, if you're using gpio-keys, you may need to remake it:
