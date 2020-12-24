@@ -1,6 +1,13 @@
 import sys
 import os.path
+import os
 import re
+
+print "Updating Python Modules"
+print "Updating python-dateutil"
+os.system("sudo pip install python-dateutil --upgrade")
+print "Updating tzlocal"
+os.system("sudo pip install tzlocal --upgrade")
 
 buttonFileName = 'Button/gpio-keys'
 print "Checking " + buttonFileName
