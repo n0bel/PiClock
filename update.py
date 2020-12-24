@@ -14,32 +14,40 @@ if os.path.isfile(buttonFileName):
 apikeysFileName = 'Clock/ApiKeys.py'
 wuapi_re = re.compile('\\s*wuapi\\s*=')
 dsapi_re = re.compile('\\s*dsapi\\s*=')
+ccapi_re = re.compile('\\s*ccapi\\s*=')
+owmapi_re = re.compile('\\s*owmapi\\s*=')
 
 print "Checking " + apikeysFileName
 if (os.path.isfile(apikeysFileName)):
     altered = False
-    foundds = False
+    foundcc = False
+    foundowm = False
     newfile = ''
     apikeys = open(apikeysFileName, "r")
     for aline in apikeys:
-        if dsapi_re.match(aline):
-            foundds = True
+        if ccapi_re.match(aline):
+            foundcc = True
+        if owmapi_re.match(aline):
+            foundwom = True
         if wuapi_re.match(aline):
             print "Removing wuapi key from " + apikeysFileName
+            altered = True
+        if dsapi_re.match(aline):
+            print "Removing dsapi key from " + apikeysFileName
             altered = True
         else:
             newfile += aline
     apikeys.close()
 
-    if not foundds:
-        print "This version of PiClock requires a DarkSky api key."
-        print "https://darksky.net/dev"
-        print "Enter your DarkSky api key."
+    if not foundcc and not foundowm:
+        print "This version of PiClock requires a ClimaCell api key."
+        print "https://www.climacell.co/weather-api/"
+        print "Enter your Climacell api key."
         print "key:",
         k = sys.stdin.readline()
         k = k.strip()
         if len(k) > 1:
-            newfile += "dsapi = '" + k + "'"
+            newfile += "ccapi = '" + k + "'"
             altered = True
 
     if altered:
