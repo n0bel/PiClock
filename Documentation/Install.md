@@ -475,6 +475,12 @@ You'll want to reboot after the update.
 
 Note: If you get errors because you've made changes to the base code you might need
 ```
+git diff
+```
+To see your changes, so you can back them up
+
+Then this will update to the current version
+```
 git reset --hard
 ```
 Backup your changes first!
