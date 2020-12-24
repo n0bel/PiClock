@@ -5,5 +5,7 @@
 googleapi = 'YOUR GOOGLE MAPS API KEY'
 # Mapbox API key (access_token) [if usemapbox is set in Config]
 mbapi = 'YOUR MAPBOX ACCESS TOKEN'
-# Openweathermap.org appid
-owmapi = 'YOUR OPENWEATHERMAP APPID'
+# If you want to use Openweathermap.org, uncomment and add appid
+# owmapi = 'YOUR OPENWEATHERMAP APPID'
+# If you want to use Climacell.co, uncomment and add appid
+ccapi = 'YOUR CLIMACELL API KEY'
