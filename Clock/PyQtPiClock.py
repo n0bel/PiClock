@@ -799,18 +799,18 @@ def wxfinished_cc2():
             s += '%.0f' % pop + '% '
         if Config.metric:
             if (ptype == 'snow'):
-                if (paccum > 0.05):
+                if (paccum > 0.01):
                     s += Config.LSnow + '%.0f' % heightm(paccum) + 'mm '
             else:
-                if (paccum > 0.05):
+                if (paccum > 0.01):
                     s += Config.LRain + '%.0f' % heightm(paccum) + 'mm '
             s += '%.0f' % tempm(f['temp']['value']) + u'°C'
         else:
             if (ptype == 'snow'):
-                if (paccum > 0.05):
+                if (paccum > 0.01):
                     s += Config.LSnow + '%.0f' % paccum + 'in '
             else:
-                if (paccum > 0.05):
+                if (paccum > 0.01):
                     s += Config.LRain + '%.0f' % paccum + 'in '
             s += '%.0f' % (f['temp']['value']) + u'°F'
 
@@ -861,12 +861,13 @@ def wxfinished_cc3():
             ptype = 'rain'
         if 'ice' in wc:
             ptype = 'snow'
-        if 'flurries' in wc:
+        if 'flurries' in wc
             ptype = 'snow'
         if 'snow' in wc:
             ptype = 'snow'
         if 'tstorm' in wc:
             ptype = 'rain'
+        print('ffffffffffffffff', wc, ptype, paccum)
 
         # if (pop > 0.05 and ptype == ''):
         #     if f['temp'][1]['max']['value'] > 28:
@@ -877,19 +878,19 @@ def wxfinished_cc3():
             s += '%.0f' % pop + '% '
         if Config.metric:
             if (ptype == 'snow'):
-                if (paccum > 0.05):
+                if (paccum > 0.01):
                     s += Config.LSnow + '%.0f' % heightm(paccum*15) + 'mm '
             else:
-                if (paccum > 0.05):
+                if (paccum > 0.01):
                     s += Config.LRain + '%.0f' % heightm(paccum) + 'mm '
             s += '%.0f' % tempm(f['temp'][1]['max']['value']) + '/' + \
                  '%.0f' % tempm(f['temp'][0]['min']['value'])
         else:
             if (ptype == 'snow'):
-                if (paccum > 0.05):
+                if (paccum > 0.01):
                     s += Config.LSnow + '%.1f' % (paccum*15) + 'in '
             else:
-                if (paccum > 0.05):
+                if (paccum > 0.01):
                     s += Config.LRain + '%.1f' % paccum + 'in '
             s += '%.0f' % f['temp'][1]['max']['value'] + '/' + \
                  '%.0f' % f['temp'][0]['min']['value']
