@@ -641,6 +641,8 @@ cc_code_map = {
             "mostly_clear": "Mostly Clear",
             "clear": "Clear"
 }
+
+
 cc_code_icons = {
             "freezing_rain_heavy": "sleet",
             "freezing_rain": "sleet",
@@ -909,6 +911,11 @@ def getwx():
         pass
     try:
         ApiKeys.ccapi
+        global cc_code_map
+        try:
+            cc_code_map = Config.Lcc_code_map
+        except:
+            pass
         getwx_cc()
         return
     except:

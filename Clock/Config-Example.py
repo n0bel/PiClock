@@ -96,6 +96,32 @@ Lmoon5 = 'Full Moon'
 Lmoon6 = 'Waning Gibbous'
 Lmoon7 = 'Third Quarter'
 Lmoon8 = 'Waning Crecent'
+# Language Specific terms for weather conditions
+Lcc_code_map = {
+            "freezing_rain_heavy": "Freezing Rain",
+            "freezing_rain": "Freezing Rain",
+            "freezing_rain_light": "Freezing Rain",
+            "freezing_drizzle": "Freezing Drizzle",
+            "ice_pellets_heavy": "Ice Pellets",
+            "ice_pellets": "Ice Pellets",
+            "ice_pellets_light": "Ice Pellets",
+            "snow_heavy": "Heavy Snow",
+            "snow": "Snow",
+            "snow_light": "Light Snow",
+            "flurries": "Flurries",
+            "tstorm": "Thunder Storm",
+            "rain_heavy": "Heavy Rain",
+            "rain": "Rain",
+            "rain_light": "Light Rain",
+            "drizzle": "Drizzle",
+            "fog_light": "Light Fog",
+            "fog": "Fog",
+            "cloudy": "Cloudy",
+            "mostly_cloudy": "Mostly Cloudy",
+            "partly_cloudy": "Partly Cloudy",
+            "mostly_clear": "Mostly Clear",
+            "clear": "Clear"
+}
 
 # RADAR
 # By default, primary_location entered will be the
