@@ -861,7 +861,7 @@ def wxfinished_cc3():
             ptype = 'rain'
         if 'ice' in wc:
             ptype = 'snow'
-        if 'flurries' in wc
+        if 'flurries' in wc:
             ptype = 'snow'
         if 'snow' in wc:
             ptype = 'snow'
