@@ -684,8 +684,8 @@ def wxfinished_cc():
     icon = f['weather_code']['value']
     icon = cc_code_icons[icon]
     daytime = False
-    if f['observation_time'] >= f['sunrise']:
-        if['observation_time'] <= f['sunset']:
+    if f['observation_time']['value'] >= f['sunrise']['value']:
+        if['observation_time']['value'] <= f['sunset']['value']:
             daytime = True
     if not daytime:
         icon = icon.replace('-day', '-night')
@@ -770,8 +770,8 @@ def wxfinished_cc2():
         wicon = f['weather_code']['value']
         wicon = cc_code_icons[wicon]
         daytime = False
-        if f['observation_time'] >= f['sunrise']:
-            if['observation_time'] <= f['sunset']:
+        if f['observation_time']['value'] >= f['sunrise']['value']:
+            if['observation_time']['value'] <= f['sunset']['value']:
                 daytime = True
         if not daytime:
             wicon = wicon.replace('-day', '-night')
@@ -984,7 +984,7 @@ def getwx_cc():
         str(Config.location.lng)
     wxurl2 += '&unit_system=us'
     wxurl2 += '&fields=temp,precipitation,precipitation_type,'
-    wxurl2 += 'precipitation_probability,weather_code'
+    wxurl2 += 'precipitation_probability,weather_code,sunrise,sunset'
     print(wxurl2)
     r2 = QUrl(wxurl2)
     r2 = QNetworkRequest(r2)
