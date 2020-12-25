@@ -685,7 +685,7 @@ def wxfinished_cc():
     icon = cc_code_icons[icon]
     daytime = False
     if f['observation_time']['value'] >= f['sunrise']['value']:
-        if['observation_time']['value'] <= f['sunset']['value']:
+        if f['observation_time']['value'] <= f['sunset']['value']:
             daytime = True
     if not daytime:
         icon = icon.replace('-day', '-night')
@@ -771,7 +771,7 @@ def wxfinished_cc2():
         wicon = cc_code_icons[wicon]
         daytime = False
         if f['observation_time']['value'] >= f['sunrise']['value']:
-            if['observation_time']['value'] <= f['sunset']['value']:
+            if f['observation_time']['value'] <= f['sunset']['value']:
                 daytime = True
         if not daytime:
             wicon = wicon.replace('-day', '-night')
@@ -867,7 +867,6 @@ def wxfinished_cc3():
             ptype = 'snow'
         if 'tstorm' in wc:
             ptype = 'rain'
-        print('ffffffffffffffff', wc, ptype, paccum)
 
         # if (pop > 0.05 and ptype == ''):
         #     if f['temp'][1]['max']['value'] > 28:
