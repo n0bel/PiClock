@@ -688,7 +688,7 @@ def wxfinished_cc():
         if['observation_time'] <= f['sunset']:
             daytime = True
     if not daytime:
-        icon.replace('-day', '-night')
+        icon = icon.replace('-day', '-night')
     wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + icon + ".png")
     wxicon.setPixmap(wxiconpixmap.scaled(
         wxicon.width(), wxicon.height(), Qt.IgnoreAspectRatio,
@@ -769,6 +769,12 @@ def wxfinished_cc2():
         fl = forecast[i]
         wicon = f['weather_code']['value']
         wicon = cc_code_icons[wicon]
+        daytime = False
+        if f['observation_time'] >= f['sunrise']:
+            if['observation_time'] <= f['sunset']:
+                daytime = True
+        if not daytime:
+            wicon = wicon.replace('-day', '-night')
         icon = fl.findChild(QtGui.QLabel, "icon")
         wxiconpixmap = QtGui.QPixmap(
             Config.icons + "/" + wicon + ".png")
