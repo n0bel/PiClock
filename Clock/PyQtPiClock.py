@@ -829,8 +829,9 @@ def wxfinished_cc3():
     wxdata3 = json.loads(wxstr3)
     ioff = 0
     dt = dateutil.parser.parse(
-        wxdata3[0]['observation_time']['value']+"T00:00:00Z")
-    dt = dt.astimezone(tzlocal.get_localzone())
+        wxdata3[0]['observation_time']['value']+"T00:00:00")
+    print('ot', wxdata3[0]['observation_time']['value'])
+    print('dt', dt)
     if datetime.datetime.now().day != dt.day:
         ioff += 1
     for i in range(3, 9):
@@ -849,8 +850,8 @@ def wxfinished_cc3():
         day = fl.findChild(QtGui.QLabel, "day")
         day.setText("{0:%A}".format(
             dateutil.parser.parse(
-                f['observation_time']['value']+"T00:00:00Z"
-            ).astimezone(tzlocal.get_localzone())
+                f['observation_time']['value']+"T00:00:00"
+            )
             ))
         s = ''
         pop = float(f['precipitation_probability']['value'])
