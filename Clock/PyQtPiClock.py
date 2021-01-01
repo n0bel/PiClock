@@ -286,11 +286,13 @@ def wxfinished_owm():
         wd = bearing(f['wind_deg'])
         if Config.wind_degrees:
             wd = str(f['wind_deg']) + u'°'
-        wind.setText(Config.LWind +
-                     wd + ' ' +
-                     '%.1f' % (speedm(f['wind_deg'])) + 'kmh' +
-                     Config.Lgusting +
-                     '%.1f' % (speedm(f['wind_gust'])) + 'kmh')
+        w = (Config.LWind +
+             wd + ' ' +
+             '%.1f' % (speedm(f['wind_speed'])) + 'kmh')
+        if 'wind_gust' in f:
+            w += (Config.Lgusting +
+                  '%.1f' % (speedm(f['wind_gust'])) + 'kmh')
+        wind.setText(w)
         wind2.setText(Config.LFeelslike +
                       '%.1f' % (tempm(f['feels_like'])) + u'°C')
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
@@ -305,11 +307,13 @@ def wxfinished_owm():
         wd = bearing(f['wind_deg'])
         if Config.wind_degrees:
             wd = str(f['wind_deg']) + u'°'
-        wind.setText(Config.LWind +
-                     wd + ' ' +
-                     '%.1f' % (f['wind_speed']) + 'mph' +
-                     Config.Lgusting +
-                     '%.1f' % (f['wind_gust']) + 'mph')
+        w = (Config.LWind +
+             wd + ' ' +
+             '%.1f' % ((f['wind_speed'])) + 'mph')
+        if 'wind_gust' in f:
+            w += (Config.Lgusting +
+                  '%.1f' % ((f['wind_gust'])) + 'kph')
+        wind.setText(w)
         wind2.setText(Config.LFeelslike +
                       '%.1f' % (f['feels_like']) + u'°F')
         wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
