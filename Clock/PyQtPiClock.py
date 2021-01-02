@@ -11,6 +11,7 @@ import time
 import json
 import locale
 import random
+import math
 # import urllib
 # import re
 
@@ -26,6 +27,104 @@ from subprocess import Popen
 sys.dont_write_bytecode = True
 from GoogleMercatorProjection import getCorners, getPoint, getTileXY, LatLng  # NOQA
 import ApiKeys                                              # NOQA
+
+
+class tzutc(datetime.tzinfo):
+    def utcoffset(self, dt):
+        return datetime.timedelta(hours=0, minutes=0)
+
+
+class suntimes:
+    def __init__(self, lat, long):
+        self.lat = lat
+        self.long = long
+
+    def sunrise(self, when=None):
+        if when is None:
+            when = datetime.now(tz=tzlocal.get_localzone())
+        self.__preptime(when)
+        self.__calc()
+        return suntimes.__timefromdecimalday(self.sunrise_t)
+
+    def sunset(self, when=None):
+        if when is None:
+            when = datetime.now(tz=tzlocal.get_localzone())
+        self.__preptime(when)
+        self.__calc()
+        return suntimes.__timefromdecimalday(self.sunset_t)
+
+    @staticmethod
+    def __timefromdecimalday(day):
+        hours = 24.0*day
+        h = int(hours)
+        minutes = (hours-h)*60
+        m = int(minutes)
+        seconds = (minutes-m)*60
+        s = int(seconds)
+        return datetime.time(hour=h, minute=m, second=s)
+
+    def __preptime(self, when):
+        # datetime days are numbered in the Gregorian calendar
+        # while the calculations from NOAA are distibuted as
+        # OpenOffice spreadsheets with days numbered from
+        # 1/1/1900. The difference are those numbers taken for
+        # 18/12/2010
+        self.day = when.toordinal()-(734124-40529)
+        t = when.time()
+        self.time = (t.hour + t.minute/60.0 + t.second/3600.0) / 24.0
+
+        self.timezone = 0
+        offset = when.utcoffset()
+        if offset is not None:
+            self.timezone = offset.seconds / 3600.0 + (offset.days * 24)
+
+    def __calc(self):
+        timezone = self.timezone  # in hours, east is positive
+        longitude = self.long     # in decimal degrees, east is positive
+        latitude = self.lat       # in decimal degrees, north is positive
+
+        time = self.time  # percentage past midnight, i.e. noon  is 0.5
+        day = self.day     # daynumber 1=1/1/1900
+
+        Jday = day+2415018.5 + time - timezone / 24  # Julian day
+        Jcent = (Jday - 2451545) / 36525    # Julian century
+
+        Manom = 357.52911 + Jcent * (35999.05029 - 0.0001537 * Jcent)
+        Mlong = 280.46646 + Jcent * (36000.76983 + Jcent * 0.0003032) % 360
+        Eccent = 0.016708634 - Jcent * (0.000042037 + 0.0001537 * Jcent)
+        Mobliq = (23 + (26 + ((21.448 - Jcent * (46.815 + Jcent *
+                  (0.00059 - Jcent * 0.001813)))) / 60) / 60)
+        obliq = (Mobliq + 0.00256 *
+                 math.cos(math.radians(125.04-1934.136 * Jcent)))
+        vary = (math.tan(math.radians(obliq / 2)) *
+                math.tan(math.radians(obliq / 2)))
+        Seqcent = (math.sin(math.radians(Manom)) *
+                   (1.914602 - Jcent*(0.004817 + 0.000014 * Jcent)) +
+                   math.sin(math.radians(2 * Manom))
+                   * (0.019993 - 0.000101 * Jcent) +
+                   math.sin(math.radians(3 * Manom)) * 0.000289)
+        Struelong = Mlong + Seqcent
+        Sapplong = (Struelong - 0.00569 - 0.00478 *
+                    math.sin(math.radians(125.04-1934.136*Jcent)))
+        declination = (math.degrees(math.asin(math.sin(math.radians(obliq)) *
+                       math.sin(math.radians(Sapplong)))))
+
+        eqtime = (4 * math.degrees(vary * math.sin(2 * math.radians(Mlong)) -
+                  2 * Eccent*math.sin(math.radians(Manom)) + 4 * Eccent *
+                  vary * math.sin(math.radians(Manom)) *
+                  math.cos(2 * math.radians(Mlong)) - 0.5 * vary * vary *
+                  math.sin(4 * math.radians(Mlong)) - 1.25 * Eccent * Eccent *
+                  math.sin(2*math.radians(Manom))))
+
+        hourangle = (math.degrees(math.acos(math.cos(math.radians(90.833)) /
+                     (math.cos(math.radians(latitude)) *
+                     math.cos(math.radians(declination))) -
+                     math.tan(math.radians(latitude)) *
+                     math.tan(math.radians(declination)))))
+
+        self.solarnoon_t = (720-4 * longitude - eqtime + timezone * 60) / 1440
+        self.sunrise_t = self.solarnoon_t - hourangle * 4 / 1440
+        self.sunset_t = self.solarnoon_t + hourangle * 4 / 1440
 
 
 def tick():
@@ -234,7 +333,7 @@ def gettemp():
 
 
 def wxfinished_owm():
-    global wxreply, wxdata
+    global wxreply, wxdata, supress_current
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc, attribution
@@ -266,60 +365,62 @@ def wxfinished_owm():
     f = wxdata['current']
     icon = f['weather'][0]['icon']
     icon = owmicons[icon]
-    wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + icon + ".png")
-    wxicon.setPixmap(wxiconpixmap.scaled(
-        wxicon.width(), wxicon.height(), Qt.IgnoreAspectRatio,
-        Qt.SmoothTransformation))
-    wxicon2.setPixmap(wxiconpixmap.scaled(
-        wxicon.width(),
-        wxicon.height(),
-        Qt.IgnoreAspectRatio,
-        Qt.SmoothTransformation))
-    wxdesc.setText(f['weather'][0]['description'])
-    wxdesc2.setText(f['weather'][0]['description'])
+    if not supress_current:
+        wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + icon + ".png")
+        wxicon.setPixmap(wxiconpixmap.scaled(
+            wxicon.width(), wxicon.height(), Qt.IgnoreAspectRatio,
+            Qt.SmoothTransformation))
+        wxicon2.setPixmap(wxiconpixmap.scaled(
+            wxicon.width(),
+            wxicon.height(),
+            Qt.IgnoreAspectRatio,
+            Qt.SmoothTransformation))
+        wxdesc.setText(f['weather'][0]['description'])
+        wxdesc2.setText(f['weather'][0]['description'])
 
-    if Config.metric:
-        temper.setText('%.1f' % (tempm(f['temp'])) + u'°C')
-        temper2.setText('%.1f' % (tempm(f['temp'])) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mb')
-        humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']))
-        wd = bearing(f['wind_deg'])
-        if Config.wind_degrees:
-            wd = str(f['wind_deg']) + u'°'
-        w = (Config.LWind +
-             wd + ' ' +
-             '%.1f' % (speedm(f['wind_speed'])) + 'kmh')
-        if 'wind_gust' in f:
-            w += (Config.Lgusting +
-                  '%.1f' % (speedm(f['wind_gust'])) + 'kmh')
-        wind.setText(w)
-        wind2.setText(Config.LFeelslike +
-                      '%.1f' % (tempm(f['feels_like'])) + u'°C')
-        wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-            int(f['dt']))))
-# Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
-# Config.LToday + f['precip_today_metric'] + 'mm')
-    else:
-        temper.setText('%.1f' % (f['temp']) + u'°F')
-        temper2.setText('%.1f' % (f['temp']) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % pressi(f['pressure']) + 'in')
-        humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']))
-        wd = bearing(f['wind_deg'])
-        if Config.wind_degrees:
-            wd = str(f['wind_deg']) + u'°'
-        w = (Config.LWind +
-             wd + ' ' +
-             '%.1f' % ((f['wind_speed'])) + 'mph')
-        if 'wind_gust' in f:
-            w += (Config.Lgusting +
-                  '%.1f' % ((f['wind_gust'])) + 'kph')
-        wind.setText(w)
-        wind2.setText(Config.LFeelslike +
-                      '%.1f' % (f['feels_like']) + u'°F')
-        wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-            int(f['dt']))))
-# Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
-# Config.LToday + f['precip_today_in'] + 'in')
+        if Config.metric:
+            temper.setText('%.1f' % (tempm(f['temp'])) + u'°C')
+            temper2.setText('%.1f' % (tempm(f['temp'])) + u'°C')
+            press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mb')
+            humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']))
+            wd = bearing(f['wind_deg'])
+            if Config.wind_degrees:
+                wd = str(f['wind_deg']) + u'°'
+            w = (Config.LWind +
+                 wd + ' ' +
+                 '%.1f' % (speedm(f['wind_speed'])) + 'kmh')
+            if 'wind_gust' in f:
+                w += (Config.Lgusting +
+                      '%.1f' % (speedm(f['wind_gust'])) + 'kmh')
+            wind.setText(w)
+            wind2.setText(Config.LFeelslike +
+                          '%.1f' % (tempm(f['feels_like'])) + u'°C')
+            wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
+                int(f['dt']))))
+    # Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
+    # Config.LToday + f['precip_today_metric'] + 'mm')
+        else:
+            temper.setText('%.1f' % (f['temp']) + u'°F')
+            temper2.setText('%.1f' % (f['temp']) + u'°F')
+            press.setText(
+                Config.LPressure + '%.2f' % pressi(f['pressure']) + 'in')
+            humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']))
+            wd = bearing(f['wind_deg'])
+            if Config.wind_degrees:
+                wd = str(f['wind_deg']) + u'°'
+            w = (Config.LWind +
+                 wd + ' ' +
+                 '%.1f' % ((f['wind_speed'])) + 'mph')
+            if 'wind_gust' in f:
+                w += (Config.Lgusting +
+                      '%.1f' % ((f['wind_gust'])) + 'kph')
+            wind.setText(w)
+            wind2.setText(Config.LFeelslike +
+                          '%.1f' % (f['feels_like']) + u'°F')
+            wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
+                int(f['dt']))))
+    # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
+    # Config.LToday + f['precip_today_in'] + 'in')
 
     bottomText = ""
     bottomText += (Config.LSunRise +
@@ -445,7 +546,7 @@ def wxfinished_owm():
 
 
 def wxfinished_ds():
-    global wxreply, wxdata
+    global wxreply, wxdata, supress_current
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc, attribution
@@ -456,56 +557,60 @@ def wxfinished_ds():
     wxstr = str(wxreply.readAll())
     wxdata = json.loads(wxstr)
     f = wxdata['currently']
-    wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + f['icon'] + ".png")
-    wxicon.setPixmap(wxiconpixmap.scaled(
-        wxicon.width(), wxicon.height(), Qt.IgnoreAspectRatio,
-        Qt.SmoothTransformation))
-    wxicon2.setPixmap(wxiconpixmap.scaled(
-        wxicon.width(),
-        wxicon.height(),
-        Qt.IgnoreAspectRatio,
-        Qt.SmoothTransformation))
-    wxdesc.setText(f['summary'])
-    wxdesc2.setText(f['summary'])
+    if not supress_current:
+        wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + f['icon'] + ".png")
+        wxicon.setPixmap(wxiconpixmap.scaled(
+            wxicon.width(), wxicon.height(), Qt.IgnoreAspectRatio,
+            Qt.SmoothTransformation))
+        wxicon2.setPixmap(wxiconpixmap.scaled(
+            wxicon.width(),
+            wxicon.height(),
+            Qt.IgnoreAspectRatio,
+            Qt.SmoothTransformation))
+        wxdesc.setText(f['summary'])
+        wxdesc2.setText(f['summary'])
 
-    if Config.metric:
-        temper.setText('%.1f' % (tempm(f['temperature'])) + u'°C')
-        temper2.setText('%.1f' % (tempm(f['temperature'])) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mb')
-        humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']*100.0))
-        wd = bearing(f['windBearing'])
-        if Config.wind_degrees:
-            wd = str(f['windBearing']) + u'°'
-        wind.setText(Config.LWind +
-                     wd + ' ' +
-                     '%.1f' % (speedm(f['windSpeed'])) + 'kmh' +
-                     Config.Lgusting +
-                     '%.1f' % (speedm(f['windGust'])) + 'kmh')
-        wind2.setText(Config.LFeelslike +
-                      '%.1f' % (tempm(f['apparentTemperature'])) + u'°C')
-        wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-            int(f['time']))))
-# Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
-# Config.LToday + f['precip_today_metric'] + 'mm')
-    else:
-        temper.setText('%.1f' % (f['temperature']) + u'°F')
-        temper2.setText('%.1f' % (f['temperature']) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % pressi(f['pressure']) + 'in')
-        humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']*100.0))
-        wd = bearing(f['windBearing'])
-        if Config.wind_degrees:
-            wd = str(f['windBearing']) + u'°'
-        wind.setText(Config.LWind +
-                     wd + ' ' +
-                     '%.1f' % (f['windSpeed']) + 'mph' +
-                     Config.Lgusting +
-                     '%.1f' % (f['windGust']) + 'mph')
-        wind2.setText(Config.LFeelslike +
-                      '%.1f' % (f['apparentTemperature']) + u'°F')
-        wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-            int(f['time']))))
-# Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
-# Config.LToday + f['precip_today_in'] + 'in')
+        if Config.metric:
+            temper.setText('%.1f' % (tempm(f['temperature'])) + u'°C')
+            temper2.setText('%.1f' % (tempm(f['temperature'])) + u'°C')
+            press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mb')
+            humidity.setText(
+                Config.LHumidity + '%.0f%%' % (f['humidity']*100.0))
+            wd = bearing(f['windBearing'])
+            if Config.wind_degrees:
+                wd = str(f['windBearing']) + u'°'
+            wind.setText(Config.LWind +
+                         wd + ' ' +
+                         '%.1f' % (speedm(f['windSpeed'])) + 'kmh' +
+                         Config.Lgusting +
+                         '%.1f' % (speedm(f['windGust'])) + 'kmh')
+            wind2.setText(Config.LFeelslike +
+                          '%.1f' % (tempm(f['apparentTemperature'])) + u'°C')
+            wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
+                int(f['time']))))
+    # Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
+    # Config.LToday + f['precip_today_metric'] + 'mm')
+        else:
+            temper.setText('%.1f' % (f['temperature']) + u'°F')
+            temper2.setText('%.1f' % (f['temperature']) + u'°F')
+            press.setText(
+                Config.LPressure + '%.2f' % pressi(f['pressure']) + 'in')
+            humidity.setText(
+                Config.LHumidity + '%.0f%%' % (f['humidity']*100.0))
+            wd = bearing(f['windBearing'])
+            if Config.wind_degrees:
+                wd = str(f['windBearing']) + u'°'
+            wind.setText(Config.LWind +
+                         wd + ' ' +
+                         '%.1f' % (f['windSpeed']) + 'mph' +
+                         Config.Lgusting +
+                         '%.1f' % (f['windGust']) + 'mph')
+            wind2.setText(Config.LFeelslike +
+                          '%.1f' % (f['apparentTemperature']) + u'°F')
+            wdate.setText("{0:%H:%M}".format(datetime.datetime.fromtimestamp(
+                int(f['time']))))
+    # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
+    # Config.LToday + f['precip_today_in'] + 'in')
 
     bottomText = ""
     if "sunriseTime" in wxdata["daily"]["data"][0]:
@@ -675,7 +780,7 @@ cc_code_icons = {
 
 
 def wxfinished_cc():
-    global wxreply, wxdata
+    global wxreply, wxdata, supress_current
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc, attribution
@@ -695,60 +800,61 @@ def wxfinished_cc():
             daytime = True
     if not daytime:
         icon = icon.replace('-day', '-night')
-    wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + icon + ".png")
-    wxicon.setPixmap(wxiconpixmap.scaled(
-        wxicon.width(), wxicon.height(), Qt.IgnoreAspectRatio,
-        Qt.SmoothTransformation))
-    wxicon2.setPixmap(wxiconpixmap.scaled(
-        wxicon.width(),
-        wxicon.height(),
-        Qt.IgnoreAspectRatio,
-        Qt.SmoothTransformation))
-    wxdesc.setText(cc_code_map[f['weather_code']['value']])
-    wxdesc2.setText(cc_code_map[f['weather_code']['value']])
+    if not supress_current:
+        wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + icon + ".png")
+        wxicon.setPixmap(wxiconpixmap.scaled(
+            wxicon.width(), wxicon.height(), Qt.IgnoreAspectRatio,
+            Qt.SmoothTransformation))
+        wxicon2.setPixmap(wxiconpixmap.scaled(
+            wxicon.width(),
+            wxicon.height(),
+            Qt.IgnoreAspectRatio,
+            Qt.SmoothTransformation))
+        wxdesc.setText(cc_code_map[f['weather_code']['value']])
+        wxdesc2.setText(cc_code_map[f['weather_code']['value']])
 
-    if Config.metric:
-        temper.setText('%.1f' % (tempm(f['temp']['value'])) + u'°C')
-        temper2.setText('%.1f' % (tempm(f['temp']['value'])) + u'°C')
-        press.setText(
-            Config.LPressure +
-            '%.1f' % barom(f['baro_pressure']['value']) + 'mm')
-        humidity.setText(
-            Config.LHumidity + '%.0f%%' % (f['humidity']['value']))
-        wd = bearing(f['wind_direction']['value'])
-        if Config.wind_degrees:
-            wd = str(f['wind_direction']['value']) + u'°'
-        wind.setText(Config.LWind +
-                     wd + ' ' +
-                     '%.1f' % (speedm(f['wind_speed']['value'])) + 'kmh' +
-                     Config.Lgusting +
-                     '%.1f' % (speedm(f['wind_gust']['value'])) + 'kmh')
-        wind2.setText(Config.LFeelslike +
-                      '%.1f' % (tempm(f['feels_like']['value'])) + u'°C')
-        wdate.setText("{0:%H:%M}".format(dt))
-# Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
-# Config.LToday + f['precip_today_metric'] + 'mm')
-    else:
-        temper.setText('%.1f' % (f['temp']['value']) + u'°F')
-        temper2.setText('%.1f' % (f['temp']['value']) + u'°F')
-        press.setText(
-            Config.LPressure +
-            '%.2f' % (f['baro_pressure']['value']) + 'in')
-        humidity.setText(
-            Config.LHumidity + '%.0f%%' % (f['humidity']['value']))
-        wd = bearing(f['wind_direction']['value'])
-        if Config.wind_degrees:
-            wd = str(f['wind_direction']['value']) + u'°'
-        wind.setText(Config.LWind +
-                     wd + ' ' +
-                     '%.1f' % (f['wind_speed']['value']) + 'mph' +
-                     Config.Lgusting +
-                     '%.1f' % (f['wind_gust']['value']) + 'mph')
-        wind2.setText(Config.LFeelslike +
-                      '%.1f' % (f['feels_like']['value']) + u'°F')
-        wdate.setText("{0:%H:%M}".format(dt))
-# Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
-# Config.LToday + f['precip_today_in'] + 'in')
+        if Config.metric:
+            temper.setText('%.1f' % (tempm(f['temp']['value'])) + u'°C')
+            temper2.setText('%.1f' % (tempm(f['temp']['value'])) + u'°C')
+            press.setText(
+                Config.LPressure +
+                '%.1f' % barom(f['baro_pressure']['value']) + 'mm')
+            humidity.setText(
+                Config.LHumidity + '%.0f%%' % (f['humidity']['value']))
+            wd = bearing(f['wind_direction']['value'])
+            if Config.wind_degrees:
+                wd = str(f['wind_direction']['value']) + u'°'
+            wind.setText(Config.LWind +
+                         wd + ' ' +
+                         '%.1f' % (speedm(f['wind_speed']['value'])) + 'kmh' +
+                         Config.Lgusting +
+                         '%.1f' % (speedm(f['wind_gust']['value'])) + 'kmh')
+            wind2.setText(Config.LFeelslike +
+                          '%.1f' % (tempm(f['feels_like']['value'])) + u'°C')
+            wdate.setText("{0:%H:%M}".format(dt))
+    # Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
+    # Config.LToday + f['precip_today_metric'] + 'mm')
+        else:
+            temper.setText('%.1f' % (f['temp']['value']) + u'°F')
+            temper2.setText('%.1f' % (f['temp']['value']) + u'°F')
+            press.setText(
+                Config.LPressure +
+                '%.2f' % (f['baro_pressure']['value']) + 'in')
+            humidity.setText(
+                Config.LHumidity + '%.0f%%' % (f['humidity']['value']))
+            wd = bearing(f['wind_direction']['value'])
+            if Config.wind_degrees:
+                wd = str(f['wind_direction']['value']) + u'°'
+            wind.setText(Config.LWind +
+                         wd + ' ' +
+                         '%.1f' % (f['wind_speed']['value']) + 'mph' +
+                         Config.Lgusting +
+                         '%.1f' % (f['wind_gust']['value']) + 'mph')
+            wind2.setText(Config.LFeelslike +
+                          '%.1f' % (f['feels_like']['value']) + u'°F')
+            wdate.setText("{0:%H:%M}".format(dt))
+    # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
+    # Config.LToday + f['precip_today_in'] + 'in')
 
     bottomText = ""
     bottomText += (Config.LSunRise +
@@ -907,13 +1013,228 @@ def wxfinished_cc3():
         wx.setText(cc_code_map[f['weather_code']['value']] + "\n" + s)
 
 
+metar_cond = [
+    ('CLR', '', '', 'Clear', 'clear-day', 0),
+    ('NSC', '', '', 'Clear', 'clear-day', 0),
+    ('SKC', '', '', 'Clear', 'clear-day', 0),
+    ('FEW', '', '', 'Few Clouds', 'partly-cloudy-day', 1),
+    ('NCD', '', '', 'Clear', 'clear-day', 0),
+    ('SCT', '', '', 'Scattered Clouds', 'partly-cloudy-day', 2),
+    ('BKN', '', '', 'Mostly Cloudy', 'partly-cloudy-day', 3),
+    ('OVC', '', '', 'Cloudy', 'cloudy', 4),
+
+    ('///', '', '', '', 'cloudy', 0),
+    ('UP', '', '', '', 'cloudy', 0),
+    ('VV', '', '', '', 'cloudy', 0),
+    ('//', '', '', '', 'cloudy', 0),
+
+    ('DZ', '', '', 'Drizzle', 'rain', 10),
+
+    ('RA', 'FZ', '+', 'Heavy Freezing Rain', 'sleet', 11),
+    ('RA', 'FZ', '-', 'Light Freezing Rain', 'sleet', 11),
+    ('RA', 'SH', '+', 'Heavy Rain Showers', 'sleet', 11),
+    ('RA', 'SH', '-', 'Light Rain Showers', 'rain', 11),
+    ('RA', 'BL', '+', 'Heavy Blowing Rain', 'rain', 11),
+    ('RA', 'BL', '-', 'Light Blowing Rain', 'rain', 11),
+    ('RA', 'FZ', '', 'Freezing Rain', 'sleet', 11),
+    ('RA', 'SH', '', 'Rain Showers', 'rain', 11),
+    ('RA', 'BL', '', 'Blowing Rain', 'rain', 11),
+    ('RA', '', '+', 'Heavy Rain', 'rain', 11),
+    ('RA', '', '-', 'Light Rain', 'rain', 11),
+    ('RA', '', '', 'Rain', 'rain', 11),
+
+    ('SN', 'FZ', '+', 'Heavy Freezing Snow', 'snow', 12),
+    ('SN', 'FZ', '-', 'Light Freezing Snow', 'snow', 12),
+    ('SN', 'SH', '+', 'Heavy Snow Showers', 'snow', 12),
+    ('SN', 'SH', '-', 'Light Snow Showers', 'snow', 12),
+    ('SN', 'BL', '+', 'Heavy Blowing Snow', 'snow', 12),
+    ('SN', 'BL', '-', 'Light Blowing Snow', 'snow', 12),
+    ('SN', 'FZ', '', 'Freezing Snow', 'snow', 12),
+    ('SN', 'SH', '', 'Snow Showers', 'snow', 12),
+    ('SN', 'BL', '', 'Blowing Snow', 'snow', 12),
+    ('SN', '', '+', 'Heavy Snow', 'snow', 12),
+    ('SN', '', '-', 'Light Snow', 'snow', 12),
+    ('SN', '', '', 'Rain', 'snow', 12),
+
+    ('SG', 'BL', '', 'Blowing Snow', 'snow', 12),
+    ('SG', '', '', 'Snow', 'snow', 12),
+    ('GS', 'BL', '', 'Blowing Snow Pellets', 'snow', 12),
+    ('GS', '', '', 'Snow Pellets', 'snow', 12),
+
+    ('IC', '', '', 'Ice Crystals', 'snow', 13),
+    ('PL', '', '', 'Ice Pellets', 'snow', 13),
+
+    ('GR', '', '+', 'Heavy Hail', 'thuderstorm', 14),
+    ('GR', '', '', 'Hail', 'thuderstorm', 14),
+]
+
+
+def feels_like(f):
+    t = f.temp.value('C')
+    d = f.dewpt.value('C')
+    h = (math.exp((17.625*d)/(243.04+d)) /
+         math.exp((17.625*t)/(243.04+t)))
+    t = f.temp.value('F')
+    w = f.wind_speed.value('MPH')
+    if t > 80 and h >= 0.40:
+        hi = (-42.379 + 2.04901523 * t + 10.14333127 * h - .22475541 * t * h -
+              .00683783 * t * t - .05481717 * h * h + .00122874 * t * t * h +
+              .00085282 * t * h * h - .00000199 * t * t * h * h)
+        if h < 0.13 and t >= 80.0 and t <= 112.0:
+            hi -= ((13 - h) / 4) * math.sqrt((17 - math.abs(t-95)) / 17)
+        if h > 0.85 and t >= 80.0 and t <= 112.0:
+            hi += ((h - 85)/10) * ((87 - t)/5)
+        return hi
+    if t < 50 and w >= 3:
+        wc = 35.74 + 0.6215 * t - 35.75 * (w * 0.16) + 0.4275 * t * (w * 0.16)
+        return wc
+    return t
+
+
+def wxfinished_metar():
+    global metarreply
+    global wxicon, temper, wxdesc, press, humidity
+    global wind, wind2, wdate, bottom
+    global wxicon2, temper2, wxdesc
+
+    wxstr = str(metarreply.readAll())
+    for wxline in wxstr.splitlines():
+        if wxline.startswith(Config.METAR):
+            wxstr = wxline
+    print('wxmetar', wxstr)
+    f = Metar.Metar(wxstr)
+    dt = f.time.replace(tzinfo=tzutc()).astimezone(tzlocal.get_localzone())
+    print('dt', str(dt))
+    daytime = False
+    s = suntimes(Config.location.lat, Config.location.lng)
+    print('s ', dt.time(), s.sunrise(dt), s.sunset(dt))
+    if dt.time() >= s.sunrise(dt):
+        if dt.time() <= s.sunset(dt):
+            daytime = True
+    print('daytime', daytime)
+
+    pri = -1
+    weather = ''
+    icon = ''
+    for s in f.sky:
+        for c in metar_cond:
+            if s[0] == c[0]:
+                if c[5] > pri:
+                    pri = c[5]
+                    weather = c[3]
+                    icon = c[4]
+    for w in f.weather:
+        for c in metar_cond:
+            if w[2] == c[0]:
+                if c[1] > '':
+                    if w[1] == c[1]:
+                        if c[2] > '':
+                            if w[0][0:1] == c[2]:
+                                if c[5] > pri:
+                                    pri = c[5]
+                                    weather = c[3]
+                                    icon = c[4]
+                else:
+                    if c[2] > '':
+                        if w[0][0:1] == c[2]:
+                            if c[5] > pri:
+                                pri = c[5]
+                                weather = c[3]
+                                icon = c[4]
+                    else:
+                        if c[5] > pri:
+                            pri = c[5]
+                            weather = c[3]
+                            icon = c[4]
+
+    if not daytime:
+        icon = icon.replace('-day', '-night')
+
+    wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + icon + ".png")
+    wxicon.setPixmap(wxiconpixmap.scaled(
+        wxicon.width(), wxicon.height(), Qt.IgnoreAspectRatio,
+        Qt.SmoothTransformation))
+    wxicon2.setPixmap(wxiconpixmap.scaled(
+        wxicon.width(),
+        wxicon.height(),
+        Qt.IgnoreAspectRatio,
+        Qt.SmoothTransformation))
+    wxdesc.setText(weather)
+    wxdesc2.setText(weather)
+
+    if Config.metric:
+        temper.setText('%.1f' % (f.temp.value('C')) + u'°C')
+        temper2.setText('%.1f' % (f.temp.value('C')) + u'°C')
+        press.setText(
+            Config.LPressure +
+            '%.1f' % f.press.value('MB') + 'mb')
+        t = f.temp.value('C')
+        d = f.dewpt.value('C')
+        h = 100.0 * (math.exp((17.625*d)/(243.04+d)) /
+                     math.exp((17.625*t)/(243.04+t)))
+        humidity.setText(
+            Config.LHumidity + '%.0f%%' % (h))
+        wd = f.wind_dir.compass()
+        if Config.wind_degrees:
+            wd = str(f.wind_dir.value) + u'°'
+        ws = (Config.LWind +
+              wd + ' ' +
+              '%.1f' % (f.wind_speed.value('KMH')) + 'kmh')
+        if f.wind_gust:
+            ws += (Config.Lgusting +
+                   '%.1f' % (f.wind_gust.value('KMH')) + 'kmh')
+        wind.setText(ws)
+        wind2.setText(Config.LFeelslike +
+                      '%.1f' % (tempm(feels_like(f)) + u'°C'))
+        wdate.setText("{0:%H:%M}".format(dt))
+# Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
+# Config.LToday + f['precip_today_metric'] + 'mm')
+    else:
+        temper.setText('%.1f' % (f.temp.value('F')) + u'°F')
+        temper2.setText('%.1f' % (f.temp.value('F')) + u'°F')
+        press.setText(
+            Config.LPressure +
+            '%.2f' % f.press.value('IN') + 'in')
+        t = f.temp.value('C')
+        d = f.dewpt.value('C')
+        h = 100.0 * (math.exp((17.625*d)/(243.04+d)) /
+                     math.exp((17.625*t)/(243.04+t)))
+        humidity.setText(
+            Config.LHumidity + '%.0f%%' % (h))
+        wd = f.wind_dir.compass()
+        if Config.wind_degrees:
+            wd = str(f.wind_dir.value) + u'°'
+        ws = (Config.LWind +
+              wd + ' ' +
+              '%.1f' % (f.wind_speed.value('MPH')) + 'mph')
+        if f.wind_gust:
+            ws += (Config.Lgusting +
+                   '%.1f' % (f.wind_gust.value('MPH')) + 'mph')
+        wind.setText(ws)
+        wind2.setText(Config.LFeelslike +
+                      '%.1f' % (feels_like(f)) + u'°F')
+        wdate.setText("{0:%H:%M}".format(dt))
+# Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
+# Config.LToday + f['precip_today_in'] + 'in')
+
+
 def getwx():
+    global supress_current
+    supress_current = False
+    try:
+        if Config.METAR != '':
+            supress_current = True
+            getwx_metar()
+    except:
+        pass
+
     try:
         ApiKeys.dsapi
         getwx_ds()
         return
     except:
         pass
+
     try:
         ApiKeys.ccapi
         global cc_code_map
@@ -925,6 +1246,7 @@ def getwx():
         return
     except:
         pass
+
     try:
         ApiKeys.owmapi
         getwx_owm()
@@ -1016,6 +1338,19 @@ def getwx_cc():
     r3 = QNetworkRequest(r3)
     wxreply3 = manager.get(r3)
     wxreply3.finished.connect(wxfinished_cc3)
+
+
+def getwx_metar():
+    global metarurl
+    global metarreply
+    metarurl = \
+        "https://tgftp.nws.noaa.gov/data/observations/metar/stations/" + \
+        Config.METAR + ".TXT"
+    print(metarurl)
+    r = QUrl(metarurl)
+    r = QNetworkRequest(r)
+    metarreply = manager.get(r)
+    metarreply.finished.connect(wxfinished_metar)
 
 
 def getallwx():
@@ -1689,6 +2024,12 @@ try:
 except AttributeError:
     pass
 
+
+try:
+    if Config.METAR != '':
+        from metar import Metar
+except AttributeError:
+    pass
 
 lastmin = -1
 lastday = -1

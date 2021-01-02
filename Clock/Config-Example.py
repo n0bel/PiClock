@@ -61,6 +61,17 @@ fontattr = ''
 dimcolor = QColor('#000000')
 dimcolor.setAlpha(0)
 
+# Optional Current conditions replaced with observations from a METAR station
+# METAR is world wide, provided mostly for pilots
+# But data can be sparse outside US and Europe
+#  If you're close to an international airport, you should find soemthing close
+# Find the closest METAR station with the following URL
+# https://www.aviationweather.gov/metar
+# scroll/zoom the map to find your closest station
+# or look up the ICAO code here:
+# https://airportcodes.aero/name
+METAR = ''
+
 # Language Specific wording
 # DarkSky Language code
 #  (https://darksky.net/dev/docs under lang=)
