@@ -1213,7 +1213,7 @@ def wxfinished_metar():
         wind.setText(ws)
         wind2.setText(Config.LFeelslike +
                       '%.1f' % (feels_like(f)) + u'°F')
-        wdate.setText("{0:%H:%M}".format(dt))
+        wdate.setText("{0:%H:%M} {1}".format(dt, Config.METAR))
 # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
 # Config.LToday + f['precip_today_in'] + 'in')
 
