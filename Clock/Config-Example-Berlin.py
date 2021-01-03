@@ -54,6 +54,8 @@ fontattr = ''
 dimcolor = QColor('#000000')
 dimcolor.setAlpha(0)
 
+METAR="EDDB"  # Berlin-Schönefeld International Airport
+
 # Language Specific wording
 # DarkSky Language code
 #  (https://darksky.net/dev/docs under lang=)
