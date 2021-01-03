@@ -336,7 +336,7 @@ def wxfinished_owm():
     global wxreply, wxdata, supress_current
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
-    global wxicon2, temper2, wxdesc, attribution
+    global wxicon2, temper2, wxdesc2, attribution
     owmicons = {
         '01d': 'clear-day',
         '02d': 'partly-cloudy-day',
@@ -549,7 +549,7 @@ def wxfinished_ds():
     global wxreply, wxdata, supress_current
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
-    global wxicon2, temper2, wxdesc, attribution
+    global wxicon2, temper2, wxdesc2, attribution
 
     attribution.setText("DarkSky.net")
     attribution2.setText("DarkSky.net")
@@ -783,7 +783,7 @@ def wxfinished_cc():
     global wxreply, wxdata, supress_current
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
-    global wxicon2, temper2, wxdesc, attribution
+    global wxicon2, temper2, wxdesc2, attribution
     attribution.setText("climacell.co")
     attribution2.setText("climacell.co")
 
@@ -1095,7 +1095,7 @@ def wxfinished_metar():
     global metarreply
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom
-    global wxicon2, temper2, wxdesc
+    global wxicon2, temper2, wxdesc2
 
     wxstr = str(metarreply.readAll())
     for wxline in wxstr.splitlines():
