@@ -122,6 +122,12 @@ apt-get install python-dev
 ```
 Then try the pip command again.
 
+then install more needed python libraries
+```
+pip install python-dateutil --upgrade
+pip install tzlocal --upgrade
+pip install python-metar --upgrade
+```
 
 then get unclutter (disables the mouse pointer when there's no activity)
 ```
