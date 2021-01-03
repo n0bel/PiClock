@@ -87,7 +87,7 @@ radar map centers and markers.
 ```
 cd PiClock
 cd Clock
-cp Config-example.py Config.py  (copy on windows)
+cp Config-Example.py Config.py  (copy on windows)
 [use your favorite editor] Config.py
 ```
 
