@@ -127,6 +127,16 @@ class suntimes:
         self.sunset_t = self.solarnoon_t + hourangle * 4 / 1440
 
 
+# https://gist.github.com/miklb/ed145757971096565723
+def moon_phase(dt=None):
+    if dt is None:
+        dt = datetime.datetime.now()
+    diff = dt - datetime.datetime(2001, 1, 1)
+    days = float(diff.days) + (float(diff.seconds) / 86400.0)
+    lunations = 0.20439731 + float(days) * 0.03386319269
+    return lunations % 1.0
+
+
 def tick():
     global hourpixmap, minpixmap, secpixmap
     global hourpixmap2, minpixmap2, secpixmap2
@@ -245,8 +255,7 @@ def tick():
                        "{0:%H:%M}".format(sunrise) +
                        Config.LSet +
                        "{0:%H:%M}".format(sunset))
-        # bottomText += (Config.LMoonPhase +
-        #                phase(wxdata["daily"]["data"][0]["moonPhase"]))
+        bottomText += (Config.LMoonPhase + phase(moon_phase()))
         bottom.setText(bottomText)
 
 
