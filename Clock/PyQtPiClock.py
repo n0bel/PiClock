@@ -133,6 +133,8 @@ def tick():
     global lastmin, lastday, lasttimestr
     global clockrect
     global datex, datex2, datey2, pdy
+    global sun, daytime, sunrise, sunset
+    global bottom
 
     if Config.DateLocale != "":
         try:
@@ -168,7 +170,6 @@ def tick():
             ts.height()
         )
         if now.minute != lastmin:
-            lastmin = now.minute
             angle = now.minute * 6
             ts = minpixmap.size()
             minpixmap2 = minpixmap.transformed(
@@ -213,6 +214,13 @@ def tick():
         pdy = dy
         datey2.setText(dy)
 
+    if now.minute != lastmin:
+        lastmin = now.minute
+        if now.time() >= sunrise and now.time() <= sunset:
+            daytime = True
+        else:
+            daytime = False
+
     if now.day != lastday:
         lastday = now.day
         # date
@@ -229,6 +237,17 @@ def tick():
         ds2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
         datex.setText(ds)
         datex2.setText(ds2)
+        dt = now.replace(tzinfo=tzlocal.get_localzone())
+        sunrise = sun.sunrise(dt)
+        sunset = sun.sunset(dt)
+        bottomText = ""
+        bottomText += (Config.LSunRise +
+                       "{0:%H:%M}".format(sunrise) +
+                       Config.LSet +
+                       "{0:%H:%M}".format(sunset))
+        # bottomText += (Config.LMoonPhase +
+        #                phase(wxdata["daily"]["data"][0]["moonPhase"]))
+        bottom.setText(bottomText)
 
 
 def tempfinished():
@@ -337,6 +356,7 @@ def wxfinished_owm():
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc2, attribution
+    global daytime
     owmicons = {
         '01d': 'clear-day',
         '02d': 'partly-cloudy-day',
@@ -421,19 +441,6 @@ def wxfinished_owm():
                 int(f['dt']))))
     # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
     # Config.LToday + f['precip_today_in'] + 'in')
-
-    bottomText = ""
-    bottomText += (Config.LSunRise +
-                   "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-                    f['sunrise'])) +
-                   Config.LSet +
-                   "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-                        f['sunset'])))
-
-    # bottomText += (Config.LMoonPhase +
-    #                phase(wxdata["daily"]["data"][0]["moonPhase"]))
-
-    bottom.setText(bottomText)
 
     for i in range(0, 3):
         f = wxdata['hourly'][i * 3 + 2]
@@ -550,6 +557,7 @@ def wxfinished_ds():
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc2, attribution
+    global daytime
 
     attribution.setText("DarkSky.net")
     attribution2.setText("DarkSky.net")
@@ -611,21 +619,6 @@ def wxfinished_ds():
                 int(f['time']))))
     # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
     # Config.LToday + f['precip_today_in'] + 'in')
-
-    bottomText = ""
-    if "sunriseTime" in wxdata["daily"]["data"][0]:
-        bottomText += (Config.LSunRise +
-                       "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-                        wxdata["daily"]["data"][0]["sunriseTime"])) +
-                       Config.LSet +
-                       "{0:%H:%M}".format(datetime.datetime.fromtimestamp(
-                        wxdata["daily"]["data"][0]["sunsetTime"])))
-
-    if "moonPhase" in wxdata["daily"]["data"][0]:
-        bottomText += (Config.LMoonPhase +
-                       phase(wxdata["daily"]["data"][0]["moonPhase"]))
-
-    bottom.setText(bottomText)
 
     for i in range(0, 3):
         f = wxdata['hourly']['data'][i * 3 + 2]
@@ -784,6 +777,7 @@ def wxfinished_cc():
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc2, attribution
+    global daytime
     attribution.setText("climacell.co")
     attribution2.setText("climacell.co")
 
@@ -794,10 +788,6 @@ def wxfinished_cc():
         .astimezone(tzlocal.get_localzone())
     icon = f['weather_code']['value']
     icon = cc_code_icons[icon]
-    daytime = False
-    if f['observation_time']['value'] >= f['sunrise']['value']:
-        if f['observation_time']['value'] <= f['sunset']['value']:
-            daytime = True
     if not daytime:
         icon = icon.replace('-day', '-night')
     if not supress_current:
@@ -856,36 +846,35 @@ def wxfinished_cc():
     # Config.LPrecip1hr + f['precip_1hr_in'] + 'in ' +
     # Config.LToday + f['precip_today_in'] + 'in')
 
-    bottomText = ""
-    bottomText += (Config.LSunRise +
-                   "{0:%H:%M}".format(
-                    dateutil.parser.parse(f['sunrise']['value'])
-                    .astimezone(tzlocal.get_localzone())) +
-                   Config.LSet +
-                   "{0:%H:%M}".format(
-                    dateutil.parser.parse(f['sunset']['value'])
-                    .astimezone(tzlocal.get_localzone())))
-    # bottomText += (Config.LMoonPhase +
-    #                phase(wxdata["daily"]["data"][0]["moonPhase"]))
-    bottom.setText(bottomText)
-
 
 def wxfinished_cc2():
     global wxreply, forecast
+    global daytime
     wxstr2 = str(wxreply2.readAll())
     # print('cc2', wxstr2)
     wxdata2 = json.loads(wxstr2)
 
     for i in range(0, 3):
         f = wxdata2[i * 3 + 2]
+        # print(i, i*3+2, f)
         fl = forecast[i]
         wicon = f['weather_code']['value']
         wicon = cc_code_icons[wicon]
-        daytime = False
-        if f['observation_time']['value'] >= f['sunrise']['value']:
-            if f['observation_time']['value'] <= f['sunset']['value']:
-                daytime = True
-        if not daytime:
+
+        dt = dateutil.parser.parse(f['observation_time']['value']) \
+            .astimezone(tzlocal.get_localzone())
+        if dt.day == datetime.datetime.now().day:
+            fdaytime = daytime
+        else:
+            fsunrise = sun.sunrise(dt)
+            fsunset = sun.sunset(dt)
+            print('calc daytime', fdaytime, dt, fsunrise, fsunset)
+            if dt.time() >= fsunrise and dt.time() <= fsunset:
+                fdaytime = True
+            else:
+                fdaytime = False
+
+        if not fdaytime:
             wicon = wicon.replace('-day', '-night')
         icon = fl.findChild(QtGui.QLabel, "icon")
         wxiconpixmap = QtGui.QPixmap(
@@ -934,14 +923,13 @@ def wxfinished_cc2():
 
 def wxfinished_cc3():
     global wxreply3, forecast
+    global daytime
     wxstr3 = str(wxreply3.readAll())
     # print('cc2', wxstr2)
     wxdata3 = json.loads(wxstr3)
     ioff = 0
     dt = dateutil.parser.parse(
         wxdata3[0]['observation_time']['value']+"T00:00:00")
-    print('ot', wxdata3[0]['observation_time']['value'])
-    print('dt', dt)
     if datetime.datetime.now().day != dt.day:
         ioff += 1
     for i in range(3, 9):
@@ -1096,6 +1084,7 @@ def wxfinished_metar():
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom
     global wxicon2, temper2, wxdesc2
+    global daytime
 
     wxstr = str(metarreply.readAll())
     for wxline in wxstr.splitlines():
@@ -1104,14 +1093,6 @@ def wxfinished_metar():
     print('wxmetar', wxstr)
     f = Metar.Metar(wxstr)
     dt = f.time.replace(tzinfo=tzutc()).astimezone(tzlocal.get_localzone())
-    print('dt', str(dt))
-    daytime = False
-    s = suntimes(Config.location.lat, Config.location.lng)
-    print('s ', dt.time(), s.sunrise(dt), s.sunset(dt))
-    if dt.time() >= s.sunrise(dt):
-        if dt.time() <= s.sunset(dt):
-            daytime = True
-    print('daytime', daytime)
 
     pri = -1
     weather = ''
@@ -1303,7 +1284,7 @@ def getwx_cc():
     wxurl += "&lat=" + str(Config.location.lat) + '&lon=' + \
         str(Config.location.lng)
     wxurl += '&unit_system=us'
-    wxurl += '&fields=temp,weather_code,feels_like,humidity,sunrise,sunset,'
+    wxurl += '&fields=temp,weather_code,feels_like,humidity,'
     wxurl += 'wind_speed,wind_direction,wind_gust,baro_pressure'
     print(wxurl)
     r = QUrl(wxurl)
@@ -1318,7 +1299,7 @@ def getwx_cc():
         str(Config.location.lng)
     wxurl2 += '&unit_system=us'
     wxurl2 += '&fields=temp,precipitation,precipitation_type,'
-    wxurl2 += 'precipitation_probability,weather_code,sunrise,sunset'
+    wxurl2 += 'precipitation_probability,weather_code'
     print(wxurl2)
     r2 = QUrl(wxurl2)
     r2 = QNetworkRequest(r2)
@@ -1364,6 +1345,16 @@ def qtstart():
     global objradar2
     global objradar3
     global objradar4
+    global sun, daytime, sunrise, sunset
+
+    dt = datetime.datetime.now().replace(tzinfo=tzlocal.get_localzone())
+    sun = suntimes(Config.location.lat, Config.location.lng)
+    sunrise = sun.sunrise(dt)
+    sunset = sun.sunset(dt)
+    if dt.time() >= sunrise and dt.time() <= sunset:
+            daytime = True
+    else:
+            daytime = False
 
     getallwx()
 
