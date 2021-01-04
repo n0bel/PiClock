@@ -1188,7 +1188,7 @@ def wxfinished_metar():
                    '%.1f' % (f.wind_gust.value('KMH')) + 'kmh')
         wind.setText(ws)
         wind2.setText(Config.LFeelslike +
-                      '%.1f' % (tempm(feels_like(f)) + u'°C'))
+                      '%.1f%s' % (tempm(feels_like(f)), u'°C'))
         wdate.setText("{0:%H:%M}".format(dt))
 # Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
 # Config.LToday + f['precip_today_metric'] + 'mm')
@@ -1296,7 +1296,7 @@ def getwx_owm():
 def getwx_cc():
     global wxurl
     global wxurl2
-    global wxur3
+    global wxurl3
     global wxreply
     global wxreply2
     global wxreply3
