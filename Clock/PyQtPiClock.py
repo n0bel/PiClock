@@ -41,14 +41,14 @@ class suntimes:
 
     def sunrise(self, when=None):
         if when is None:
-            when = datetime.now(tz=tzlocal.get_localzone())
+            when = datetime.datetime.now(tz=tzlocal.get_localzone())
         self.__preptime(when)
         self.__calc()
         return suntimes.__timefromdecimalday(self.sunrise_t)
 
     def sunset(self, when=None):
         if when is None:
-            when = datetime.now(tz=tzlocal.get_localzone())
+            when = datetime.datetime.now(tz=tzlocal.get_localzone())
         self.__preptime(when)
         self.__calc()
         return suntimes.__timefromdecimalday(self.sunset_t)
@@ -116,13 +116,25 @@ class suntimes:
                   math.sin(4 * math.radians(Mlong)) - 1.25 * Eccent * Eccent *
                   math.sin(2*math.radians(Manom))))
 
-        hourangle = (math.degrees(math.acos(math.cos(math.radians(90.833)) /
-                     (math.cos(math.radians(latitude)) *
-                     math.cos(math.radians(declination))) -
-                     math.tan(math.radians(latitude)) *
-                     math.tan(math.radians(declination)))))
+        hourangle0 = (math.cos(math.radians(90.833)) /
+                      (math.cos(math.radians(latitude)) *
+                      math.cos(math.radians(declination))) -
+                      math.tan(math.radians(latitude)) *
+                      math.tan(math.radians(declination)))
 
         self.solarnoon_t = (720-4 * longitude - eqtime + timezone * 60) / 1440
+        # sun never sets
+        if hourangle0 > 1.0:
+            self.sunrise_t = 0.0
+            self.sunset_t = 1.0 - 1.0/86400.0
+            return
+        if hourangle0 < -1.0:
+            self.sunrise_t = 0.0
+            self.sunset_t = 0.0
+            return
+
+        hourangle = math.degrees(math.acos(hourangle0))
+
         self.sunrise_t = self.solarnoon_t - hourangle * 4 / 1440
         self.sunset_t = self.solarnoon_t + hourangle * 4 / 1440
 
