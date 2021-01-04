@@ -1296,7 +1296,7 @@ def getwx_owm():
 def getwx_cc():
     global wxurl
     global wxurl2
-    global wxur3
+    global wxurl3
     global wxreply
     global wxreply2
     global wxreply3
