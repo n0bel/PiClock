@@ -1096,7 +1096,7 @@ def feels_like(f):
         return hi
     if t < 50 and w >= 3:
         wc = 35.74 + 0.6215 * t - 35.75 * \
-            (w ** 0.16) + 0.4275 * t * (w ** 0.16)
+         (w ** 0.16) + 0.4275 * t * (w ** 0.16)
         return wc
     return t
 
@@ -1188,7 +1188,7 @@ def wxfinished_metar():
                    '%.1f' % (f.wind_gust.value('KMH')) + 'kmh')
         wind.setText(ws)
         wind2.setText(Config.LFeelslike +
-                      '%.1f' % (tempm(feels_like(f)) + u'°C'))
+                      ('%.1f' % (tempm(feels_like(f))) + u'°C'))
         wdate.setText("{0:%H:%M}".format(dt))
 # Config.LPrecip1hr + f['precip_1hr_metric'] + 'mm ' +
 # Config.LToday + f['precip_today_metric'] + 'mm')
