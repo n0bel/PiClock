@@ -256,7 +256,9 @@ def tick():
         if Config.DateLocale != "":
             sup = ""
         ds = "{0:%A %B} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
+        ds = ds.decode('utf-8')  #Date decode utf-8
         ds2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
+        ds2 = ds2.decode('utf-8')  #Date decode utf-8
         datex.setText(ds)
         datex2.setText(ds2)
         dt = now.replace(tzinfo=tzlocal.get_localzone())
@@ -909,7 +911,7 @@ def wxfinished_cc2():
         day = fl.findChild(QtGui.QLabel, "day")
         day.setText("{0:%A %I:%M%p}".format(
             dateutil.parser.parse(f['observation_time']['value'])
-            .astimezone(tzlocal.get_localzone())))
+            .astimezone(tzlocal.get_localzone())).decode('utf-8')) #Decode utf-8
         s = ''
         pop = float(f['precipitation_probability']['value'])
         ptype = f['precipitation_type']['value']
@@ -971,7 +973,7 @@ def wxfinished_cc3():
             dateutil.parser.parse(
                 f['observation_time']['value']+"T00:00:00"
             )
-            ))
+            ).decode('utf-8')) # DECODE utf-8
         s = ''
         pop = float(f['precipitation_probability']['value'])
         ptype = ''
