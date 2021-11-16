@@ -7,7 +7,7 @@ based on the Raspberry Pi and a display monitor. The display monitor is
 assumed to be an HDMI monitor, but it will probably (possibly) work with
 the composite output as well, but this is not a design goal.  The main
 program (Clock/PyQtPiClock.py) will also run on Windows, Mac, and Linux,
-as long as python 2.7+ and PyQt4 is installed.
+as long as Python 3 and PyQt5 is installed.
 
 The Weather data comes from DarkSky using their API ( http://darksky.net/dev/ ).
 The maps are from Mapbox ( https://mapbox.com/ ) Google Maps API.
@@ -101,7 +101,7 @@ I decided to rewrite the whole thing in Python.  Why?  I decided I needed to lea
 Python in more than a passing way. For some (unfathomable reason to me) Python is
 the language of choice for Pi's.  It took a while to settle on a GUI framework.
 The primary issue on most of the GUIs was lack of image transparency support.
-Qt4 and its Python wrapper PyQt4 is what I finally chose.
+Qt5 and its Python wrapper PyQt5 is what I finally chose.
 
 The details of this evolution are on my blog http://n0bel.net/v1/index.php/projects/raspberry-pi-clock
 as well as newer postings and updates.   Some of my friends have been treated (subjected)

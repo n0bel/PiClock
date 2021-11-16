@@ -1,5 +1,6 @@
+from PyQt5.QtGui import QColor
+
 from GoogleMercatorProjection import LatLng
-from PyQt4.QtGui import QColor
 
 # LOCATION(S)
 # Further radar configuration (zoom, marker location)
@@ -21,7 +22,7 @@ hourhand = 'images/hourhand-darkgreen.png'
 minhand = 'images/minhand-darkgreen.png'
 sechand = 'images/sechand-darkgreen.png'
 
-digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
+digital = 0  # 1 = Digital Clock, 0 = Analog Clock
 
 digitalcolor = "#154018"
 digitalformat = "{0:%I:%M\n%S %p}"  # The format of the time
@@ -84,7 +85,6 @@ LInsideTemp = "Inside Temp "
 LRain = " Rain: "
 LSnow = " Snow: "
 
-
 # RADAR
 # By default, primary_location entered will be the center and marker of all
 # radar images.
@@ -98,15 +98,14 @@ radar1 = {
     'center': primary_location,  # the center of your radar block
     'zoom': 7,  # this is a google maps zoom factor, bigger = smaller area
     'style': 'mapbox/cj5l80zrp29942rmtg0zctjto',  # Mapbox calls this Decimal
-    'markers': (   # google maps markers can be overlayed
+    'markers': (  # google maps markers can be overlaid
         {
             'location': primary_location,
             'color': 'red',
             'size': 'small',
-        },          # dangling comma is on purpose.
+        },  # dangling comma is on purpose.
     )
 }
-
 
 radar2 = {
     'center': primary_location,
@@ -120,7 +119,6 @@ radar2 = {
         },
     )
 }
-
 
 radar3 = {
     'center': primary_location,

@@ -101,9 +101,9 @@ update the repository
 ```
 apt-get update
 ```
-then get qt4 for python
+then get qt5 for python
 ```
-apt-get install python-qt4
+apt-get install python3-qt5
 ```
 you may need to confirm some things, like:
 After this operation, 59.5 MB of additional disk space will be used.
@@ -112,9 +112,9 @@ Go ahead, say yes
 
 then get ws281x driver for python (optional for the NeoPixel LED Driver)
 ```
-pip install rpi_ws281x
+pip3 install rpi_ws281x
 ```
-Someversions of Raspbian need python-dev to be installed as well, before
+Some versions of Raspbian need python-dev to be installed as well, before
 rpi-ws281x can be installed.  If the prevous command fails reporting
 a missing include file, then do this:
 ```
@@ -124,9 +124,10 @@ Then try the pip command again.
 
 then install more needed python libraries
 ```
-pip install python-dateutil --upgrade
-pip install tzlocal --upgrade
-pip install python-metar --upgrade
+pip3 install --upgrade pip
+pip3 install python-dateutil --upgrade
+pip3 install tzlocal --upgrade
+pip3 install python-metar --upgrade
 ```
 
 then get unclutter (disables the mouse pointer when there's no activity)
@@ -139,7 +140,7 @@ apt-get install unclutter
 (you must still be root [super user])
 ```
 git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
-python setup.py install
+python3 setup.py install
 ```
 
 ### Get Lirc driver for IR remote (optional)
@@ -210,7 +211,7 @@ as found on http://lirc.org/
 
 The software expects 7 keys.   KEY_F1, KEY_F2, KEY_F3, KEY_UP, KEY_DOWN, KEY_RIGHT
 and KEY_LEFT.   Lirc takes these keys and injects them into linix as if they
-were typed from a keyboard.   PyQPiClock.py then simply looks for normal keyboard
+were typed from a keyboard.   PyQtPiClock.py then simply looks for normal keyboard
 events.   Therefore of course, if you have a usb keyboard attached, those keys
 work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV.
 
@@ -472,7 +473,7 @@ using git and github.
 ```
 cd PiClock
 git pull
-python update.py
+python3 update.py
 ```
 This will automatically update any part(s) of the software that has changed.
 The update.py program will then convert any config files as needed.

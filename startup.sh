@@ -72,14 +72,14 @@ amixer cset numid=1 -- 400 >/dev/null 2>&1
 # NeoPixel AmbiLights
 echo "Checking for NeoPixels Ambilight..."
 cd Leds
-python -c "import rpi_ws281x" >/dev/null 2>&1
+python3 -c "import rpi_ws281x" >/dev/null 2>&1
 if [ $? -eq 0 ]
 then
 	pgrep -f NeoAmbi.py
 	if [ $? -eq 1 ]
 	then
 		echo "Starting NeoPixel Ambilight Service..."
-		sudo python NeoAmbi.py &
+		sudo python3 NeoAmbi.py &
 	fi
 fi
 cd ..
@@ -98,7 +98,7 @@ fi
 
 echo "Checking for Temperature Sensors..."
 # for temperature sensor(s) on One Wire bus
-python -c "import w1thermsensor" >/dev/null 2>&1
+python3 -c "import w1thermsensor" >/dev/null 2>&1
 if [ $? -eq 0 ]
 	then
 	pgrep -f TempServer.py
@@ -106,7 +106,7 @@ if [ $? -eq 0 ]
 	then
 		echo "Starting Temperature Service..."
 		cd Temperature
-		python TempServer.py &
+		python3 TempServer.py &
 		cd ..
 	fi
 fi
@@ -116,7 +116,7 @@ cd Clock
 if [ "$1" = "-s" -o "$1" = "--screen-log" ]
 then
   echo "Starting PiClock.... logging to screen."
-  python -u PyQtPiClock.py
+  python3 -u PyQtPiClock.py
 else
   # create a new log file name, max of 7 log files
   echo "Rotating log files...."
@@ -128,5 +128,5 @@ else
   mv PyQtPiClock.2.log PyQtPiClock.3.log >/dev/null 2>&1
   mv PyQtPiClock.1.log PyQtPiClock.2.log >/dev/null 2>&1
   echo "Starting PiClock.... logging to Clock/PyQtPiClock.1.log "
-  python -u PyQtPiClock.py >PyQtPiClock.1.log 2>&1
+  python3 -u PyQtPiClock.py >PyQtPiClock.1.log 2>&1
 fi

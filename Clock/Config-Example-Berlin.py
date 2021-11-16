@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from PyQt5.QtGui import QColor
+
 from GoogleMercatorProjection import LatLng
-from PyQt4.QtGui import QColor
 
 # LOCATION(S)
 # Further radar configuration (zoom, marker location) can be
@@ -20,8 +21,7 @@ hourhand = 'images/hourhand.png'
 minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
-
-digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
+digital = 0  # 1 = Digital Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
@@ -39,11 +39,10 @@ digitalsize = 200
 
 
 metric = 1  # 0 = English, 1 = Metric
-radar_refresh = 10      # minutes
-weather_refresh = 30    # minutes
+radar_refresh = 10  # minutes
+weather_refresh = 30  # minutes
 # Wind in degrees instead of cardinal 0 = cardinal, 1 = degrees
 wind_degrees = 0
-
 
 # gives all text additional attributes using QT style notation
 # example: fontattr = 'font-weight: bold; '
@@ -54,7 +53,7 @@ fontattr = ''
 dimcolor = QColor('#000000')
 dimcolor.setAlpha(0)
 
-METAR="EDDB"  # Berlin-Schönefeld International Airport
+METAR = "EDDB"  # Berlin-Schönefeld International Airport
 
 # Language Specific wording
 # DarkSky Language code
@@ -94,29 +93,29 @@ Lmoon7 = 'Abnehmender Halbmond'
 Lmoon8 = 'Abnehmender Sichelmond'
 # Language Specific terms for weather conditions
 Lcc_code_map = {
-            "freezing_rain_heavy": "Gefrierender Regen",
-            "freezing_rain": "Gefrierender Regen",
-            "freezing_rain_light": "Gefrierender Regen",
-            "freezing_drizzle": "Gefrierender Nieselregen",
-            "ice_pellets_heavy": "Eisstücke",
-            "ice_pellets": "Eisstücke",
-            "ice_pellets_light": "Eisstücke",
-            "snow_heavy": "Starker Schneefall",
-            "snow": "Schnee",
-            "snow_light": "Leichter Schnee",
-            "flurries": "Gewitter",
-            "tstorm": "Gewitter",
-            "rain_heavy": "Starkregen",
-            "rain": "Regen",
-            "rain_light": "Leichter Regen",
-            "drizzle": "Nieselregen",
-            "fog_light": "Leichter Nebel",
-            "fog": "Nebel",
-            "cloudy": "Wolkig",
-            "mostly_cloudy": "Meist Wolkig",
-            "partly_cloudy": "Teilweise Wolkig",
-            "mostly_clear": "Teilweise klar",
-            "clear": "Klar"
+    "freezing_rain_heavy": "Gefrierender Regen",
+    "freezing_rain": "Gefrierender Regen",
+    "freezing_rain_light": "Gefrierender Regen",
+    "freezing_drizzle": "Gefrierender Nieselregen",
+    "ice_pellets_heavy": "Eisstücke",
+    "ice_pellets": "Eisstücke",
+    "ice_pellets_light": "Eisstücke",
+    "snow_heavy": "Starker Schneefall",
+    "snow": "Schnee",
+    "snow_light": "Leichter Schnee",
+    "flurries": "Gewitter",
+    "tstorm": "Gewitter",
+    "rain_heavy": "Starkregen",
+    "rain": "Regen",
+    "rain_light": "Leichter Regen",
+    "drizzle": "Nieselregen",
+    "fog_light": "Leichter Nebel",
+    "fog": "Nebel",
+    "cloudy": "Wolkig",
+    "mostly_cloudy": "Meist Wolkig",
+    "partly_cloudy": "Teilweise Wolkig",
+    "mostly_clear": "Teilweise klar",
+    "clear": "Klar"
 }
 
 # RADAR
@@ -131,15 +130,14 @@ Lcc_code_map = {
 radar1 = {
     'center': primary_location,  # the center of your radar block
     'zoom': 7,  # this is a google maps zoom factor, bigger = smaller area
-    'markers': (   # google maps markers can be overlayed
+    'markers': (  # google maps markers can be overlaid
         {
             'location': primary_location,
             'color': 'red',
             'size': 'small',
-        },          # dangling comma is on purpose.
+        },  # dangling comma is on purpose.
     )
 }
-
 
 radar2 = {
     'center': primary_location,
@@ -152,7 +150,6 @@ radar2 = {
         },
     )
 }
-
 
 radar3 = {
     'center': primary_location,

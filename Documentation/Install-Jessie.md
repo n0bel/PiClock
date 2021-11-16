@@ -223,7 +223,7 @@ as found on http://lirc.org/
 
 The software expects 7 keys.   KEY_F1, KEY_F2, KEY_F3, KEY_UP, KEY_DOWN, KEY_RIGHT
 and KEY_LEFT.   Lirc takes these keys and injects them into linix as if they
-were typed from a keyboard.   PyQPiClock.py then simply looks for normal keyboard
+were typed from a keyboard.   PyQtPiClock.py then simply looks for normal keyboard
 events.   Therefore of course, if you have a usb keyboard attached, those keys
 work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV.
 

@@ -1,6 +1,6 @@
-from GoogleMercatorProjection import LatLng     # NOQA
-from PyQt4.QtGui import QColor
+from PyQt5.QtGui import QColor
 
+from GoogleMercatorProjection import LatLng  # NOQA
 
 # LOCATION(S)
 # Further radar configuration (zoom, marker location) can be
@@ -20,8 +20,7 @@ hourhand = 'images/hourhand.png'
 minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
-
-digital = 0             # 1 = Digtal Clock, 0 = Analog Clock
+digital = 0  # 1 = Digital Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
@@ -39,8 +38,8 @@ digitalsize = 200
 
 
 metric = 1  # 0 = English, 1 = Metric
-radar_refresh = 10      # minutes
-weather_refresh = 30    # minutes
+radar_refresh = 10  # minutes
+weather_refresh = 30  # minutes
 # Wind in degrees instead of cardinal 0 = cardinal, 1 = degrees
 wind_degrees = 0
 
@@ -53,7 +52,7 @@ fontattr = ''
 dimcolor = QColor('#000000')
 dimcolor.setAlpha(0)
 
-METAR="EGLL"  # LHR London Heathrow Airport
+METAR = "EGLL"  # LHR London Heathrow Airport
 
 # Language Specific wording
 # DarkSky Language code
@@ -83,7 +82,6 @@ LInsideTemp = "Inside Temp "
 LRain = " Rain: "
 LSnow = " Snow: "
 
-
 # RADAR
 # By default, primary_location entered will be the
 #  center and marker of all radar images.
@@ -95,15 +93,14 @@ LSnow = " Snow: "
 radar1 = {
     'center': primary_location,  # the center of your radar block
     'zoom': 7,  # this is a google maps zoom factor, bigger = smaller area
-    'markers': (   # google maps markers can be overlayed
+    'markers': (  # google maps markers can be overlaid
         {
             'location': primary_location,
             'color': 'red',
             'size': 'small',
-        },          # dangling comma is on purpose.
+        },  # dangling comma is on purpose.
     )
 }
-
 
 radar2 = {
     'center': primary_location,
@@ -116,7 +113,6 @@ radar2 = {
         },
     )
 }
-
 
 radar3 = {
     'center': primary_location,
