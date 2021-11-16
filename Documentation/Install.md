@@ -1,17 +1,17 @@
 # Install Instructions for PiClock
-## For Raspbian Stretch
+## For Raspberry Pi OS
 
-PiClock and this install guide are based on Raspian Stretch downloaded from
-https://www.raspberrypi.org/downloads/raspbian/ I suggest using
-"Raspbian Stretch with desktop"  It will work with many raspbian versions,
+PiClock and this install guide are based on Raspberry Pi OS downloaded from
+https://www.raspberrypi.com/software/ I suggest using
+"Raspberry Pi OS with desktop"  It will work with many Raspberry Pi OS versions,
 but you may have to add more packages, etc.  That exercise is left for the reader.
 
-What follows is a step by step guide.  If you start with a new clean raspbian
+What follows is a step by step guide.  If you start with a new clean Raspberry Pi OS
 image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
 
-### Download Raspbian Stretch and put it on an SD Card
+### Download Raspberry Pi OS and put it on an SD Card
 
 The instructions for doing this are on the following page:
 https://www.raspberrypi.org/documentation/installation/installing-images/README.md
@@ -114,7 +114,7 @@ then get ws281x driver for python (optional for the NeoPixel LED Driver)
 ```
 pip3 install rpi_ws281x
 ```
-Some versions of Raspbian need python-dev to be installed as well, before
+Some versions of Raspberry Pi OS need python-dev to be installed as well, before
 rpi-ws281x can be installed.  If the prevous command fails reporting
 a missing include file, then do this:
 ```
@@ -191,7 +191,7 @@ git clone https://github.com/n0bel/PiClock.git
 (Optional for GPIO keys)
 Once that is done, you'll have a new directory called PiClock
 A few commands are needed if you intend to use gpio buttons
-and the gpio-keys driver to compile it for the latest Raspbian:
+and the gpio-keys driver to compile it for the latest Raspberry Pi OS:
 ```
 cd PiClock/Button
 make gpio-keys
