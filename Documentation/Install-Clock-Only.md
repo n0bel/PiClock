@@ -21,11 +21,11 @@ as an excersise for the reader.
 
 ### Get the PiClock software
 ```
-git clone https://github.com/n0bel/PiClock.git
+git clone https://github.com/SerBrynden/PiClock.git
 ```
 Alternatively, you can download a zip file of the github project.
 
-https://github.com/n0bel/PiClock/archive/master.zip, then unzip it.
+https://github.com/SerBrynden/PiClock/archive/master.zip, then unzip it.
 
 
 ### Configure the PiClock api keys
