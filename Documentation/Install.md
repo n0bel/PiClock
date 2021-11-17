@@ -103,7 +103,7 @@ apt-get update
 ```
 then get qt5 for python
 ```
-apt-get install python3-qt5
+apt-get install python3-pyqt5
 ```
 you may need to confirm some things, like:
 After this operation, 59.5 MB of additional disk space will be used.
