@@ -14,7 +14,7 @@ regarding setting up the basic hardware for your Raspi.
 ### Download Raspberry Pi OS and put it on an SD Card
 
 The instructions for doing this are on the following page:
-https://www.raspberrypi.org/documentation/installation/installing-images/README.md
+https://www.raspberrypi.com/documentation/computers/getting-started.html
 
 ### First boot and configure
 A keyboard and mouse are really handy at this point.
@@ -186,7 +186,7 @@ and this is where we want to be.  Note that the following command while
 itself not being case sensitive, further operation of PiClock may be
 affected if the upper and lower case of the command is not followed.
 ```
-git clone https://github.com/n0bel/PiClock.git
+git clone https://github.com/SerBrynden/PiClock.git
 ```
 (Optional for GPIO keys)
 Once that is done, you'll have a new directory called PiClock
