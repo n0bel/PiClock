@@ -2,7 +2,7 @@
 ## For Raspbian Stretch
 
 PiClock and this install guide are based on Raspian Stretch downloaded from
-https://www.raspberrypi.org/downloads/raspbian/ I suggest using
+https://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/ I suggest using
 "Raspbian Stretch with desktop"  It will work with many raspbian versions,
 but you may have to add more packages, etc.  That exercise is left for the reader.
 
@@ -13,8 +13,24 @@ regarding setting up the basic hardware for your Raspi.
 
 ### Download Raspbian Stretch and put it on an SD Card
 
-The instructions for doing this are on the following page:
-https://www.raspberrypi.org/documentation/installation/installing-images/README.md
+Download the zip file, and unzip it.  You'll have a .img file.  You'll need
+an Imaging program like Win32 Disk Imager http://sourceforge.net/projects/win32diskimager/
+
+![Win32 Disk Imager](https://cdn.shopify.com/s/files/1/0176/3274/files/6_6153a773-ecc0-4ba5-9b01-d2aa7780cc8f_1024x1024.png "Win32 Disk Imager")
+
+Now, insert your SD card into your laptop/computer and browse to your image file.
+
+![Choose Image and SD Card](https://cdn.shopify.com/s/files/1/0176/3274/files/7_1024x1024.png "Choose Image and SD Card")
+
+**BEFORE YOU HIT WRITE - Please make sure that you have selected the correct device.
+Win32 will pick up any removable media including SSD's. The last thing you want to 
+do is overwrite your computer's hard drive!**
+
+When you're happy that you have the **correct image**, and **correct device**, hit write.
+
+You'll get a warning message to confirm that you're happy to proceed. 
+Hit yes, and the image will burn to your card.
+
 
 ### First boot and configure
 A keyboard and mouse are really handy at this point.
