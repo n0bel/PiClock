@@ -1,36 +1,20 @@
 # Install Instructions for PiClock
-## For Raspbian Stretch
+## For Raspberry Pi OS
 
-PiClock and this install guide are based on Raspian Stretch downloaded from
-https://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/ I suggest using
-"Raspbian Stretch with desktop"  It will work with many raspbian versions,
+PiClock and this install guide are based on Raspberry Pi OS downloaded from
+https://www.raspberrypi.com/software/ I suggest using
+"Raspberry Pi OS with desktop"  It will work with many Raspberry Pi OS versions,
 but you may have to add more packages, etc.  That exercise is left for the reader.
 
-What follows is a step by step guide.  If you start with a new clean raspbian
+What follows is a step by step guide.  If you start with a new clean Raspberry Pi OS
 image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
 
-### Download Raspbian Stretch and put it on an SD Card
+### Download Raspberry Pi OS and put it on an SD Card
 
-Download the zip file, and unzip it.  You'll have a .img file.  You'll need
-an Imaging program like Win32 Disk Imager http://sourceforge.net/projects/win32diskimager/
-
-![Win32 Disk Imager](https://cdn.shopify.com/s/files/1/0176/3274/files/6_6153a773-ecc0-4ba5-9b01-d2aa7780cc8f_1024x1024.png "Win32 Disk Imager")
-
-Now, insert your SD card into your laptop/computer and browse to your image file.
-
-![Choose Image and SD Card](https://cdn.shopify.com/s/files/1/0176/3274/files/7_1024x1024.png "Choose Image and SD Card")
-
-**BEFORE YOU HIT WRITE - Please make sure that you have selected the correct device.
-Win32 will pick up any removable media including SSD's. The last thing you want to 
-do is overwrite your computer's hard drive!**
-
-When you're happy that you have the **correct image**, and **correct device**, hit write.
-
-You'll get a warning message to confirm that you're happy to proceed. 
-Hit yes, and the image will burn to your card.
-
+The instructions for doing this are on the following page:
+https://www.raspberrypi.com/documentation/computers/getting-started.html
 
 ### First boot and configure
 A keyboard and mouse are really handy at this point.
@@ -117,9 +101,9 @@ update the repository
 ```
 apt-get update
 ```
-then get qt4 for python
+then get qt5 for python
 ```
-apt-get install python-qt4
+apt-get install python3-pyqt5
 ```
 you may need to confirm some things, like:
 After this operation, 59.5 MB of additional disk space will be used.
@@ -128,9 +112,9 @@ Go ahead, say yes
 
 then get ws281x driver for python (optional for the NeoPixel LED Driver)
 ```
-pip install rpi_ws281x
+pip3 install rpi_ws281x
 ```
-Someversions of Raspbian need python-dev to be installed as well, before
+Some versions of Raspberry Pi OS need python-dev to be installed as well, before
 rpi-ws281x can be installed.  If the prevous command fails reporting
 a missing include file, then do this:
 ```
@@ -140,9 +124,10 @@ Then try the pip command again.
 
 then install more needed python libraries
 ```
-pip install python-dateutil --upgrade
-pip install tzlocal --upgrade
-pip install python-metar --upgrade
+pip3 install --upgrade pip
+pip3 install python-dateutil --upgrade
+pip3 install tzlocal --upgrade
+pip3 install python-metar --upgrade
 ```
 
 then get unclutter (disables the mouse pointer when there's no activity)
@@ -155,7 +140,7 @@ apt-get install unclutter
 (you must still be root [super user])
 ```
 git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
-python setup.py install
+python3 setup.py install
 ```
 
 ### Get Lirc driver for IR remote (optional)
@@ -201,12 +186,12 @@ and this is where we want to be.  Note that the following command while
 itself not being case sensitive, further operation of PiClock may be
 affected if the upper and lower case of the command is not followed.
 ```
-git clone https://github.com/n0bel/PiClock.git
+git clone https://github.com/SerBrynden/PiClock.git
 ```
 (Optional for GPIO keys)
 Once that is done, you'll have a new directory called PiClock
 A few commands are needed if you intend to use gpio buttons
-and the gpio-keys driver to compile it for the latest Raspbian:
+and the gpio-keys driver to compile it for the latest Raspberry Pi OS:
 ```
 cd PiClock/Button
 make gpio-keys
@@ -226,7 +211,7 @@ as found on http://lirc.org/
 
 The software expects 7 keys.   KEY_F1, KEY_F2, KEY_F3, KEY_UP, KEY_DOWN, KEY_RIGHT
 and KEY_LEFT.   Lirc takes these keys and injects them into linix as if they
-were typed from a keyboard.   PyQPiClock.py then simply looks for normal keyboard
+were typed from a keyboard.   PyQtPiClock.py then simply looks for normal keyboard
 events.   Therefore of course, if you have a usb keyboard attached, those keys
 work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV.
 
@@ -488,7 +473,7 @@ using git and github.
 ```
 cd PiClock
 git pull
-python update.py
+python3 update.py
 ```
 This will automatically update any part(s) of the software that has changed.
 The update.py program will then convert any config files as needed.
