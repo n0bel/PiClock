@@ -17,4 +17,4 @@ mv PyQtPiClock.2.log PyQtPiClock.3.log >/dev/null 2>&1
 mv PyQtPiClock.1.log PyQtPiClock.2.log >/dev/null 2>&1
 # start the clock
 echo "Starting PiClock...."
-python -u PyQtPiClock.py $1 >PyQtPiClock.1.log 2>&1 &
+python3 -u PyQtPiClock.py $1 >PyQtPiClock.1.log 2>&1 &

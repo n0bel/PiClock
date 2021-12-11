@@ -1,6 +1,6 @@
-from GoogleMercatorProjection import LatLng
-from PyQt4.QtGui import QColor
+from PyQt5.QtGui import QColor
 
+from GoogleMercatorProjection import LatLng
 
 # LOCATION(S)
 # Further radar configuration (zoom, marker location) can be
@@ -21,12 +21,12 @@ minhand = 'images/minhand.png'
 sechand = 'images/sechand.png'
 
 # SlideShow
-useslideshow = 0             # 1 to enable, 0 to disable
-slide_time = 305              # in seconds, 3600 per hour
-slides = 'images/slideshow'   # the path to your local images
-slide_bg_color = "#000"       # https://htmlcolorcodes.com/  black #000
+useslideshow = 0  # 1 to enable, 0 to disable
+slide_time = 305  # in seconds, 3600 per hour
+slides = 'images/slideshow'  # the path to your local images
+slide_bg_color = "#000"  # https://htmlcolorcodes.com/  black #000
 
-digital = 0                 # 1 = Digtal Clock, 0 = Analog Clock
+digital = 0  # 1 = Digital Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
 digitalcolor = "#50CBEB"
@@ -35,20 +35,32 @@ digitalsize = 200
 
 # The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg
-# ( specifications of the time string are documented here:
-#  https://docs.python.org/2/library/time.html#time.strftime )
+# (specifications of the time string are documented here:
+#  https://docs.python.org/2/library/time.html#time.strftime)
 
 # digitalformat = "{0:%I:%M}"
 # digitalsize = 250
-#  The above example shows in this way:
-#  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
+# The above example shows in this way:
+# https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
 
 digitalformat2 = "{0:%H:%M:%S}"  # Format of the digital time on second screen
 
-usemapbox = 0   # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
+usemapbox = 1  # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
+map_base = 'bcurley/cj712peyz0bwr2sqfndbggupb'  # Custom dark Mapbox style for land and water only (bottom layer that goes below weather radar)
+map_overlay = 'bcurley/cj712r01c0bw62rm9isme3j8c'  # Custom Mapbox style for labels, roads, and borders only (top layer that goes above weather radar)
+# map_base = 'mapbox/satellite-streets-v11' # Uncomment for standard Mapbox style, and comment/remove the custom style
+# map_overlay = '' # Uncomment and leave blank for standard Mapbox style, and comment/remove the custom style
+
+# Sign-in and create custom map styles at https://studio.mapbox.com/
+# Example: If static map URL is
+# https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/-80.2,25.8,10/600x400?access_token=YOUR-ACCESS-TOKEN
+# use the portion between '/styles/v1/' and '/static/'
+# Standard Mapbox maps will look like 'mapbox/streets-v11'
+# User created Mapbox maps will look like 'user-name/map-identifier'
+
 metric = 0  # 0 = English, 1 = Metric
-radar_refresh = 10      # minutes
-weather_refresh = 30    # minutes
+radar_refresh = 10  # minutes
+weather_refresh = 30  # minutes
 # Wind in degrees instead of cardinal 0 = cardinal, 1 = degrees
 wind_degrees = 0
 
@@ -64,7 +76,7 @@ dimcolor.setAlpha(0)
 # Optional Current conditions replaced with observations from a METAR station
 # METAR is world wide, provided mostly for pilots
 # But data can be sparse outside US and Europe
-#  If you're close to an international airport, you should find soemthing close
+# If you're close to an international airport, you should find something close
 # Find the closest METAR station with the following URL
 # https://www.aviationweather.gov/metar
 # scroll/zoom the map to find your closest station
@@ -74,7 +86,7 @@ METAR = ''
 
 # Language Specific wording
 # DarkSky Language code
-#  (https://darksky.net/dev/docs under lang=)
+# (https://darksky.net/dev/docs under lang=)
 Language = "EN"
 
 # The Python Locale for date/time (locale.setlocale)
@@ -106,32 +118,32 @@ Lmoon4 = 'Waxing Gibbous'
 Lmoon5 = 'Full Moon'
 Lmoon6 = 'Waning Gibbous'
 Lmoon7 = 'Third Quarter'
-Lmoon8 = 'Waning Crecent'
+Lmoon8 = 'Waning Crescent'
 # Language Specific terms for weather conditions
 Lcc_code_map = {
-            "freezing_rain_heavy": "Freezing Rain",
-            "freezing_rain": "Freezing Rain",
-            "freezing_rain_light": "Freezing Rain",
-            "freezing_drizzle": "Freezing Drizzle",
-            "ice_pellets_heavy": "Ice Pellets",
-            "ice_pellets": "Ice Pellets",
-            "ice_pellets_light": "Ice Pellets",
-            "snow_heavy": "Heavy Snow",
-            "snow": "Snow",
-            "snow_light": "Light Snow",
-            "flurries": "Flurries",
-            "tstorm": "Thunder Storm",
-            "rain_heavy": "Heavy Rain",
-            "rain": "Rain",
-            "rain_light": "Light Rain",
-            "drizzle": "Drizzle",
-            "fog_light": "Light Fog",
-            "fog": "Fog",
-            "cloudy": "Cloudy",
-            "mostly_cloudy": "Mostly Cloudy",
-            "partly_cloudy": "Partly Cloudy",
-            "mostly_clear": "Mostly Clear",
-            "clear": "Clear"
+    "freezing_rain_heavy": "Freezing Rain",
+    "freezing_rain": "Freezing Rain",
+    "freezing_rain_light": "Freezing Rain",
+    "freezing_drizzle": "Freezing Drizzle",
+    "ice_pellets_heavy": "Ice Pellets",
+    "ice_pellets": "Ice Pellets",
+    "ice_pellets_light": "Ice Pellets",
+    "snow_heavy": "Heavy Snow",
+    "snow": "Snow",
+    "snow_light": "Light Snow",
+    "flurries": "Flurries",
+    "tstorm": "Thunder Storm",
+    "rain_heavy": "Heavy Rain",
+    "rain": "Rain",
+    "rain_light": "Light Rain",
+    "drizzle": "Drizzle",
+    "fog_light": "Light Fog",
+    "fog": "Fog",
+    "cloudy": "Cloudy",
+    "mostly_cloudy": "Mostly Cloudy",
+    "partly_cloudy": "Partly Cloudy",
+    "mostly_clear": "Mostly Clear",
+    "clear": "Clear"
 }
 
 # RADAR
@@ -146,27 +158,28 @@ Lcc_code_map = {
 radar1 = {
     'center': primary_location,  # the center of your radar block
     'zoom': 7,  # this is a maps zoom factor, bigger = smaller area
-    'style': 'mapbox/satellite-streets-v10',  # optional style (mapbox only)
+    'basemap': map_base,  # Mapbox style for standard map or custom map with land and water only
+    'overlay': map_overlay,  # Mapbox style for labels, roads, and borders only
     'color': 6,  # rainviewer radar color style:
-                 # https://www.rainviewer.com/api.html#colorSchemes
+    # https://www.rainviewer.com/api.html#colorSchemes
     'smooth': 1,  # rainviewer radar smoothing
     'snow': 1,  # rainviewer radar show snow as different color
-    'markers': (   # google maps markers can be overlayed
+    'markers': (  # google maps markers can be overlaid
         {
             'visible': 1,  # 0 = hide marker, 1 = show marker
             'location': primary_location,
             'color': 'red',
             'size': 'small',
             'image': 'teardrop-dot',  # optional image from the markers folder
-        },          # dangling comma is on purpose.
+        },  # dangling comma is on purpose.
     )
 }
-
 
 radar2 = {
     'center': primary_location,
     'zoom': 11,
-    'style': 'mapbox/satellite-streets-v10',
+    'basemap': map_base,
+    'overlay': map_overlay,
     'color': 6,
     'smooth': 1,
     'snow': 1,
@@ -181,11 +194,11 @@ radar2 = {
     )
 }
 
-
 radar3 = {
     'center': primary_location,
     'zoom': 7,
-    'style': 'mapbox/satellite-streets-v10',
+    'basemap': map_base,
+    'overlay': map_overlay,
     'color': 6,
     'smooth': 1,
     'snow': 1,
@@ -203,7 +216,8 @@ radar3 = {
 radar4 = {
     'center': primary_location,
     'zoom': 11,
-    'style': 'mapbox/satellite-streets-v10',
+    'basemap': map_base,
+    'overlay': map_overlay,
     'color': 6,
     'smooth': 1,
     'snow': 1,

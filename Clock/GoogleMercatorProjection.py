@@ -1,22 +1,23 @@
 # http://stackoverflow.com/
 #   questions/12507274/how-to-get-bounds-of-a-google-static-map
 import math
+
 MERCATOR_RANGE = 256
 
 
 def bound(value, opt_min, opt_max):
-    if (opt_min is not None):
+    if opt_min is not None:
         value = max(value, opt_min)
-    if (opt_max is not None):
+    if opt_max is not None:
         value = min(value, opt_max)
     return value
 
 
-def degreesToRadians(deg):
+def degrees_to_radians(deg):
     return deg * (math.pi / 180)
 
 
-def radiansToDegrees(rad):
+def radians_to_degrees(rad):
     return rad / (math.pi / 180)
 
 
@@ -47,69 +48,68 @@ class LatLng:
 class MercatorProjection:
 
     def __init__(self):
-        self.pixelOrigin_ = Point(MERCATOR_RANGE / 2.0, MERCATOR_RANGE / 2.0)
+        self.pixelOrigin_ = Point(int(MERCATOR_RANGE / 2.0), int(MERCATOR_RANGE / 2.0))
         self.pixelsPerLonDegree_ = MERCATOR_RANGE / 360.0
         self.pixelsPerLonRadian_ = MERCATOR_RANGE / (2.0 * math.pi)
 
-    def fromLatLngToPoint(self, latLng, opt_point=None):
+    def from_latlng_to_point(self, latlng, opt_point=None):
         point = opt_point if opt_point is not None else Point(0, 0)
         origin = self.pixelOrigin_
-        point.x = origin.x + latLng.lng * self.pixelsPerLonDegree_
+        point.x = origin.x + latlng.lng * self.pixelsPerLonDegree_
         # NOTE(appleton): Truncating to 0.9999 effectively limits latitude to
         # 89.189.This is about a third of a tile past the edge of world tile
-        siny = bound(math.sin(degreesToRadians(latLng.lat)), -0.9999, 0.9999)
-        point.y = origin.y + 0.5 * math.log((1 + siny) / (1.0 - siny)) * \
-            -self.pixelsPerLonRadian_
+        siny = bound(math.sin(degrees_to_radians(latlng.lat)), -0.9999, 0.9999)
+        point.y = origin.y + 0.5 * math.log((1 + siny) / (1.0 - siny)) * -self.pixelsPerLonRadian_
         return point
 
-    def fromPointToLatLng(self, point):
+    def from_point_to_latlng(self, point):
         origin = self.pixelOrigin_
         lng = (point.x - origin.x) / self.pixelsPerLonDegree_
-        latRadians = (point.y - origin.y) / -self.pixelsPerLonRadian_
-        lat = radiansToDegrees(2.0 * math.atan(math.exp(latRadians)) -
-                               math.pi / 2.0)
+        lat_radians = (point.y - origin.y) / -self.pixelsPerLonRadian_
+        lat = radians_to_degrees(2.0 * math.atan(math.exp(lat_radians)) -
+                                 math.pi / 2.0)
         return LatLng(lat, lng)
 
 
-def getPoint(point, center, zoom, mapWidth, mapHeight):
-    scale = 2.0**zoom
+def get_point(point, center, zoom, mapwidth, mapheight):
+    scale = 2.0 ** zoom
     proj = MercatorProjection()
-    centerP = proj.fromLatLngToPoint(center)
-    centerP.x = centerP.x * scale
-    centerP.y = centerP.y * scale
-    subjectP = proj.fromLatLngToPoint(point)
-    subjectP.x = subjectP.x * scale
-    subjectP.y = subjectP.y * scale
-    return Point((subjectP.x - centerP.x) + mapWidth / 2.0,
-                 (subjectP.y - centerP.y) + mapHeight / 2.0)
+    center_p = proj.from_latlng_to_point(center)
+    center_p.x = center_p.x * scale
+    center_p.y = center_p.y * scale
+    subject_p = proj.from_latlng_to_point(point)
+    subject_p.x = subject_p.x * scale
+    subject_p.y = subject_p.y * scale
+    return Point((subject_p.x - center_p.x) + mapwidth / 2.0,
+                 (subject_p.y - center_p.y) + mapheight / 2.0)
 
 
-def getCorners(center, zoom, mapWidth, mapHeight):
-    scale = 2.0**zoom
+def get_corners(center, zoom, mapwidth, mapheight):
+    scale = 2.0 ** zoom
     proj = MercatorProjection()
-    centerPx = proj.fromLatLngToPoint(center)
-    SWPoint = Point(centerPx.x - (mapWidth / 2.0) / scale, centerPx.y +
-                    (mapHeight / 2.0) / scale)
-    SWLatLon = proj.fromPointToLatLng(SWPoint)
-    NEPoint = Point(centerPx.x + (mapWidth / 2.0) / scale, centerPx.y -
-                    (mapHeight / 2.0) / scale)
-    NELatLon = proj.fromPointToLatLng(NEPoint)
+    center_px = proj.from_latlng_to_point(center)
+    sw_point = Point(center_px.x - (mapwidth / 2.0) / scale, center_px.y +
+                     (mapheight / 2.0) / scale)
+    sw_lat_lon = proj.from_point_to_latlng(sw_point)
+    ne_point = Point(center_px.x + (mapwidth / 2.0) / scale, center_px.y -
+                     (mapheight / 2.0) / scale)
+    ne_lat_lon = proj.from_point_to_latlng(ne_point)
     return {
-        'N': NELatLon.lat,
-        'E': NELatLon.lng,
-        'S': SWLatLon.lat,
-        'W': SWLatLon.lng,
+        'N': ne_lat_lon.lat,
+        'E': ne_lat_lon.lng,
+        'S': sw_lat_lon.lat,
+        'W': sw_lat_lon.lng,
     }
 
 
 # https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 
-def getTileXY(latLng, zoom):
-    lat_rad = math.radians(latLng.lat)
+def get_tile_xy(latlng, zoom):
+    lat_rad = math.radians(latlng.lat)
     n = 2.0 ** zoom
-    xtile = (latLng.lng + 180.0) / 360.0 * n
+    xtile = (latlng.lng + 180.0) / 360.0 * n
     ytile = ((1.0 - math.log(math.tan(lat_rad) +
-             (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
+                             (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
     return {
         'X': xtile,
         'Y': ytile

@@ -8,8 +8,8 @@ clock on a desktop OS.
 # Prerequisites
 
 The minium requirements for a PiClock is pretty simple
-* Python 2.7+ (but not 3)
-* Python Qt4, known as PyQt4
+* Python 3
+* Python Qt5, known as PyQt5
 * git (as an alternative to git, you can pull the zip file from git hub
 (download button on the right side of the github project) then unzip it
 onto your system )
@@ -21,11 +21,11 @@ as an excersise for the reader.
 
 ### Get the PiClock software
 ```
-git clone https://github.com/n0bel/PiClock.git
+git clone https://github.com/SerBrynden/PiClock.git
 ```
 Alternatively, you can download a zip file of the github project.
 
-https://github.com/n0bel/PiClock/archive/master.zip, then unzip it.
+https://github.com/SerBrynden/PiClock/archive/master.zip, then unzip it.
 
 
 ### Configure the PiClock api keys
