@@ -226,11 +226,22 @@ def gettemp():
     tempreply = manager.get(r)
     tempreply.finished.connect(tempfinished)
 
+def waterfinished():
+    global waterreply, waterdata
+
+    waterstr = str(waterreply.readAll())
+    waterdata = json.loads(waterstr)
+    print("waterstr is: "+waterstr)
+    print waterdata['data']
+    print waterdata['data'][0]['v']
+    watertempText = "Water Temperature: "+waterdata['data'][0]['v']+"F"
+    watertemp.setText(watertempText)
 
 def tidefinished():
     global tidereply, tidedata
 
     tidestr = str(tidereply.readAll())
+    print('tidestr is: '+tidestr)
     tidedata = json.loads(tidestr)
     print tidedata['predictions']
     print tidedata['predictions'][0]['t']
@@ -243,7 +254,7 @@ def tidefinished():
     bottom.setText(bottomText)
 
 def wxfinished():
-    global wxreply, wxdata, tidereply, tidedata
+    global wxreply, wxdata, tidereply, tidedata, waterreply, waterdata
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
     global wxicon2, temper2, wxdesc, attribution
@@ -252,7 +263,6 @@ def wxfinished():
     attribution2.setText("DarkSky.net")
 
     wxstr = str(wxreply.readAll())
-    print(wxstr)
     wxdata = json.loads(wxstr)
     f = wxdata['currently']
     wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + f['icon'] + ".png")
@@ -422,9 +432,12 @@ def getwx():
     global wxurl
     global wxreply
     global tidereply
+    global waterreply
     now = datetime.datetime.now()
     datestr = now.strftime("%Y%m%d %H:%M")
-    tideurl = 'https://tidesandcurrents.noaa.gov/api/datagetter?begin_date='+datestr+'&range=24&station=8720554&product=predictions&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=json&interval=hilo'
+#    tideurl = 'https://tidesandcurrents.noaa.gov/api/datagetter?begin_date='+datestr+'&range=24&station=8720554&product=predictions&datum=mllw&units=metric&time_zone=lst_ldt&application=web_services&format=json&interval=hilo'
+    tideurl = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date='+datestr+'&range=24&station=8720554&product=predictions&datum=mllw&units=metric&time_zone=lst_ldt&application=web_services&format=json&interval=hilo'
+    waterurl = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&range=24&station=8720218&product=water_temperature&units=english&time_zone=lst_ldt&application=web_services&format=json'
     print "getting current and forecast:" + time.ctime()
     wxurl = 'https://api.darksky.net/forecast/' + \
         ApiKeys.dsapi + \
@@ -435,14 +448,19 @@ def getwx():
     wxurl += '&r=' + str(random.random())
     print wxurl
     print tideurl
+    print waterurl
     r = QUrl(wxurl)
     r = QNetworkRequest(r)
     t = QUrl(tideurl)
     t = QNetworkRequest(t)
+    w = QUrl(waterurl)
+    w = QNetworkRequest(w)
     wxreply = manager.get(r)
     tidereply = manager.get(t)
+    waterreply = manager.get(w)
     wxreply.finished.connect(wxfinished)
     tidereply.finished.connect(tidefinished)
+    waterreply.finished.connect(waterfinished)
 
 
 
@@ -952,6 +970,18 @@ def nextframe(plusminus):
 
 class myMain(QtGui.QWidget):
 
+    def weather(self):
+        global weatherplayer, lastkeytime
+        if time.time() > lastkeytime:
+            if weatherplayer is None:
+                weatherplayer = Popen(
+                    ["mpg123", "-q", Config.noaastream])
+            else:
+                weatherplayer.kill()
+                weatherplayer = None
+        lastkeytime = time.time() + 2
+
+
     def keyPressEvent(self, event):
         global weatherplayer, lastkeytime
         if isinstance(event, QtGui.QKeyEvent):
@@ -959,14 +989,7 @@ class myMain(QtGui.QWidget):
             if event.key() == Qt.Key_F4:
                 myquit()
             if event.key() == Qt.Key_F2:
-                if time.time() > lastkeytime:
-                    if weatherplayer is None:
-                        weatherplayer = Popen(
-                            ["mpg123", "-q", Config.noaastream])
-                    else:
-                        weatherplayer.kill()
-                        weatherplayer = None
-                lastkeytime = time.time() + 2
+                weather()
             if event.key() == Qt.Key_Space:
                 nextframe(1)
             if event.key() == Qt.Key_Left:
@@ -1465,6 +1488,19 @@ bottom.setStyleSheet("#bottom { font-family:sans-serif; color: " +
                      "}")
 bottom.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
 bottom.setGeometry(0, height - 50, width, 50)
+
+watertemp = QtGui.QLabel(foreGround)
+watertemp.setObjectName("watertemp")
+watertemp.setStyleSheet("#watertemp { font-family:sans-serif; color: " +
+                      Config.textcolor +
+                      "; background-color: transparent; font-size: " +
+                      str(int(30 * xscale)) +
+                      "px; " +
+                      Config.fontattr +
+                      "}")
+watertemp.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+watertemp.setGeometry(0, height - 20, width, 50)
+
 
 temp = QtGui.QLabel(foreGround)
 temp.setObjectName("temp")
