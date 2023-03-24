@@ -49,14 +49,14 @@ if (os.path.isfile(apikeysFileName)):
     apikeys.close()
 
     if not foundcc and not foundowm:
-        print "This version of PiClock requires a ClimaCell api key."
-        print "https://www.climacell.co/weather-api/"
-        print "Enter your Climacell api key."
+        print "This version of PiClock requires a openweathermap api key."
+        print "https://openweathermap.org/price"
+        print "Enter your openweathermap api key."
         print "key:",
         k = sys.stdin.readline()
         k = k.strip()
         if len(k) > 1:
-            newfile += "ccapi = '" + k + "'"
+            newfile += "owmapi = '" + k + "'"
             altered = True
 
     if altered:
