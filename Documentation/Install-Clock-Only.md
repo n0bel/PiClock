@@ -10,78 +10,123 @@ clock on a desktop OS.
 The minium requirements for a PiClock is pretty simple
 * Python 3
 * Python Qt5, known as PyQt5
-* git (as an alternative to git, you can pull the zip file from git hub
-(download button on the right side of the github project) then unzip it
+* git (as an alternative to git, you can pull the zip file from GitHub
+(download button on the right side of the GitHub project) then unzip it
 onto your system )
 
 Theses are available under Windows, Linux, and OSX OS's.
 
 How to get these installed on your choice of system I'll leave
-as an excersise for the reader.
+as an exercise for the reader.
 
 ### Get the PiClock software
 ```
 git clone https://github.com/SerBrynden/PiClock.git
 ```
-Alternatively, you can download a zip file of the github project.
+Alternatively, you can download a zip file of the GitHub project.
 
 https://github.com/SerBrynden/PiClock/archive/master.zip, then unzip it.
 
 
-### Configure the PiClock api keys
+### Configure the PiClock API keys
 
-The first is to set API keys for DarkSky and Google Maps.
-These are both free, unless you have large volume.
-The PiClock usage is well below the maximums imposed by the no cost api keys.
+We need to set API keys for one weather service and one map service.
+These are free unless you have large volume.
+The PiClock usage is well below the maximums imposed by the no cost API keys.
 
-#### DarkSky api keys
+#### Weather API Key
 
-DarkSky api keys are created at this link:
-https://darksky.net/dev
+You have your choice of OpenWeather or Tomorrow from which to get your 
+current weather and forcast data.
+You only need one or the other (owmapi or tmapi)
+
+#### OpenWeather API key
+
+An OpenWeather One Call API 3.0 key is required to use OpenWeather data.
+(Requires credit card which won't be charged unless usage is high.)
+
+OpenWeather One Call API 3.0 keys are created by signing up at this link:
+https://home.openweathermap.org/subscriptions/unauth_subscribe/onecall_30/base
+
+Once you subscribe to the One Call API 3.0 plan, the default call limit is set 
+to 2,000 API calls per day, however only the first 1,000 calls are free, which 
+you should not exceed under typical PiClock operation.
+After the daily limit is reached, the overage charge is $0.15 per 100 calls.
+To be safe, it is recommended you change the daily limit by going to the 
+"Billing plans" tab in your OpenWeather Personal account, and change the standard 
+"Calls per day (no more than)" setting to 1,000 calls.
+
+#### Tomorrow API key
+
+A Tomorrow API key is required to use Tomorrow weather data.
+
+Tomorrow API keys are created by signing up at this link:
+https://www.tomorrow.io/weather-api/
+
+#### Map API Key
+
+You have your choice of Mapbox (for dark maps) or Google Maps from which to get your underlying maps.
+You only need one or the other (mbapi or googleapi)
 
 #### Google Maps API key
 
-A Google Maps api key is _required_.  (Requires credit card which won't be
-charged unless usage is great.)
+A Google Maps API key is required to use Google Maps.
+(Requires credit card which won't be charged unless usage is high.)
 
-An intro to Google static maps api keys, and a link to creating your account and ApiKeys:
+An intro to Google static maps API keys, and a link to creating your account and API keys:
 https://developers.google.com/maps/documentation/maps-static/intro
-You'll require a google user and password.  It'll also require a credit card.
-The credit card should not be charged, because my reading of https://cloud.google.com/maps-platform/pricing/sheet/ the $200.00 credit will
+You'll require a Google user and password.  It'll also require a credit card.
+The credit card should not be charged, because my reading of
+https://cloud.google.com/maps-platform/pricing/sheet/ the $200.00 credit will
 apply, and your charges incurred will be for 31 map pulls per month will be
 $0.62 , if you reboot daily.
 You'll be required to create a "project" (maybe PiClock for a project name?)
 You need to then activate the key.
 
 _Protect your API keys._  You'd be surprised how many pastebin's are out
-there with valid API keys, because of people not being careful.   If you post
-your keys somewhere, your usage will skyrocket, and your bill as well.  Google
-has the ability to add referer, device and ip requirements on your api key.  It
-can also allow you to limit an api key to specific applications only (static-maps)
-in this case.   Also you might consider disabling all the other APIs on your
-project dashboard.   Under the Billing section of things you can set up budgets
-and alerts.  (Set to like $1.00)
+there with valid API keys, because of people not being careful.   _If you post
+your keys somewhere, your usage will skyrocket, and your bill as well._  Google
+has the ability to add referer, device and IP requirements on your API key.  It
+can also allow you to limit an API key to specific applications only (static-maps)
+in this case. Also, you might consider disabling all the other APIs on your
+project dashboard. Under the Billing section of things you can set up budgets
+and alerts (set to like $1.00).
+
+#### Mapbox API key
+
+A Mapbox API key (access token) is required to use Mapbox (for dark maps).
+
+Mapbox access tokens are created by signing up at this link:
+https://www.mapbox.com/signup/
 
 
-Now that you have your api keys...
+Now that you have your API keys...
 
 ```
 cd PiClock
 cd Clock
 cp ApiKeys-example.py ApiKeys.py
-[use your favorite editor] ApiKeys.py
+nano ApiKeys.py
 ```
-Put your api keys in the file as indicated
+Put your API keys in the file as indicated
 ```
-#change this to your API keys
-# DarkSky API key
-dsapi = 'YOUR DARKSKY API KEY'
-# Google Maps API key
-googleapi = 'YOUR GOOGLE API KEY'
+# Change this to your API keys
+
+# Map API keys -- only need 1 of the following
+# Google Maps API key (if usemapbox is not set in Config)
+googleapi = 'YOUR GOOGLE MAPS API KEY'
+# Mapbox API key (access_token) [if usemapbox is set in Config]
+mbapi = 'YOUR MAPBOX ACCESS TOKEN'
+
+# Weather API key -- only need 1 of the following
+# If you want to use OpenWeatherMap.org, uncomment and add API key
+owmapi = 'YOUR OPENWEATHERMAP API KEY'
+# If you want to use Tomorrow.io, uncomment and add API key
+# tmapi = 'YOUR TOMORROW API KEY'
 ```
 
 ### Configure your PiClock
-here's were you tell PiClock where your weather should come from, and the
+Here's where you tell PiClock where your weather should come from, and the
 radar map centers and markers.
 
 ```
@@ -113,7 +158,7 @@ After a few seconds, your screen should be covered by the PiClock  YAY!
 
 There may be some output on the terminal screen as it executes.
 If everything works, it can be ignored.  If for some reason the clock
-doesn't work, or maps are missing, etc the output may give a reason
+doesn't work, or maps are missing, etc. the output may give a reason
 or reasons, which usually reference something to do with the config
 file (Config.py)
 
@@ -125,8 +170,8 @@ file (Config.py)
 
 
 ### Updating to newer/updated versions
-Since we pulled the software from github originally, it can be updated
-using git and github.
+Since we pulled the software from GitHub originally, it can be updated
+using git and GitHub.
 ```
 cd PiClock
 git pull

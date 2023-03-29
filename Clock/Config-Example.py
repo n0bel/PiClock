@@ -24,13 +24,13 @@ sechand = 'images/sechand.png'
 useslideshow = 0  # 1 to enable, 0 to disable
 slide_time = 305  # in seconds, 3600 per hour
 slides = 'images/slideshow'  # the path to your local images
-slide_bg_color = "#000"  # https://htmlcolorcodes.com/  black #000
+slide_bg_color = '#000'  # https://htmlcolorcodes.com/  black #000
 
 digital = 0  # 1 = Digital Clock, 0 = Analog Clock
 
 # Goes with light blue config (like the default one)
-digitalcolor = "#50CBEB"
-digitalformat = "{0:%I:%M\n%S %p}"  # Format of the digital clock face
+digitalcolor = '#50CBEB'
+digitalformat = '{0:%I:%M\n%S %p}'  # Format of the digital clock face
 digitalsize = 200
 
 # The above example shows in this way:
@@ -38,12 +38,12 @@ digitalsize = 200
 # (specifications of the time string are documented here:
 #  https://docs.python.org/2/library/time.html#time.strftime)
 
-# digitalformat = "{0:%I:%M}"
+# digitalformat = '{0:%I:%M}'
 # digitalsize = 250
 # The above example shows in this way:
 # https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v2.jpg
 
-digitalformat2 = "{0:%H:%M:%S}"  # Format of the digital time on second screen
+digitalformat2 = '{0:%H:%M:%S}'  # Format of the digital time on second screen
 
 usemapbox = 1  # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
 map_base = 'bcurley/cj712peyz0bwr2sqfndbggupb'  # Custom dark Mapbox style for land and water only (bottom layer that goes below weather radar)
@@ -74,7 +74,7 @@ dimcolor = QColor('#000000')
 dimcolor.setAlpha(0)
 
 # Optional Current conditions replaced with observations from a METAR station
-# METAR is world wide, provided mostly for pilots
+# METAR is worldwide, provided mostly for pilots
 # But data can be sparse outside US and Europe
 # If you're close to an international airport, you should find something close
 # Find the closest METAR station with the following URL
@@ -84,33 +84,32 @@ dimcolor.setAlpha(0)
 # https://airportcodes.aero/name
 METAR = ''
 
-# Language Specific wording
-# DarkSky Language code
-# (https://darksky.net/dev/docs under lang=)
+# Language specific wording
+# Language code
 Language = "EN"
 
 # The Python Locale for date/time (locale.setlocale)
 #  '' for default Pi Setting
-# Locales must be installed in your Pi.. to check what is installed
+# Locales must be installed in your Pi. To check what is installed:
 # locale -a
 # to install locales
 # sudo dpkg-reconfigure locales
 DateLocale = ''
 
 # Language specific wording
-LPressure = "Pressure "
-LHumidity = "Humidity "
-LWind = "Wind "
-Lgusting = " gust "
-LFeelslike = "Feels like "
-LPrecip1hr = " Precip 1hr: "
-LToday = "Today: "
-LSunRise = "Sun Rise: "
-LSet = " Set: "
-LMoonPhase = " Moon: "
-LInsideTemp = "Inside Temp "
-LRain = " Rain: "
-LSnow = " Snow: "
+LPressure = 'Pressure '
+LHumidity = 'Humidity '
+LWind = 'Wind '
+Lgusting = ' gust '
+LFeelslike = 'Feels like '
+LPrecip1hr = ' Precip 1hr: '
+LToday = 'Today: '
+LSunRise = 'Sun Rise: '
+LSet = ' Set: '
+LMoonPhase = ' Moon: '
+LInsideTemp = 'Inside Temp '
+LRain = ' Rain: '
+LSnow = ' Snow: '
 Lmoon1 = 'New Moon'
 Lmoon2 = 'Waxing Crescent'
 Lmoon3 = 'First Quarter'
@@ -119,31 +118,33 @@ Lmoon5 = 'Full Moon'
 Lmoon6 = 'Waning Gibbous'
 Lmoon7 = 'Third Quarter'
 Lmoon8 = 'Waning Crescent'
-# Language Specific terms for weather conditions
-Lcc_code_map = {
-    "freezing_rain_heavy": "Freezing Rain",
-    "freezing_rain": "Freezing Rain",
-    "freezing_rain_light": "Freezing Rain",
-    "freezing_drizzle": "Freezing Drizzle",
-    "ice_pellets_heavy": "Ice Pellets",
-    "ice_pellets": "Ice Pellets",
-    "ice_pellets_light": "Ice Pellets",
-    "snow_heavy": "Heavy Snow",
-    "snow": "Snow",
-    "snow_light": "Light Snow",
-    "flurries": "Flurries",
-    "tstorm": "Thunder Storm",
-    "rain_heavy": "Heavy Rain",
-    "rain": "Rain",
-    "rain_light": "Light Rain",
-    "drizzle": "Drizzle",
-    "fog_light": "Light Fog",
-    "fog": "Fog",
-    "cloudy": "Cloudy",
-    "mostly_cloudy": "Mostly Cloudy",
-    "partly_cloudy": "Partly Cloudy",
-    "mostly_clear": "Mostly Clear",
-    "clear": "Clear"
+
+# Language specific terms for Tomorrow.io weather conditions
+Ltm_code_map = {
+    0: 'Unknown',
+    1000: 'Clear, Sunny',
+    1100: 'Mostly Clear',
+    1101: 'Partly Cloudy',
+    1102: 'Mostly Cloudy',
+    1001: 'Cloudy',
+    2000: 'Fog',
+    2100: 'Light Fog',
+    4000: 'Drizzle',
+    4001: 'Rain',
+    4200: 'Light Rain',
+    4201: 'Heavy Rain',
+    5000: 'Snow',
+    5001: 'Flurries',
+    5100: 'Light Snow',
+    5101: 'Heavy Snow',
+    6000: 'Freezing Drizzle',
+    6001: 'Freezing Rain',
+    6200: 'Light Freezing Rain',
+    6201: 'Heavy Freezing Rain',
+    7000: 'Ice Pellets',
+    7101: 'Heavy Ice Pellets',
+    7102: 'Light Ice Pellets',
+    8000: 'Thunderstorm'
 }
 
 # RADAR

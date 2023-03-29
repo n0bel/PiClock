@@ -3,7 +3,7 @@
 ## Introduction
 
 I'm going to assume you know how to connect your Raspberry Pi, Power supply, Monitor, 
-keyboard/mouse and Wifi or Wired Ethernet.
+keyboard/mouse and Wi-Fi or Wired Ethernet.
 
 What follows is the details of various optional hardware you can add to your Raspi
 to add features or make your clock cooler.
@@ -16,7 +16,7 @@ picture showing the hookup for the PiClock.*
 
 This hardware guide directly supports the following
 
-* Raspsbery Pi Revision 2 Model B
+* Raspberry Pi Revision 2 Model B
 * Raspberry Pi Revision 2 Model B
 * Raspberry Pi Model B+
 * Raspberry Pi 2 Model B
@@ -42,7 +42,7 @@ GPIO3 Pin 5                  Pin 3
 ```
 ![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/tsop4838.jpg)
 
-## Inside Temperature ( DS18B20 )
+## Inside Temperature (DS18B20)
 
 There are many guides showing how to connect and check one or more DS18B20s to
 a Raspberry Pi.   Here's one: http://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
@@ -69,7 +69,7 @@ your power supply accordingly.
 
 Everyone seems to recommend a level shift (3.3V to 5V) to drive the LEDs.   I've found this to
 be unnecessary.  It also seems that Adafruit recommends a 1000uF cap on the power supply, with
-the dubious explaination that it protects the LEDs from inrush surges.  Again I don't botther.
+the dubious explanation that it protects the LEDs from inrush surges.  Again I don't bother.
 Meh... Your milage may vary.  The data pin of the WS2818b string should be connected
 to GPIO18, header pin 12.   Note the markings on the LED strip since they all are not pinned
 the same.
@@ -85,10 +85,10 @@ in startup.sh configure their function, and which GPIO they are located on.
 ```
 sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
 ```
- * GPIO23 (header pin 16) is mapped to a space (which flips pages on the clock.
+ * GPIO23 (header pin 16) is mapped to a space (which flips pages on the clock).
  * GPIO24 (header pin 18) is mapped to F2 (which toggles the NOAA stream)
  * GPIO25 (header pin 22) is mapped to UP (which does nothing yet)
- * A convinient ground is on header pin 20.
+ * A convenient ground is on header pin 20.
  
 ![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/gpiobuttons.jpg)
 
