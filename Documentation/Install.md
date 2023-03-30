@@ -3,10 +3,10 @@
 
 PiClock and this install guide are based on Raspberry Pi OS downloaded from
 https://www.raspberrypi.com/software/ I suggest using
-"Raspberry Pi OS with desktop"  It will work with many Raspberry Pi OS versions,
+"Raspberry Pi OS with desktop".  It will work with many Raspberry Pi OS versions,
 but you may have to add more packages, etc.  That exercise is left for the reader.
 
-What follows is a step by step guide.  If you start with a new clean Raspberry Pi OS
+What follows is a step-by-step guide.  If you start with a new clean Raspberry Pi OS
 image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
@@ -32,7 +32,7 @@ Just change the Items below.
   - Hostname: (Maybe set this to PiClock?)
   - Boot: To Desktop
   - Auto Login: Checked
-  - Overscan: (Initally leave as default, but if your monitor has extra
+  - Overscan: (Initially leave as default, but if your monitor has extra
     black area on the border, or bleeds off the edge, then change this)
  - Interfaces
   - 1-Wire Enable (for the inside temperature, DS18B20 if you're using it)
@@ -115,7 +115,7 @@ then get ws281x driver for python (optional for the NeoPixel LED Driver)
 pip3 install rpi_ws281x
 ```
 Some versions of Raspberry Pi OS need python-dev to be installed as well, before
-rpi-ws281x can be installed.  If the prevous command fails reporting
+rpi-ws281x can be installed.  If the previous command fails reporting
 a missing include file, then do this:
 ```
 apt-get install python-dev
@@ -183,7 +183,7 @@ reboot
 Log into your Pi, (either on the screen or via ssh) (NOT as root)
 You'll be in the home directory of the user pi (/home/pi) by default,
 and this is where we want to be.  Note that the following command while
-itself not being case sensitive, further operation of PiClock may be
+itself not being case-sensitive, further operation of PiClock may be
 affected if the upper and lower case of the command is not followed.
 ```
 git clone https://github.com/SerBrynden/PiClock.git
@@ -212,11 +212,11 @@ as found on http://lirc.org/
 The software expects 7 keys.   KEY_F1, KEY_F2, KEY_F3, KEY_UP, KEY_DOWN, KEY_RIGHT
 and KEY_LEFT.   Lirc takes these keys and injects them into linix as if they
 were typed from a keyboard.   PyQtPiClock.py then simply looks for normal keyboard
-events.   Therefore of course, if you have a usb keyboard attached, those keys
+events.   Therefore, of course, if you have a USB keyboard attached, those keys
 work too.  On the key fob remote, F1 is power, F2 is mute and F3 is AV/TV.
 
 You should (must) verify your IR codes.   I've included a program called IRCodes.pl
-which will verify that your lircd.conf is setup correctly.
+which will verify that your lircd.conf is set up correctly.
 If you've rebooted after installing lircd.conf, you'll have to stop lirc first:
 ```
 sudo service lirc stop
@@ -225,7 +225,7 @@ Then use the IRCodes.pl program as follows:
 ```
 perl IR/IRCodes.pl
 ```
-Yes, I reverted to perl.. I may redo it in Python one day.
+Yes, I reverted to perl... I may redo it in Python one day.
 
 If you're using the recommended key fob remote, they come randomly programmed from
 the supplier.   To program them you press and hold the mute button (the middle one)
@@ -247,30 +247,54 @@ sudo reboot
 ```
 
 
-### Configure the PiClock api keys
+### Configure the PiClock API keys
 
-We need to set API keys for DarkSky and Mapbox or Google Maps.
-These are both unless you have large volume.
-The PiClock usage is well below the maximums imposed by the no cost api keys.
+We need to set API keys for one weather service and one map service.
+These are free unless you have large volume.
+The PiClock usage is well below the maximums imposed by the no cost API keys.
 
-#### DarkSky api keys
+#### Weather API Key
 
-DarkSky api keys are created at this link:
-https://darksky.net/dev
+You have your choice of OpenWeather or Tomorrow from which to get your 
+current weather and forcast data.
+You only need one or the other (owmapi or tmapi)
+
+#### OpenWeather API key
+
+An OpenWeather One Call API 3.0 key is required to use OpenWeather data.
+(Requires credit card which won't be charged unless usage is high.)
+
+OpenWeather One Call API 3.0 keys are created by signing up at this link:
+https://home.openweathermap.org/subscriptions/unauth_subscribe/onecall_30/base
+
+Once you subscribe to the One Call API 3.0 plan, the default call limit is set 
+to 2,000 API calls per day, however only the first 1,000 calls are free, which 
+you should not exceed under typical PiClock operation.
+After the daily limit is reached, the overage charge is $0.15 per 100 calls.
+To be safe, it is recommended you change the daily limit by going to the 
+"Billing plans" tab in your OpenWeather Personal account, and change the standard 
+"Calls per day (no more than)" setting to 1,000 calls.
+
+#### Tomorrow API key
+
+A Tomorrow API key is required to use Tomorrow weather data.
+
+Tomorrow API keys are created by signing up at this link:
+https://www.tomorrow.io/weather-api/
 
 #### Map API Key
 
-You have your choice of Mapbox or Google Maps to get your underlying maps from.
+You have your choice of Mapbox (for dark maps) or Google Maps from which to get your underlying maps.
 You only need one or the other (mbapi or googleapi)
 
 #### Google Maps API key
 
-A Google Maps api key is required to use Google Maps.
-(Requires credit card which won't be charged unless usage is great.)
+A Google Maps API key is required to use Google Maps.
+(Requires credit card which won't be charged unless usage is high.)
 
-An intro to Google static maps api keys, and a link to creating your account and ApiKeys:
+An intro to Google static maps API keys, and a link to creating your account and API keys:
 https://developers.google.com/maps/documentation/maps-static/intro
-You'll require a google user and password.  It'll also require a credit card.
+You'll require a Google user and password.  It'll also require a credit card.
 The credit card should not be charged, because my reading of
 https://cloud.google.com/maps-platform/pricing/sheet/ the $200.00 credit will
 apply, and your charges incurred will be for 31 map pulls per month will be
@@ -281,21 +305,21 @@ You need to then activate the key.
 _Protect your API keys._  You'd be surprised how many pastebin's are out
 there with valid API keys, because of people not being careful.   _If you post
 your keys somewhere, your usage will skyrocket, and your bill as well._  Google
-has the ability to add referer, device and ip requirements on your api key.  It
-can also allow you to limit an api key to specific applications only (static-maps)
-in this case.   Also you might consider disabling all the other APIs on your
-project dashboard.   Under the Billing section of things you can set up budgets
-and alerts.  (Set to like $1.00)
+has the ability to add referer, device and IP requirements on your API key.  It
+can also allow you to limit an API key to specific applications only (static-maps)
+in this case. Also, you might consider disabling all the other APIs on your
+project dashboard. Under the Billing section of things you can set up budgets
+and alerts (set to like $1.00).
 
-#### Mapbox api keys
+#### Mapbox API key
 
-Mapbox api keys (access tokens) are created by signing up at this link:
+A Mapbox API key (access token) is required to use Mapbox (for dark maps).
 
+Mapbox access tokens are created by signing up at this link:
 https://www.mapbox.com/signup/
 
 
-
-Now that you have your api keys...
+Now that you have your API keys...
 
 ```
 cd PiClock
@@ -303,20 +327,25 @@ cd Clock
 cp ApiKeys-example.py ApiKeys.py
 nano ApiKeys.py
 ```
-Put your api keys in the file as indicated
+Put your API keys in the file as indicated
 ```
-#change this to your API keys
-# DarkSky API key
-dsapi = 'YOUR DARKSKY API KEY'
-# Map API keys -- only needs 1 of the following
+# Change this to your API keys
+
+# Map API keys -- only need 1 of the following
 # Google Maps API key (if usemapbox is not set in Config)
 googleapi = 'YOUR GOOGLE MAPS API KEY'
 # Mapbox API key (access_token) [if usemapbox is set in Config]
 mbapi = 'YOUR MAPBOX ACCESS TOKEN'
+
+# Weather API key -- only need 1 of the following
+# If you want to use OpenWeatherMap.org, uncomment and add API key
+owmapi = 'YOUR OPENWEATHERMAP API KEY'
+# If you want to use Tomorrow.io, uncomment and add API key
+# tmapi = 'YOUR TOMORROW API KEY'
 ```
 
 ### Configure your PiClock
-here's were you tell PiClock where your weather should come from, and the
+Here's where you tell PiClock where your weather should come from, and the
 radar map centers and markers.
 
 ```
@@ -333,16 +362,16 @@ are not arbitrary.  If you're not familiar with python, use extra
 care not to disturb the format while changing the data.
 
 The first thing is to change the primary_coordinates to yours.  That is really
-all that is manditory.  Further customization of the radar maps can be done in
+all that is mandatory.  Further customization of the radar maps can be done in
 the Radar section.  There you can customize where your radar images are centered
 and where the markers appear on those images.  Markers are those little red
 location pointers.  Radar1 and 2 show on the first page, and 3 and 4 show on the
 second page of the display (here's a post of about that:
-https://www.facebook.com/permalink.php?story_fbid=1371576642857593&id=946361588712436&substory_index=0 )
+https://www.facebook.com/permalink.php?story_fbid=1371576642857593&id=946361588712436&substory_index=0)
 
 The second thing to change is your NOAA weather radio stream url.  You can
 find it here: http://noaaweatherradio.org/  They don't put the .mp3 urls
-where they are easily accessable, so you need to use your browser to "View Page Source"
+where they are easily accessible, so you need to use your browser to "View Page Source"
 in order to find the proper .mp3 url.
 
 At this point, I'd not recommend many other changes until you have tested
@@ -359,7 +388,7 @@ Your screen should be covered by the PiClock  YAY!
 
 There will be some output on the terminal screen as startup.sh executes.
 If everything works, it can be ignored.  If for some reason the clock
-doesn't work, or maps are missing, etc the output may give a reason
+doesn't work, or maps are missing, etc. the output may give a reason
 or reasons, which usually reference something to do with the config
 file (Config.py)
 
@@ -399,7 +428,7 @@ ln PiClock.desktop ~/Desktop
 mkdir ~/.config/autostart
 ln PiClock.desktop ~/.config/autostart
 ```
-This puts the a PiClock icon on your desktop.  It also runs it when
+This puts the PiClock icon on your desktop.  It also runs it when
 the desktop starts.
 
 ## Autostart Method 2
@@ -424,7 +453,7 @@ startup.sh has a few options:
 * -d X or --delay X			Delay X seconds before starting the clock
 * -m X or --message-delay X 	Delay X seconds while displaying a message on the desktop
 
-Startup also looks at the various optional PiClock items (Buttons, Temperature, NeoPixel, etc)
+Startup also looks at the various optional PiClock items (Buttons, Temperature, NeoPixel, etc.)
 and only starts those things that are configured to run.   It also checks if they are already
 running, and refrains from starting them again if they are.
 
@@ -441,7 +470,7 @@ cd PiClock
 chmod +x switcher.sh
 ```
 Now we'll tell our friend cron to run the switcher script (switcher.sh) on day/night cycles.
-Run the cron editor: (should *not* be roor)
+Run the cron editor: (should *not* be root)
 ```
 crontab -e
 ```
@@ -468,8 +497,8 @@ save the file
 This sets the reboot to occur at 3:22am every day.   Adjust as needed.
 
 ### Updating to newer/updated versions
-Since we pulled the software from github originally, it can be updated
-using git and github.
+Since we pulled the software from GitHub originally, it can be updated
+using git and GitHub.
 ```
 cd PiClock
 git pull
@@ -490,7 +519,7 @@ Then this will update to the current version
 ```
 git reset --hard
 ```
-(This won't bother your Config.py nor ApiKeys.py because they are not tracked in git.
+(This won't bother your Config.py nor ApiKeys.py because they are not tracked in git.)
 
 Also, if you're using gpio-keys, you may need to remake it:
 ```

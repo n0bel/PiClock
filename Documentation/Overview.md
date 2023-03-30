@@ -9,10 +9,12 @@ the composite output as well, but this is not a design goal.  The main
 program (Clock/PyQtPiClock.py) will also run on Windows, Mac, and Linux,
 as long as Python 3 and PyQt5 is installed.
 
-The Weather data comes from DarkSky using their API ( http://darksky.net/dev/ ).
-The maps are from Mapbox ( https://mapbox.com/ ) Google Maps API.
-**You must get API Keys from DarkSky and Mapbox or Google in order to make
-this work.** It is free for low usage such as this application.
+The current weather and forcast data comes from your choice of either
+OpenWeather (https://openweathermap.org/) or Tomorrow (https://www.tomorrow.io/).
+The maps come from your choice of either Mapbox (https://mapbox.com/) or 
+Google Maps (https://developers.google.com/maps).
+**You must get API keys from one each of those weather and map services in order to make
+this work.** They offer free subscription plans for low-usage projects such as this application.
 
 The PiClock can be customized with several supported additional things:
   * RGB LED strips (NeoPixel) to create an ambilight effect
@@ -43,46 +45,46 @@ So what do you need to build a PiClock?
 
   * A Raspberry Pi (revision 2) Model B, or B+ or Pi 2 Model B
   * A Display Monitor & Cable
-  * Power Supply (or if you're ambitious tap your display power supply,
+  * Power Supply (or if you are ambitious, tap your display power supply,
     you'll probably need a switching down regulator to 5v)  Remember
     the Pi likes something that can source up to 2A.
   * A USB Keyboard and Mouse for setup (if you want something small
     and semi-permanent, I've had good luck with this:
     https://www.google.com/search?q=iPazzPort+2.4G+Mini+Wireless+Keyboard
     I like the one with the mousepad on the side)
-  * USB Wifi or Internet Connection
+  * USB Wi-Fi or Internet Connection
 
 Optional things
 
-  * One or more DS18B20s for showing the inside temperature ( https://www.google.com/#q=ds18b20 )
+  * One or more DS18B20s for showing the inside temperature (https://www.google.com/#q=ds18b20)
   * A string of WS2818 based RGB LEDs for the AmbiLight effect.  At 40ma per LED, and 30 or so
     LEDs you're quickly up to needing an extra 1.2A from the power supply.  Size it appropriately.
     One option is https://learn.adafruit.com/adafruit-neopixel-uberguide/overview)
   * A TSOP4838 IR Receiver to flip the page display of the PiClock (https://www.google.com/search?q=tsop4838)
-  * An IR Remote control ( I use this little guy: https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain )
+  * An IR Remote control (I use this little guy: https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain)
   * Button or buttons connected to some GPIO pins (and a ground pin) for flipping pages like the IR remote
 
 ## What else?
 
-The Hardware guide ( https://github.com/n0bel/PiClock/blob/master/Documentation/Hardware.md )
+The Hardware guide (https://github.com/n0bel/PiClock/blob/master/Documentation/Hardware.md)
 gives more details about how to wire/connect the various extras.
 
-The Install guide ( https://github.com/n0bel/PiClock/blob/master/Documentation/Install.md )
+The Install guide (https://github.com/n0bel/PiClock/blob/master/Documentation/Install.md)
 steps through all the things that you need to do to a stock Raspbian image to make the PiClock work.
 
 ## Not a Pi Person?
 
-If you want to use the PiClock on your desktop (not your Pi), I've created instructinos for that
+If you want to use the PiClock on your desktop (not your Pi), I've created instructions for that
 https://github.com/n0bel/PiClock/blob/master/Documentation/Install-Clock-Only.md
 
 
 ## History
 
-It all started one Satuday afternoon when I was feeling bored.  My super duper radio
-controlled clock ( you know those AccuRite clocks) was WRONG!.    Apparently the
+It all started one Saturday afternoon when I was feeling bored.  My super duper radio
+controlled clock (you know those AccuRite clocks) was WRONG!.    Apparently the
 daylight savings time adjustment was coded to the pre-2007 dates.   I was going
-to go get something new.. when I spotted an unused monitor in the corner of my
-livingroom...  My eyes flicked back and forth between it and the wall.  I had
+to go get something new... when I spotted an unused monitor in the corner of my
+living room...  My eyes flicked back and forth between it and the wall.  I had
 recently been playing with a Raspberry Pi Model B, and of course the idea was born.
 
 The initial clock was built as a static web page hosted in the Pi itself and run from
