@@ -455,7 +455,6 @@ def wxfinished_owm():
                 temper.setText('%.1f' % (tempf2tempc(f['temp'])) + u'°C')
                 temper2.setText('%.1f' % (tempf2tempc(f['temp'])) + u'°C')
                 press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mb')
-
                 w = (Config.LWind + wd + ' ' + '%.1f' % (mph2kph(f['wind_speed'])) + 'km/h')
                 if 'wind_gust' in f:
                     w += (Config.Lgusting + '%.1f' % (mph2kph(f['wind_gust'])) + 'km/h')
@@ -986,6 +985,11 @@ def wxfinished_metar():
     global daytime
 
     wxstr = str(metarreply.readAll(), 'utf-8')
+
+    if metarreply.error() != QNetworkReply.NoError:
+        print('ERROR from nws.noaa.gov: ' + wxstr)
+        return
+
     for wxline in wxstr.splitlines():
         if wxline.startswith(Config.METAR):
             wxstr = wxline
@@ -1042,50 +1046,35 @@ def wxfinished_metar():
     wxdesc.setText(weather)
     wxdesc2.setText(weather)
 
+    if Config.wind_degrees:
+        wd = str(f.wind_dir.value) + u'°'
+    else:
+        wd = f.wind_dir.compass()
+
     if Config.metric:
         temper.setText('%.1f' % (f.temp.value('C')) + u'°C')
         temper2.setText('%.1f' % (f.temp.value('C')) + u'°C')
         press.setText(Config.LPressure + '%.1f' % f.press.value('MB') + 'mb')
-        t = f.temp.value('C')
-        d = f.dewpt.value('C')
-        h = 100.0 * (math.exp((17.625 * d) / (243.04 + d)) /
-                     math.exp((17.625 * t) / (243.04 + t)))
-        humidity.setText(Config.LHumidity + '%.0f%%' % h)
-        wd = f.wind_dir.compass()
-        if Config.wind_degrees:
-            wd = str(f.wind_dir.value) + u'°'
-        ws = (Config.LWind +
-              wd + ' ' +
-              '%.1f' % (f.wind_speed.value('KMH')) + 'km/h')
+        ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('KMH')) + 'km/h')
         if f.wind_gust:
-            ws += (Config.Lgusting +
-                   '%.1f' % (f.wind_gust.value('KMH')) + 'km/h')
-        wind.setText(ws)
-        feelslike.setText(Config.LFeelslike +
-                          ('%.1f' % (tempf2tempc(feels_like(f))) + u'°C'))
-        wdate.setText('{0:%H:%M}'.format(dt))
+            ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('KMH')) + 'km/h')
+        feelslike.setText(Config.LFeelslike + ('%.1f' % (tempf2tempc(feels_like(f))) + u'°C'))
     else:
         temper.setText('%.1f' % (f.temp.value('F')) + u'°F')
         temper2.setText('%.1f' % (f.temp.value('F')) + u'°F')
         press.setText(Config.LPressure + '%.2f' % f.press.value('IN') + 'in')
-        t = f.temp.value('C')
-        d = f.dewpt.value('C')
-        h = 100.0 * (math.exp((17.625 * d) / (243.04 + d)) /
-                     math.exp((17.625 * t) / (243.04 + t)))
-        humidity.setText(Config.LHumidity + '%.0f%%' % h)
-        wd = f.wind_dir.compass()
-        if Config.wind_degrees:
-            wd = str(f.wind_dir.value) + u'°'
-        ws = (Config.LWind +
-              wd + ' ' +
-              '%.1f' % (f.wind_speed.value('MPH')) + 'mph')
+        ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('MPH')) + 'mph')
         if f.wind_gust:
-            ws += (Config.Lgusting +
-                   '%.1f' % (f.wind_gust.value('MPH')) + 'mph')
-        wind.setText(ws)
-        feelslike.setText(Config.LFeelslike +
-                          '%.1f' % (feels_like(f)) + u'°F')
-        wdate.setText('{0:%H:%M} {1}'.format(dt, Config.METAR))
+            ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('MPH')) + 'mph')
+        feelslike.setText(Config.LFeelslike + '%.1f' % (feels_like(f)) + u'°F')
+
+    t = f.temp.value('C')
+    d = f.dewpt.value('C')
+    h = 100.0 * (math.exp((17.625 * d) / (243.04 + d)) /
+                 math.exp((17.625 * t) / (243.04 + t)))
+    humidity.setText(Config.LHumidity + '%.0f%%' % h)
+    wind.setText(ws)
+    wdate.setText('{0:%H:%M} {1}'.format(dt, Config.METAR))
 
 
 def getwx():
@@ -1121,7 +1110,7 @@ def getwx():
 def getwx_owm():
     global wxurl
     global wxreply
-    print('getting current: ' + time.ctime())
+    print('getting current conditions and forecast: ' + time.ctime())
     wxurl = 'https://api.openweathermap.org/data/3.0/onecall?appid=' + ApiKeys.owmapi
     wxurl += '&lat=' + str(Config.location.lat) + '&lon=' + str(Config.location.lng)
     wxurl += '&units=imperial&lang=' + Config.Language.lower()
@@ -1140,7 +1129,7 @@ def getwx_tm():
     global wxreply
     global wxreply2
     global wxreply3
-    print('getting current: ' + time.ctime())
+    print('getting current conditions: ' + time.ctime())
     wxurl = 'https://api.tomorrow.io/v4/timelines?timesteps=current&apikey=' + ApiKeys.tmapi
     wxurl += '&location=' + str(Config.location.lat) + ',' + str(Config.location.lng)
     wxurl += '&units=imperial'
@@ -1152,7 +1141,7 @@ def getwx_tm():
     wxreply = manager.get(r)
     wxreply.finished.connect(wxfinished_tm)
 
-    print('getting hourly: ' + time.ctime())
+    print('getting hourly forecast: ' + time.ctime())
     wxurl2 = 'https://api.tomorrow.io/v4/timelines?timesteps=1h&apikey=' + ApiKeys.tmapi
     wxurl2 += '&location=' + str(Config.location.lat) + ',' + str(Config.location.lng)
     wxurl2 += '&units=imperial'
@@ -1164,7 +1153,7 @@ def getwx_tm():
     wxreply2 = manager.get(r2)
     wxreply2.finished.connect(wxfinished_tm2)
 
-    print('getting daily: ' + time.ctime())
+    print('getting daily forecast: ' + time.ctime())
     wxurl3 = 'https://api.tomorrow.io/v4/timelines?timesteps=1d&apikey=' + ApiKeys.tmapi
     wxurl3 += '&location=' + str(Config.location.lat) + ',' + str(Config.location.lng)
     wxurl3 += '&units=imperial'
