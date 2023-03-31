@@ -5,4 +5,4 @@
 * A great analog clock face  PiClock_neo-aeon-Clockface-FliegerB.zip
 * A clock face and hands making guide as gimp files.
 
-### Personal thanks for the contriubtions.
+### Personal thanks for the contributions.

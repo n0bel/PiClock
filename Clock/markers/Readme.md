@@ -1,6 +1,6 @@
 # Custom markers
 
-This folder contains some sample map markers which are overlayed onto the
+This folder contains some sample map markers which are overlaid onto the
 radar maps as directed by your config file.
 
 markers.xcf is a gimp file containing several of the teardrop markers
