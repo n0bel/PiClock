@@ -259,7 +259,7 @@ def tick():
         ds2 = "{0:%a %b} {0.day}<sup>{1}</sup> {0.year}".format(now, sup)
         datex.setText(ds)
         datex2.setText(ds2)
-        dt = now.replace(tzinfo=tzlocal.get_localzone())
+        dt = datetime.datetime.now(tz=tzlocal.get_localzone())
         sunrise = sun.sunrise(dt)
         sunset = sun.sunset(dt)
         bottomText = ""
@@ -1691,7 +1691,7 @@ def qtstart():
     global objradar4
     global sun, daytime, sunrise, sunset
 
-    dt = datetime.datetime.now().replace(tzinfo=tzlocal.get_localzone())
+    dt = datetime.datetime.now(tz=tzlocal.get_localzone())
     sun = suntimes(Config.location.lat, Config.location.lng)
     sunrise = sun.sunrise(dt)
     sunset = sun.sunset(dt)
