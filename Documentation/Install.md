@@ -2,7 +2,7 @@
 ## For Raspberry Pi OS
 
 PiClock and this install guide are based on Raspberry Pi OS downloaded from
-https://www.raspberrypi.com/software/ I suggest using
+https://www.raspberrypi.com/software/. I suggest using
 "Raspberry Pi OS with desktop".  It will work with many Raspberry Pi OS versions,
 but you may have to add more packages, etc.  That exercise is left for the reader.
 
