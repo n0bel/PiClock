@@ -50,7 +50,7 @@ if (os.path.isfile(apikeysFileName)):
 
     if not foundcc and not foundowm:
         print "This version of PiClock requires a openweathermap api key."
-        print "https://openweathermap.org/price"
+        print "https://openweathermap.org/price  use the Free option"
         print "Enter your openweathermap api key."
         print "key:",
         k = sys.stdin.readline()
