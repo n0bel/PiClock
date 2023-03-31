@@ -553,7 +553,7 @@ def wxfinished_owm_forecast():
 
         wx.setStyleSheet(
             "#wx { font-size: " +
-            str(int(25 * xscale * Config.fontmult)) + "px; }")
+            str(int(22 * xscale * Config.fontmult)) + "px; }")
         wx.setText(f['weather'][0]['description'].title() + "\n" + s)
 
     # find 6am in the current timezone (weather day is 6am to 6am next day)
@@ -794,7 +794,7 @@ def wxfinished_owm():
 
         wx.setStyleSheet(
             "#wx { font-size: " +
-            str(int(25 * xscale * Config.fontmult)) + "px; }")
+            str(int(22 * xscale * Config.fontmult)) + "px; }")
         wx.setText(f['weather'][0]['description'].title() + "\n" + s)
 
     for i in range(3, 9):
@@ -839,10 +839,10 @@ def wxfinished_owm():
                  '%.0f' % tempm(f['temp']['min'])
         else:
             if (ptype == 'snow'):
-                if (paccum > 0.05):
+                if (paccum > 2.54):
                     s += Config.LSnow + '%.1f' % heighti(paccum) + 'in '
             else:
-                if (paccum > 0.05):
+                if (paccum > 2.54):
                     s += Config.LRain + '%.1f' % heighti(paccum) + 'in '
             s += '%.0f' % f['temp']['max'] + '/' + \
                  '%.0f' % f['temp']['min']
@@ -1018,7 +1018,7 @@ def wxfinished_ds():
         wx.setText(f['summary'] + "\n" + s)
 
 
-cc_code_map = {
+tio_code_map = {
             "freezing_rain_heavy": "Freezing Rain",
             "freezing_rain": "Freezing Rain",
             "freezing_rain_light": "Freezing Rain",
@@ -1045,7 +1045,7 @@ cc_code_map = {
 }
 
 
-cc_code_icons = {
+tio_code_icons = {
             "freezing_rain_heavy": "sleet",
             "freezing_rain": "sleet",
             "freezing_rain_light": "sleet",
@@ -1072,7 +1072,7 @@ cc_code_icons = {
 }
 
 
-def wxfinished_cc():
+def wxfinished_tio():
     global wxreply, wxdata, supress_current
     global wxicon, temper, wxdesc, press, humidity
     global wind, wind2, wdate, bottom, forecast
@@ -1087,7 +1087,7 @@ def wxfinished_cc():
     dt = dateutil.parser.parse(f['observation_time']['value'])\
         .astimezone(tzlocal.get_localzone())
     icon = f['weather_code']['value']
-    icon = cc_code_icons[icon]
+    icon = tio_code_icons[icon]
     if not daytime:
         icon = icon.replace('-day', '-night')
     if not supress_current:
@@ -1100,8 +1100,8 @@ def wxfinished_cc():
             wxicon.height(),
             Qt.IgnoreAspectRatio,
             Qt.SmoothTransformation))
-        wxdesc.setText(cc_code_map[f['weather_code']['value']])
-        wxdesc2.setText(cc_code_map[f['weather_code']['value']])
+        wxdesc.setText(tio_code_map[f['weather_code']['value']])
+        wxdesc2.setText(tio_code_map[f['weather_code']['value']])
 
         if Config.metric:
             temper.setText('%.1f' % (tempm(f['temp']['value'])) + u'°C')
@@ -1147,11 +1147,11 @@ def wxfinished_cc():
     # Config.LToday + f['precip_today_in'] + 'in')
 
 
-def wxfinished_cc2():
+def wxfinished_tio2():
     global wxreply, forecast
     global daytime
     wxstr2 = str(wxreply2.readAll())
-    # print('cc2', wxstr2)
+    # print('tio2', wxstr2)
     wxdata2 = json.loads(wxstr2)
 
     for i in range(0, 3):
@@ -1159,7 +1159,7 @@ def wxfinished_cc2():
         # print(i, i*3+2, f)
         fl = forecast[i]
         wicon = f['weather_code']['value']
-        wicon = cc_code_icons[wicon]
+        wicon = tio_code_icons[wicon]
 
         dt = dateutil.parser.parse(f['observation_time']['value']) \
             .astimezone(tzlocal.get_localzone())
@@ -1221,11 +1221,11 @@ def wxfinished_cc2():
         wx.setText(cc_code_map[f['weather_code']['value']] + "\n" + s)
 
 
-def wxfinished_cc3():
+def wxfinished_tio3():
     global wxreply3, forecast
     global daytime
     wxstr3 = str(wxreply3.readAll())
-    # print('cc2', wxstr2)
+    # print('tio2', wxstr2)
     wxdata3 = json.loads(wxstr3)
     ioff = 0
     dt = dateutil.parser.parse(
@@ -1235,7 +1235,7 @@ def wxfinished_cc3():
     for i in range(3, 9):
         f = wxdata3[i - 3 + ioff]
         wicon = f['weather_code']['value']
-        wicon = cc_code_icons[wicon]
+        wicon = tio_code_icons[wicon]
         fl = forecast[i]
         icon = fl.findChild(QtGui.QLabel, "icon")
         wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + wicon + ".png")
@@ -1298,7 +1298,7 @@ def wxfinished_cc3():
         wx.setStyleSheet(
             "#wx { font-size: "
             + str(int(19 * xscale * Config.fontmult)) + "px; }")
-        wx.setText(cc_code_map[f['weather_code']['value']] + "\n" + s)
+        wx.setText(tio_code_map[f['weather_code']['value']] + "\n" + s)
 
 
 metar_cond = [
@@ -1518,13 +1518,13 @@ def getwx():
         pass
 
     try:
-        ApiKeys.ccapi
-        global cc_code_map
+        ApiKeys.tioapi
+        global tio_code_map
         try:
-            cc_code_map = Config.Lcc_code_map
+            tio_code_map = Config.Ltio_code_map
         except:
             pass
-        getwx_cc()
+        getwx_tio()
         return
     except:
         pass
@@ -1597,7 +1597,7 @@ def getwx_owm():
         wxreplyc.finished.connect(wxfinished_owm_current)
 
 
-def getwx_cc():
+def getwx_tio():
     global wxurl
     global wxurl2
     global wxurl3
@@ -1605,8 +1605,8 @@ def getwx_cc():
     global wxreply2
     global wxreply3
     print("getting current:" + time.ctime())
-    wxurl = 'https://api.climacell.co/v3/weather/realtime?apikey=' + \
-        ApiKeys.ccapi
+    wxurl = 'https://api.tomorrow.io/v4/weather/realtime?apikey=' + \
+        ApiKeys.tioapi
     wxurl += "&lat=" + str(Config.location.lat) + '&lon=' + \
         str(Config.location.lng)
     wxurl += '&unit_system=us'
@@ -1616,11 +1616,11 @@ def getwx_cc():
     r = QUrl(wxurl)
     r = QNetworkRequest(r)
     wxreply = manager.get(r)
-    wxreply.finished.connect(wxfinished_cc)
+    wxreply.finished.connect(wxfinished_tio)
 
     print("getting hourly:" + time.ctime())
-    wxurl2 = 'https://api.climacell.co/v3/weather/forecast/hourly?apikey=' + \
-        ApiKeys.ccapi
+    wxurl2 = 'https://api.tomorrow.io/v4/weather/forecast/hourly?apikey=' + \
+        ApiKeys.tioapi
     wxurl2 += "&lat=" + str(Config.location.lat) + '&lon=' + \
         str(Config.location.lng)
     wxurl2 += '&unit_system=us'
@@ -1630,11 +1630,11 @@ def getwx_cc():
     r2 = QUrl(wxurl2)
     r2 = QNetworkRequest(r2)
     wxreply2 = manager.get(r2)
-    wxreply2.finished.connect(wxfinished_cc2)
+    wxreply2.finished.connect(wxfinished_tio2)
 
     print("getting daily:" + time.ctime())
-    wxurl3 = 'https://api.climacell.co/v3/weather/forecast/daily?apikey=' + \
-        ApiKeys.ccapi
+    wxurl3 = 'https://api.tomorrow.io/v4/weather/forecast/daily?apikey=' + \
+        ApiKeys.tioapi
     wxurl3 += "&lat=" + str(Config.location.lat) + '&lon=' + \
         str(Config.location.lng)
     wxurl3 += '&unit_system=us'
@@ -1644,7 +1644,7 @@ def getwx_cc():
     r3 = QUrl(wxurl3)
     r3 = QNetworkRequest(r3)
     wxreply3 = manager.get(r3)
-    wxreply3.finished.connect(wxfinished_cc3)
+    wxreply3.finished.connect(wxfinished_tio3)
 
 
 def getwx_metar():
