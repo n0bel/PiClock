@@ -54,7 +54,7 @@ fontattr = ''
 dimcolor = QColor('#000000')
 dimcolor.setAlpha(0)
 
-METAR="EDDB"  # Berlin-Schönefeld International Airport
+METAR=""
 
 # Language Specific wording
 # OpenWeatherMap Language code
