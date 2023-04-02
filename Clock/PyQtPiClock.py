@@ -957,15 +957,15 @@ def wxfinished_tm():
             wd = bearing(f['values']['windDirection'])
 
         if Config.metric:
-            temper.setText('%.1f' % (tempf2tempc(f['values']['temperature'])) + u'°C')
-            temper2.setText('%.1f' % (tempf2tempc(f['values']['temperature'])) + u'°C')
+            temper.setText('%.1f' % (tempm(f['values']['temperature'])) + u'°C')
+            temper2.setText('%.1f' % (tempm(f['values']['temperature'])) + u'°C')
             press.setText(Config.LPressure + '%.1f' % inhg2mmhg(f['values']['pressureSurfaceLevel']) + 'mm')
             wind.setText(Config.LWind + wd + ' ' +
                          '%.1f' % (mph2kph(f['values']['windSpeed'])) + 'km/h' +
                          Config.Lgusting +
                          '%.1f' % (mph2kph(f['values']['windGust'])) + 'km/h')
             wind2.setText(Config.LFeelslike +
-                              '%.1f' % (tempf2tempc(f['values']['temperatureApparent'])) + u'°C')
+                              '%.1f' % (tempm(f['values']['temperatureApparent'])) + u'°C')
         else:
             temper.setText('%.1f' % (f['values']['temperature']) + u'°F')
             temper2.setText('%.1f' % (f['values']['temperature']) + u'°F')
@@ -1047,7 +1047,7 @@ def wxfinished_tm2():
             else:
                 if paccum > 0.01:
                     s += Config.LRain + '%.0f' % inches2mm(paccum) + 'mm/hr '
-            s += '%.0f' % tempf2tempc(f['values']['temperature']) + u'°C'
+            s += '%.0f' % tempm(f['values']['temperature']) + u'°C'
         else:
             if ptype == 2:
                 if paccum > 0.01:
@@ -1146,8 +1146,8 @@ def wxfinished_tm3():
             else:
                 if paccum > 0.01:
                     s += Config.LRain + '%.0f' % inches2mm(paccum) + 'mm/hr '
-            s += '%.0f' % tempf2tempc(f['values']['temperatureMax']) + '/' + \
-                 '%.0f' % tempf2tempc(f['values']['temperatureMin']) + u'°C'
+            s += '%.0f' % tempm(f['values']['temperatureMax']) + '/' + \
+                 '%.0f' % tempm(f['values']['temperatureMin']) + u'°C'
         else:
             if ptype == 'snow':
                 if paccum > 0.01:
