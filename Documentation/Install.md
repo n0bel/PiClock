@@ -528,10 +528,13 @@ wget https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc
 wget https://files.pythonhosted.org/packages/36/7a/87837f39d0296e723bb9b62bbb257d0355c7f6128853c78955f57342a56d/python_dateutil-2.8.2-py2.py3-none-any.whl
 wget https://files.pythonhosted.org/packages/61/28/1d3920e4d1d50b19bc5d24398a7cd85cc7b9a75a490570d5a30c57622d34/pytz-2018.9-py2.py3-none-any.whl
 wget https://files.pythonhosted.org/packages/cb/89/e3687d3ed99bc882793f82634e9824e62499fdfdc4b1ae39e211c5b05017/tzlocal-1.5.1.tar.gz
+wget https://files.pythonhosted.org/packages/53/97/7cc5be0d41443ba5d6b700e749f43716ff87a7ce2dbd87e92fe97e04c369/python-metar-1.4.0.tar.gz
 
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org six-1.16.0-py2.py3-none-any.whl
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org python_dateutil-2.8.2-py2.py3-none-any.whl
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org pytz-2018.9-py2.py3-none-any.whl
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org tzlocal-1.5.1.tar.gz
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org python-metar-1.4.0.tar.gz 
+
 ```
 
