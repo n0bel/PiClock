@@ -93,31 +93,35 @@ Lmoon6 = 'Abnehmender Dreiviertelmond'
 Lmoon7 = 'Abnehmender Halbmond'
 Lmoon8 = 'Abnehmender Sichelmond'
 # Language Specific terms for weather conditions
-Lcc_code_map = {
-            "freezing_rain_heavy": "Gefrierender Regen",
-            "freezing_rain": "Gefrierender Regen",
-            "freezing_rain_light": "Gefrierender Regen",
-            "freezing_drizzle": "Gefrierender Nieselregen",
-            "ice_pellets_heavy": "Eisstücke",
-            "ice_pellets": "Eisstücke",
-            "ice_pellets_light": "Eisstücke",
-            "snow_heavy": "Starker Schneefall",
-            "snow": "Schnee",
-            "snow_light": "Leichter Schnee",
-            "flurries": "Gewitter",
-            "tstorm": "Gewitter",
-            "rain_heavy": "Starkregen",
-            "rain": "Regen",
-            "rain_light": "Leichter Regen",
-            "drizzle": "Nieselregen",
-            "fog_light": "Leichter Nebel",
-            "fog": "Nebel",
-            "cloudy": "Wolkig",
-            "mostly_cloudy": "Meist Wolkig",
-            "partly_cloudy": "Teilweise Wolkig",
-            "mostly_clear": "Teilweise klar",
-            "clear": "Klar"
+
+
+Ltm_code_map = {
+    0: 'Unknown',
+    1000: "Klar",
+    1100: 'Teilweise klar',
+    1101: 'Teilweise Wolkig',
+    1102: 'Meist Wolkig',
+    1001: 'Wolkig',
+    2000: 'Nebel',
+    2100: 'Leichter Nebel',
+    4000: 'Nieselregen',
+    4001: 'Rain',
+    4200: 'Light Rain',
+    4201: 'Heavy Rain',
+    5000: 'Regen',
+    5001: 'Gewitter',
+    5100: 'Leichter Schnee',
+    5101: 'Starker Schneefall',
+    6000: 'Gefrierender Nieselregen',
+    6001: 'Gefrierender Regen',
+    6200: 'Gefrierender Regen',
+    6201: 'Gefrierender Regen',
+    7000: 'Eisstücke',
+    7101: 'Eisstücke',
+    7102: 'Eisstücke',
+    8000: 'Gewitter'
 }
+
 
 # RADAR
 # By default, primary_location entered will be the
