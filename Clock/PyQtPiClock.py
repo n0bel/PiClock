@@ -1129,7 +1129,7 @@ def wxfinished_tm():
                          '%.1f' % (mph2kph(f['values']['windSpeed'])) + 'km/h' +
                          Config.Lgusting +
                          '%.1f' % (mph2kph(f['values']['windGust'])) + 'km/h')
-            feelslike.setText(Config.LFeelslike +
+            wind2.setText(Config.LFeelslike +
                               '%.1f' % (tempf2tempc(f['values']['temperatureApparent'])) + u'°C')
         else:
             temper.setText('%.1f' % (f['values']['temperature']) + u'°F')
@@ -1140,7 +1140,7 @@ def wxfinished_tm():
                          '%.1f' % (f['values']['windSpeed']) + 'mph' +
                          Config.Lgusting +
                          '%.1f' % (f['values']['windGust']) + 'mph')
-            feelslike.setText(Config.LFeelslike +
+            wind2.setText(Config.LFeelslike +
                               '%.1f' % (f['values']['temperatureApparent']) + u'°F')
 
         humidity.setText(Config.LHumidity + '%.0f%%' % (f['values']['humidity']))
