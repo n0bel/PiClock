@@ -854,7 +854,7 @@ def wxfinished_owm():
 
 tm_code_map = {
     0: 'Unknown',
-    1000: 'Clear, Sunny',
+    1000: 'Clear',
     1100: 'Mostly Clear',
     1101: 'Partly Cloudy',
     1102: 'Mostly Cloudy',
