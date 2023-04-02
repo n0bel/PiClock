@@ -513,3 +513,25 @@ cd PiClock/Button
 rm gpio-keys
 make gpio-keys
 ```
+
+### Updating on very old Raspbian versions
+If your log shows error messages regarding dateutil or tzlocal you'll need
+to install them using pip.  Since these are very old versions you'll need to
+download them.
+
+These steps worked on my old Raspbian GNU/Linux 7 (wheezy), which I installed in 
+2015.
+
+```
+sudo su -  # becoming root
+wget https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl
+wget https://files.pythonhosted.org/packages/36/7a/87837f39d0296e723bb9b62bbb257d0355c7f6128853c78955f57342a56d/python_dateutil-2.8.2-py2.py3-none-any.whl
+wget https://files.pythonhosted.org/packages/61/28/1d3920e4d1d50b19bc5d24398a7cd85cc7b9a75a490570d5a30c57622d34/pytz-2018.9-py2.py3-none-any.whl
+wget https://files.pythonhosted.org/packages/cb/89/e3687d3ed99bc882793f82634e9824e62499fdfdc4b1ae39e211c5b05017/tzlocal-1.5.1.tar.gz
+
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org six-1.16.0-py2.py3-none-any.whl
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org python_dateutil-2.8.2-py2.py3-none-any.whl
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org pytz-2018.9-py2.py3-none-any.whl
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org tzlocal-1.5.1.tar.gz
+```
+
