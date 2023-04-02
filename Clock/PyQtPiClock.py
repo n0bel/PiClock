@@ -55,6 +55,9 @@ class suntimes:
 
     @staticmethod
     def __timefromdecimalday(day):
+        if (day < 0.0):
+            xdt = datetime.datetime.now()
+            return datetime.time(hour=xdt.hour, minute=xdt.minute, second=xdt.second)
         hours = 24.0*day
         h = int(hours)
         minutes = (hours-h)*60
@@ -1043,10 +1046,10 @@ def wxfinished_tm2():
         if Config.metric:
             if ptype == 2:
                 if paccum > 0.01:
-                    s += Config.LSnow + '%.0f' % inches2mm(paccum) + 'mm/hr '
+                    s += Config.LSnow + '%.0f' % heightm(paccum) + 'mm/hr '
             else:
                 if paccum > 0.01:
-                    s += Config.LRain + '%.0f' % inches2mm(paccum) + 'mm/hr '
+                    s += Config.LRain + '%.0f' % heightm(paccum) + 'mm/hr '
             s += '%.0f' % tempm(f['values']['temperature']) + u'°C'
         else:
             if ptype == 2:
@@ -1142,10 +1145,10 @@ def wxfinished_tm3():
         if Config.metric:
             if ptype == 'snow':
                 if paccum > 0.01:
-                    s += Config.LSnow + '%.0f' % inches2mm(paccum * 15) + 'mm/hr '
+                    s += Config.LSnow + '%.0f' % heightm(paccum * 15) + 'mm/hr '
             else:
                 if paccum > 0.01:
-                    s += Config.LRain + '%.0f' % inches2mm(paccum) + 'mm/hr '
+                    s += Config.LRain + '%.0f' % heightm(paccum) + 'mm/hr '
             s += '%.0f' % tempm(f['values']['temperatureMax']) + '/' + \
                  '%.0f' % tempm(f['values']['temperatureMin']) + u'°C'
         else:
