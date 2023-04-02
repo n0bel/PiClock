@@ -962,11 +962,11 @@ def wxfinished_tm():
         if Config.metric:
             temper.setText('%.1f' % (tempm(f['values']['temperature'])) + u'°C')
             temper2.setText('%.1f' % (tempm(f['values']['temperature'])) + u'°C')
-            press.setText(Config.LPressure + '%.1f' % inhg2mmhg(f['values']['pressureSurfaceLevel']) + 'mm')
+            press.setText(Config.LPressure + '%.1f' % barom(f['values']['pressureSurfaceLevel']) + 'mm')
             wind.setText(Config.LWind + wd + ' ' +
-                         '%.1f' % (mph2kph(f['values']['windSpeed'])) + 'km/h' +
+                         '%.1f' % (speedm(f['values']['windSpeed'])) + 'km/h' +
                          Config.Lgusting +
-                         '%.1f' % (mph2kph(f['values']['windGust'])) + 'km/h')
+                         '%.1f' % (speedm(f['values']['windGust'])) + 'km/h')
             wind2.setText(Config.LFeelslike +
                               '%.1f' % (tempm(f['values']['temperatureApparent'])) + u'°C')
         else:
