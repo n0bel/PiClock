@@ -27,6 +27,13 @@ sys.dont_write_bytecode = True
 from GoogleMercatorProjection import get_corners, get_point, get_tile_xy, LatLng  # NOQA
 import ApiKeys  # NOQA
 
+from paho.mqtt import client as mqtt_client
+mqtt_temperature = ''
+mqtt_humidity = ''
+mqtt_client_temperature = mqtt_client.Client()
+_mqtt_topic_ = "sensors/ESP32_RTL/RTL_433toMQTT/Oregon-THGR810/1/39"
+
+import threading
 
 class TimeZoneUTC(datetime.tzinfo):
     def utcoffset(self, dt):
@@ -431,6 +438,12 @@ def wxfinished_owm():
             return
 
         f = wxdata['current']
+
+        if mqtt_temperature != '' :
+            f['temperature'] = float(mqtt_temperature) * 1.8 + 32
+        if mqtt_humidity != '' :
+            f['humidity'] = mqtt_humidity
+
         icon = f['weather'][0]['icon']
         icon = owmicons[icon]
         if not supress_current:
@@ -787,7 +800,8 @@ def wxfinished_tm2():
                         s += Config.LRain + '%.1f' % paccum + 'in/hr '
                 s += '%.0f' % (f['values']['temperature']) + u'°F'
 
-            wx.setStyleSheet('#wx { font-size: ' + str(int(19 * xscale * Config.fontmult)) + 'px; }')
+#DKDK set text size for side TOP cells
+            wx.setStyleSheet('#wx { font-size: ' + str(int(25 * xscale * Config.fontmult)) + 'px; }')
             wx.setText(tm_code_map[f['values']['weatherCode']] + '\n' + s)
     except NameError:  # if there is a JSONDecodeError on first run, wxdata2 may be undefined
         pass  # ignore and try again on the next refresh
@@ -891,7 +905,8 @@ def wxfinished_tm3():
                 s += '%.0f' % f['values']['temperatureMax'] + '/' + \
                      '%.0f' % f['values']['temperatureMin'] + u'°F'
 
-            wx.setStyleSheet('#wx { font-size: ' + str(int(19 * xscale * Config.fontmult)) + 'px; }')
+#DKDK set font for side cells
+            wx.setStyleSheet('#wx { font-size: ' + str(int(25 * xscale * Config.fontmult)) + 'px; }')
             wx.setText(tm_code_map[f['values']['weatherCode']] + '\n' + s)
     except NameError:  # if there is a JSONDecodeError on first run, wxdata3 may be undefined
         pass  # ignore and try again on the next refresh
@@ -1122,7 +1137,7 @@ def getwx_owm():
     global wxurl
     global wxreply
     print('getting current: ' + time.ctime())
-    wxurl = 'https://api.openweathermap.org/data/3.0/onecall?appid=' + ApiKeys.owmapi
+    wxurl = 'https://api.openweathermap.org/data/2.5/onecall?appid=' + ApiKeys.owmapi
     wxurl += '&lat=' + str(Config.location.lat) + '&lon=' + str(Config.location.lng)
     wxurl += '&units=imperial&lang=' + Config.Language.lower()
     wxurl += '&r=' + str(random.random())
@@ -1332,7 +1347,7 @@ class Radar(QtWidgets.QLabel):
         self.point = radar['center']
         self.radar = radar
         self.baseurl = self.mapurl(radar, rect, False)
-        print('map base url for ' + self.myname + ': ' + self.baseurl)
+#        print('map base url for ' + self.myname + ': ' + self.baseurl)
 
         mb = 0
         try:
@@ -1474,7 +1489,7 @@ class Radar(QtWidgets.QLabel):
         self.frameImages = newf
         firstt = t - self.anim * 600
         for tt in range(firstt, t + 1, 600):
-            print('get... ' + str(tt) + ' ' + self.myname)
+#            print('get... ' + str(tt) + ' ' + self.myname)
             gotit = False
             for f in self.frameImages:
                 if f['time'] == tt:
@@ -1494,13 +1509,13 @@ class Radar(QtWidgets.QLabel):
                 tileurl = 'https://tilecache.rainviewer.com/v2/radar/%d/%s' \
                           % (t, tt)
                 self.tileurls.append(tileurl)
-        print(self.myname + ' ' + str(self.getIndex) + ' ' + self.tileurls[i])
+ #       print(self.myname + ' ' + str(self.getIndex) + ' ' + self.tileurls[i])
         self.tilereq = QNetworkRequest(QUrl(self.tileurls[i]))
         self.tilereply = manager.get(self.tilereq)
         self.tilereply.finished.connect(self.get_tilesreply)
 
     def get_tilesreply(self):
-        print('get_tilesreply ' + str(self.getIndex))
+#        print('get_tilesreply ' + str(self.getIndex))
         if self.tilereply.error() != QNetworkReply.NoError:
             tilestr = str(self.tilereply.readAll(), 'utf-8')
             print('ERROR from rainviewer.com: ' + tilestr)
@@ -1756,11 +1771,11 @@ class Radar(QtWidgets.QLabel):
         self.lastget = time.time() - self.interval + random.uniform(3, 10)
 
     def wxstart(self):
-        print('wxstart for ' + self.myname)
+#        print('wxstart for ' + self.myname)
         self.timer.start(200)
 
     def wxstop(self):
-        print('wxstop for ' + self.myname)
+#        print('wxstop for ' + self.myname)
         self.timer.stop()
 
     def stop(self):
@@ -1815,6 +1830,46 @@ def nextframe(plusminus):
         framep = len(frames) - 1
     frames[framep].setVisible(True)
     fixupframe(frames[framep], True)
+
+def on_message_temperature(client, userdata, msg):
+    global mqtt_temperature, temper, humidity
+    try:
+        m_decode=str(msg.payload.decode("utf-8","ignore"))
+        m_in=json.loads(m_decode)
+        mqtt_temperature  = m_in["temperature_C"]
+        temper.setText('%.1f' % (float(mqtt_temperature)) + u'°C')
+#    print(f"Received TEMPERATURE `{mqtt_temperature}` from `{msg.topic}` topic")
+        mqtt_humidity  = m_in["humidity"]
+        humidity.setText(Config.LHumidity + '%.0f%%' % (float(mqtt_humidity)))
+#        print(f"Received HUMIDITY `{msg.payload.decode()}` from `{msg.topic}` topic")
+    except Exception:
+        pass
+
+######################################################################################
+# check status thread
+#######################################################################################
+
+print_disconnected_message = True
+
+def fCheckStatus():
+    global mqtt_client_temperature, print_disconnected_message
+    while (1):
+        if( not mqtt_client_temperature.is_connected() ):
+            if (print_disconnected_message) :
+                print( "check status found mqtt disconnected at %s" %(str(datetime.datetime.now())) )
+                print_disconnected_message = False
+            try:
+                mqtt_client_temperature = mqtt_client.Client()
+                mqtt_client_temperature.on_message = on_message_temperature
+                mqtt_client_temperature.connect('192.168.1.250')
+#                mqtt_client_temperature.subscribe(_mqtt_topic_+"temperature_C")
+                mqtt_client_temperature.subscribe(_mqtt_topic_)
+                mqtt_client_temperature.loop_start()
+                print( "check status found mqtt connected at %s" %(str(datetime.datetime.now())) )
+                print_disconnected_message = True
+            except:
+                pass
+        time.sleep(1)
 
 
 class MyMain(QtWidgets.QWidget):
@@ -2376,6 +2431,26 @@ manager = QtNetwork.QNetworkAccessManager()
 
 stimer = QtCore.QTimer()
 stimer.singleShot(10, qtstart)
+
+try:
+    mqtt_client_temperature = mqtt_client.Client()
+    mqtt_client_temperature.on_message = on_message_temperature
+    mqtt_client_temperature.connect('192.168.1.250')
+    mqtt_client_temperature.subscribe(_mqtt_topic_)
+#    mqtt_client_temperature.subscribe(_mqtt_topic_+"humidity")
+    mqtt_client_temperature.loop_start()
+except:
+    pass
+#mqtt_client_humidity = mqtt_client.Client()
+#mqtt_client_humidity.on_message = on_message_humidity
+#mqtt_client_humidity.connect('192.168.1.250')
+#mqtt_client_humidity.subscribe("rtl_433/Oregon-THGR810/244/humidity")
+#mqtt_client_humidity.on_message = on_message_humidity
+#mqtt_client_humidity.loop_start()
+
+procCheckStatus        = threading.Thread( target = fCheckStatus )
+procCheckStatus.daemon = True
+procCheckStatus.start()
 
 w.show()
 w.showFullScreen()
