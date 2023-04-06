@@ -3,8 +3,8 @@ __pycache__/
 *.py[cod]
 
 # Configuration things to not commit API keys/location
-Clock/Api-Keys.py
-Clock/Config.py
+#Clock/Api-Keys.py
+#Clock/Config.py
 
 # From testing
 Clock/log.count
