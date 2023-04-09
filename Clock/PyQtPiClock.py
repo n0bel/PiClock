@@ -168,6 +168,11 @@ def tick():
             pass
 
     now = datetime.datetime.now()
+    try:
+        if Config.clockUTC:
+            now = datetime.datetime.utcnow()
+    except:
+        pass
     if Config.digital:
         timestr = Config.digitalformat.format(now)
         if Config.digitalformat.find("%I") > -1:
