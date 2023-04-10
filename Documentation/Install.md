@@ -24,7 +24,7 @@ those prompts and set things as they make sense for you.  Of course
 setting the proper timezone for a clock is key.
 
 Eventually the Pi will reboot, and you'll be back to the desktop.
-We need to configure a few more things.
+You need to configure a few more things.
 
 Navigate to Menu->Preferences->Raspberry Pi Configuration.
 Just change the Items below.
@@ -91,65 +91,56 @@ ping github.com
 go on forever)
 
 ### Get all the software that PiClock needs.
-
-Become super user! (root)  (trumpets play in the background) (ok, maybe
-just in my head)
+Update the package repository and get Qt5 for Python
 ```
-sudo su -
+sudo apt-get update
+sudo apt-get install python3-pyqt5
 ```
-update the repository
-```
-apt-get update
-```
-then get qt5 for python
-```
-apt-get install python3-pyqt5
-```
-you may need to confirm some things, like:
+You may need to confirm some things, like:
 After this operation, 59.5 MB of additional disk space will be used.
-Do you want to continue [Y/n]? y
+Do you want to continue [Y/n]? 
 Go ahead, say yes
 
-then get ws281x driver for python (optional for the NeoPixel LED Driver)
+### Required Python packages
+Install required Python packages
 ```
-pip3 install rpi_ws281x
+python3 -m pip install --upgrade pip
+python3 -m pip install python-dateutil --upgrade
+python3 -m pip install python-metar --upgrade
+python3 -m pip install pytz --upgrade
+python3 -m pip install timezonefinder --upgrade
+python3 -m pip install tzlocal --upgrade
 ```
-Some versions of Raspberry Pi OS need python-dev to be installed as well, before
+then get unclutter (disables the mouse pointer when there's no activity)
+```
+sudo apt-get install unclutter
+```
+
+#### Optional - NeoPixel LED Driver
+Get optional ws281x driver for Python if using NeoPixel LEDs
+```
+python3 -m pip install rpi_ws281x
+```
+Some versions of Raspberry Pi OS need python3-dev to be installed as well, before
 rpi-ws281x can be installed.  If the previous command fails reporting
 a missing include file, then do this:
 ```
-apt-get install python-dev
-```
-Then try the pip command again.
-
-then install more needed python libraries
-```
-pip3 install --upgrade pip
-pip3 install python-dateutil --upgrade
-pip3 install tzlocal --upgrade
-pip3 install python-metar --upgrade
+sudo apt-get install python3-dev
+python3 -m pip install rpi_ws281x
 ```
 
-then get unclutter (disables the mouse pointer when there's no activity)
-```
-apt-get install unclutter
-```
-
-### Get the DS18B20 Temperature driver for Python (optional)
-
-(you must still be root [super user])
+#### Optional - DS18B20 Temperature Driver
+Get optional DS18B20 Temperature driver for Python if using indoor temperature sensors
 ```
 git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
-python3 setup.py install
+sudo python3 setup.py install
 ```
 
-### Get Lirc driver for IR remote (optional)
-
-(you must still be root [super user])
+#### Optional - Lirc IR Remote Driver
+Get optional Lirc driver if using IR remote
 ```
-apt-get install lirc
+sudo apt-get install lirc
 ```
-
 use nano to edit lirc options file
 ```
 sudo nano /etc/lirc/lirc_options.conf
@@ -158,31 +149,28 @@ Be sure the uinput line appears as follows
 ```
 uinput         = True
 ```
-
 Be sure the driver line appears as follows
 ```
 driver          = default
-
 ```
 
-### Get mpg123 (optional to play NOAA weather radio streams)
-
-(you must still be root [super user])
+#### Optional - mpg123 Audio Streaming
+Get optional mpg123 to play NOAA weather radio streams
 ```
-apt-get install mpg123
+sudo apt-get install mpg123
 ```
 
-### reboot
-To get some things running, and ensure the final config is right, we'll do
+### Reboot
+To get some things running, and ensure the final config is right, do
 a reboot
 ```
-reboot
+sudo reboot
 ```
 
 ### Get the PiClock software
-Log into your Pi, (either on the screen or via ssh) (NOT as root)
+Log into your Pi, (either on the screen or via ssh) (NOT as root).
 You'll be in the home directory of the user pi (/home/pi) by default,
-and this is where we want to be.  Note that the following command while
+and this is where you want to be.  Note that the following command while
 itself not being case-sensitive, further operation of PiClock may be
 affected if the upper and lower case of the command is not followed.
 ```
@@ -249,7 +237,7 @@ sudo reboot
 
 ### Configure the PiClock API keys
 
-We need to set API keys for one weather service and one map service.
+You need to set API keys for one weather service and one map service.
 These are free unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost API keys.
 
@@ -261,13 +249,16 @@ You only need one or the other (owmapi or tmapi)
 
 #### OpenWeather API key
 
-An OpenWeather One Call API 3.0 key is required to use OpenWeather data.
-(Requires credit card which won't be charged unless usage is high.)
+An OpenWeather API key is required to use OpenWeather data.
 
-OpenWeather One Call API 3.0 keys are created by signing up at this link:
-https://home.openweathermap.org/subscriptions/unauth_subscribe/onecall_30/base
+OpenWeather API keys are created by signing up at this link:
+https://openweathermap.org/price
 
-Once you subscribe to the One Call API 3.0 plan, the default call limit is set 
+Select either the One Call by Call API 3.0 subscription plan, or scroll down for the 
+Professional Collections current weather and forecasts free plan.
+
+The OpenWeather One Call by Call API 3.0 key requires a credit card which won't be charged 
+unless usage is high. If you subscribe to the One Call API 3.0 plan, the default call limit is set 
 to 2,000 API calls per day, however only the first 1,000 calls are free, which 
 you should not exceed under typical PiClock operation.
 After the daily limit is reached, the overage charge is $0.15 per 100 calls.
@@ -284,7 +275,7 @@ https://www.tomorrow.io/weather-api/
 
 #### Map API Key
 
-You have your choice of Mapbox (for dark maps) or Google Maps from which to get your underlying maps.
+You have your choice of Mapbox or Google Maps from which to get your underlying maps.
 You only need one or the other (mbapi or googleapi)
 
 #### Google Maps API key
@@ -313,11 +304,10 @@ and alerts (set to like $1.00).
 
 #### Mapbox API key
 
-A Mapbox API key (access token) is required to use Mapbox (for dark maps).
+A Mapbox API key (access token) is required to use Mapbox.
 
 Mapbox access tokens are created by signing up at this link:
 https://www.mapbox.com/signup/
-
 
 Now that you have your API keys...
 
@@ -382,7 +372,7 @@ You'll need to be on the desktop, in a terminal program.
 
 ```
 cd PiClock
-sh startup.sh -n -s
+bash startup.sh -n -s
 ```
 Your screen should be covered by the PiClock  YAY!
 
@@ -432,14 +422,14 @@ This puts the PiClock icon on your desktop.  It also runs it when
 the desktop starts.
 
 ## Autostart Method 2
-To have it auto start on boot we need to do one more thing, edit the
+To have it auto start on boot you need to do one more thing, edit the
 crontab file as follows: (it will automatically start nano)  (NOT as root)
 ```
 crontab -e
 ```
 and add the following line:
 ```
-@reboot sh /home/pi/PiClock/startup.sh
+@reboot bash /home/pi/PiClock/startup.sh
 ```
 save the file
 and reboot to test
@@ -464,20 +454,20 @@ PyQtPiClock with an alternate config.
 First you need to set up an alternate config.   Config.py is the normal name, so perhaps Config-Night.py
 might be appropriate.  For a dimmer display use Config-Example-Bedside.py as a guide.
 
-First we must make switcher.sh executable (git removes the x flags)
+First you must make switcher.sh executable (git removes the x flags)
 ```
 cd PiClock
 chmod +x switcher.sh
 ```
-Now we'll tell our friend cron to run the switcher script (switcher.sh) on day/night cycles.
+Now tell your friend cron to run the switcher script (switcher.sh) on day/night cycles.
 Run the cron editor: (should *not* be root)
 ```
 crontab -e
 ```
 Add lines similar to this:
 ```
-0 8 * * * sh /home/pi/PiClock/switcher.sh Config
-0 21 * * * sh /home/pi/PiClock/switcher.sh Config-Night
+0 8 * * * bash /home/pi/PiClock/switcher.sh Config
+0 21 * * * bash /home/pi/PiClock/switcher.sh Config-Night
 ```
 The 8 there means 8am, to switch to the normal config, and the 21 means switch to Config-Night at 9pm.
 More info on crontab can be found here: https://en.wikipedia.org/wiki/Cron
@@ -497,7 +487,7 @@ save the file
 This sets the reboot to occur at 3:22am every day.   Adjust as needed.
 
 ### Updating to newer/updated versions
-Since we pulled the software from GitHub originally, it can be updated
+Since you pulled the software from GitHub originally, it can be updated
 using git and GitHub.
 ```
 cd PiClock

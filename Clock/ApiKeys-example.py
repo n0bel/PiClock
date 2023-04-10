@@ -1,9 +1,9 @@
 # Change this to your API keys
 
 # Map API keys -- only need 1 of the following
-# Google Maps API key (if usemapbox is not set in Config)
-googleapi = 'YOUR GOOGLE MAPS API KEY'
-# Mapbox API key (access_token) [if usemapbox is set in Config]
+# If you want to use Google Maps, uncomment and add API key
+# googleapi = 'YOUR GOOGLE MAPS API KEY'
+# If you want to use Mapbox, uncomment and add API key (access token)
 mbapi = 'YOUR MAPBOX ACCESS TOKEN'
 
 # Weather API key -- only need 1 of the following

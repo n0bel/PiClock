@@ -1,6 +1,8 @@
 # PiClock
 ## PiClock Mods
-Fork of PiClock that uses custom dark maps from MapBox with an additional map overlay for the radar windows so that weather does not obscure map information.
+Fork of PiClock that uses custom dark maps from MapBox, for better contrast 
+between the weather radar and the maps, with an additional map overlay so that 
+weather does not obscure map information, such as labels, borders, and roads.
 
 The radar windows consist of three layers:
  - Bottom layer is a plain MapBox dark map with no labels, borders, or roads.

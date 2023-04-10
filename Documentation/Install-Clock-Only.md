@@ -30,7 +30,7 @@ https://github.com/SerBrynden/PiClock/archive/master.zip, then unzip it.
 
 ### Configure the PiClock API keys
 
-We need to set API keys for one weather service and one map service.
+You need to set API keys for one weather service and one map service.
 These are free unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost API keys.
 
@@ -42,13 +42,16 @@ You only need one or the other (owmapi or tmapi)
 
 #### OpenWeather API key
 
-An OpenWeather One Call API 3.0 key is required to use OpenWeather data.
-(Requires credit card which won't be charged unless usage is high.)
+An OpenWeather API key is required to use OpenWeather data.
 
-OpenWeather One Call API 3.0 keys are created by signing up at this link:
-https://home.openweathermap.org/subscriptions/unauth_subscribe/onecall_30/base
+OpenWeather API keys are created by signing up at this link:
+https://openweathermap.org/price
 
-Once you subscribe to the One Call API 3.0 plan, the default call limit is set 
+Select either the One Call by Call API 3.0 subscription plan, or scroll down for the 
+Professional Collections current weather and forecasts free plan.
+
+The OpenWeather One Call by Call API 3.0 key requires a credit card which won't be charged 
+unless usage is high. If you subscribe to the One Call API 3.0 plan, the default call limit is set 
 to 2,000 API calls per day, however only the first 1,000 calls are free, which 
 you should not exceed under typical PiClock operation.
 After the daily limit is reached, the overage charge is $0.15 per 100 calls.
@@ -65,7 +68,7 @@ https://www.tomorrow.io/weather-api/
 
 #### Map API Key
 
-You have your choice of Mapbox (for dark maps) or Google Maps from which to get your underlying maps.
+You have your choice of Mapbox or Google Maps from which to get your underlying maps.
 You only need one or the other (mbapi or googleapi)
 
 #### Google Maps API key
@@ -94,11 +97,10 @@ and alerts (set to like $1.00).
 
 #### Mapbox API key
 
-A Mapbox API key (access token) is required to use Mapbox (for dark maps).
+A Mapbox API key (access token) is required to use Mapbox.
 
 Mapbox access tokens are created by signing up at this link:
 https://www.mapbox.com/signup/
-
 
 Now that you have your API keys...
 
@@ -152,9 +154,9 @@ location pointers.
 
 ```
 cd PiClock
-python PyQtPiClock.py
+python3 PyQtPiClock.py
 ```
-After a few seconds, your screen should be covered by the PiClock  YAY!
+After a few seconds, your screen should be covered by the PiClock. YAY!
 
 There may be some output on the terminal screen as it executes.
 If everything works, it can be ignored.  If for some reason the clock
@@ -170,12 +172,12 @@ file (Config.py)
 
 
 ### Updating to newer/updated versions
-Since we pulled the software from GitHub originally, it can be updated
+Since you pulled the software from GitHub originally, it can be updated
 using git and GitHub.
 ```
 cd PiClock
 git pull
-python update.py
+python3 update.py
 ```
 This will automatically update any part(s) of the software that has changed.
 The update.py program will then convert any config files as needed.

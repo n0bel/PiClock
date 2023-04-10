@@ -1,13 +1,16 @@
+# -*- coding: utf-8 -*-
 from PyQt5.QtGui import QColor
 
-from GoogleMercatorProjection import LatLng
+from GoogleMercatorProjection import LatLng  # NOQA
 
 # LOCATION(S)
 # Further radar configuration (zoom, marker location) can be
 # completed under the RADAR section
 primary_coordinates = 44.9764016, -93.2486732  # Change to your Lat/Lon
 
+# Location for weather report
 location = LatLng(primary_coordinates[0], primary_coordinates[1])
+# Default radar location
 primary_location = LatLng(primary_coordinates[0], primary_coordinates[1])
 noaastream = 'http://www.urberg.net:8000/tim273/edina'
 background = 'images/clockbackground-kevin.png'
@@ -45,17 +48,22 @@ digitalsize = 200
 
 digitalformat2 = '{0:%H:%M:%S}'  # Format of the digital time on second screen
 
-usemapbox = 1  # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
+# Mapbox map styles, need API key (mbapi in ApiKeys.py)
+# If no Mapbox API is set, Google Maps are used
 map_base = 'bcurley/cj712peyz0bwr2sqfndbggupb'  # Custom dark Mapbox style for land and water only (bottom layer that goes below weather radar)
 map_overlay = 'bcurley/cj712r01c0bw62rm9isme3j8c'  # Custom Mapbox style for labels, roads, and borders only (top layer that goes above weather radar)
-# map_base = 'mapbox/satellite-streets-v11' # Uncomment for standard Mapbox style, and comment/remove the custom style
-# map_overlay = '' # Uncomment and leave blank for standard Mapbox style, and comment/remove the custom style
+# map_base = 'mapbox/satellite-streets-v12'  # Uncomment for standard Mapbox Satellite Streets style, and comment/remove the custom style
+# map_base = 'mapbox/streets-v12'  # Uncomment for standard Mapbox Streets style, and comment/remove the custom style
+# map_base = 'mapbox/outdoors-v12'  # Uncomment for standard Mapbox Outdoors style, and comment/remove the custom style
+# map_base = 'mapbox/dark-v11'  # Uncomment for standard Mapbox Dark style, and comment/remove the custom style
+# map_overlay = ''  # Uncomment and leave blank if using standard Mapbox style, and comment/remove the custom style
 
-# Sign-in and create custom map styles at https://studio.mapbox.com/
+# For more Mapbox styles, see https://docs.mapbox.com/api/maps/styles/
+# To create custom Mapbox styles, sign-in at https://studio.mapbox.com/
 # Example: If static map URL is
-# https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/-80.2,25.8,10/600x400?access_token=YOUR-ACCESS-TOKEN
+# https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/-80.2,25.8,10/600x400?access_token=YOUR-ACCESS-TOKEN
 # use the portion between '/styles/v1/' and '/static/'
-# Standard Mapbox maps will look like 'mapbox/streets-v11'
+# Standard Mapbox maps will look like 'mapbox/streets-v12'
 # User created Mapbox maps will look like 'user-name/map-identifier'
 
 metric = 0  # 0 = English, 1 = Metric
@@ -86,7 +94,7 @@ METAR = ''
 
 # Language specific wording
 # Language code
-Language = "EN"
+Language = 'EN'
 
 # The Python Locale for date/time (locale.setlocale)
 #  '' for default Pi Setting
@@ -122,7 +130,7 @@ Lmoon8 = 'Waning Crescent'
 # Language specific terms for Tomorrow.io weather conditions
 Ltm_code_map = {
     0: 'Unknown',
-    1000: 'Clear, Sunny',
+    1000: 'Clear',
     1100: 'Mostly Clear',
     1101: 'Partly Cloudy',
     1102: 'Mostly Cloudy',

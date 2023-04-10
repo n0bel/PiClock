@@ -1,5 +1,4 @@
-# http://stackoverflow.com/
-#   questions/12507274/how-to-get-bounds-of-a-google-static-map
+# http://stackoverflow.com/questions/12507274/how-to-get-bounds-of-a-google-static-map
 import math
 
 MERCATOR_RANGE = 256
@@ -66,8 +65,7 @@ class MercatorProjection:
         origin = self.pixelOrigin_
         lng = (point.x - origin.x) / self.pixelsPerLonDegree_
         lat_radians = (point.y - origin.y) / -self.pixelsPerLonRadian_
-        lat = radians_to_degrees(2.0 * math.atan(math.exp(lat_radians)) -
-                                 math.pi / 2.0)
+        lat = radians_to_degrees(2.0 * math.atan(math.exp(lat_radians)) - math.pi / 2.0)
         return LatLng(lat, lng)
 
 
@@ -80,26 +78,18 @@ def get_point(point, center, zoom, mapwidth, mapheight):
     subject_p = proj.from_latlng_to_point(point)
     subject_p.x = subject_p.x * scale
     subject_p.y = subject_p.y * scale
-    return Point((subject_p.x - center_p.x) + mapwidth / 2.0,
-                 (subject_p.y - center_p.y) + mapheight / 2.0)
+    return Point((subject_p.x - center_p.x) + mapwidth / 2.0, (subject_p.y - center_p.y) + mapheight / 2.0)
 
 
 def get_corners(center, zoom, mapwidth, mapheight):
     scale = 2.0 ** zoom
     proj = MercatorProjection()
     center_px = proj.from_latlng_to_point(center)
-    sw_point = Point(center_px.x - (mapwidth / 2.0) / scale, center_px.y +
-                     (mapheight / 2.0) / scale)
+    sw_point = Point(center_px.x - (mapwidth / 2.0) / scale, center_px.y + (mapheight / 2.0) / scale)
     sw_lat_lon = proj.from_point_to_latlng(sw_point)
-    ne_point = Point(center_px.x + (mapwidth / 2.0) / scale, center_px.y -
-                     (mapheight / 2.0) / scale)
+    ne_point = Point(center_px.x + (mapwidth / 2.0) / scale, center_px.y - (mapheight / 2.0) / scale)
     ne_lat_lon = proj.from_point_to_latlng(ne_point)
-    return {
-        'N': ne_lat_lon.lat,
-        'E': ne_lat_lon.lng,
-        'S': sw_lat_lon.lat,
-        'W': sw_lat_lon.lng,
-    }
+    return {'N': ne_lat_lon.lat, 'E': ne_lat_lon.lng, 'S': sw_lat_lon.lat, 'W': sw_lat_lon.lng, }
 
 
 # https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
@@ -108,9 +98,5 @@ def get_tile_xy(latlng, zoom):
     lat_rad = math.radians(latlng.lat)
     n = 2.0 ** zoom
     xtile = (latlng.lng + 180.0) / 360.0 * n
-    ytile = ((1.0 - math.log(math.tan(lat_rad) +
-                             (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
-    return {
-        'X': xtile,
-        'Y': ytile
-    }
+    ytile = ((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
+    return {'X': xtile, 'Y': ytile}

@@ -1,9 +1,9 @@
-cd $HOME/PiClock
+#!/bin/bash
+cd "$HOME"/PiClock || exit
 pkill -INT -f PyQtPiClock.py
-cd Clock
-if [ "$DISPLAY" = "" ]
-then
-	export DISPLAY=:0
+cd Clock || exit
+if [ "$DISPLAY" = "" ]; then
+  export DISPLAY=:0
 fi
 # the main app
 # create a new log file name, max of 7 log files
@@ -15,6 +15,6 @@ mv PyQtPiClock.4.log PyQtPiClock.5.log >/dev/null 2>&1
 mv PyQtPiClock.3.log PyQtPiClock.4.log >/dev/null 2>&1
 mv PyQtPiClock.2.log PyQtPiClock.3.log >/dev/null 2>&1
 mv PyQtPiClock.1.log PyQtPiClock.2.log >/dev/null 2>&1
-# start the clock
-echo "Starting PiClock...."
-python3 -u PyQtPiClock.py $1 >PyQtPiClock.1.log 2>&1 &
+echo "Starting PiClock.... logging to Clock/PyQtPiClock.1.log"
+# start PiClock and add timestamp to log output
+python3 -u PyQtPiClock.py "$1" 2>&1 | (while read -r line; do echo "$(date +'[%F %T.%6N]') $line"; done) >PyQtPiClock.1.log

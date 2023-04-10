@@ -3,12 +3,14 @@
 # and makes them available as a json response
 # see TempNames.py for sensor id to name mapping
 #
+import json
+import socket
+import time
+from threading import Thread, Lock
+
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from w1thermsensor import W1ThermSensor
-import json
-import time
-import socket
-from threading import Thread, Lock
+
 from TempNames import sensornames
 
 temps = {}
@@ -17,13 +19,14 @@ lock = Lock()
 
 PORT_NUMBER = 48213
 
-# This class will handles any incoming request from
+
+# This class will handle any incoming request from
 # the browser
 
 
-class myHandler(BaseHTTPRequestHandler):
+class MyHandler(BaseHTTPRequestHandler):
 
-    def do_OPTIONS(self):
+    def do_options(self):
         self.send_response(200, "ok")
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', '*')
@@ -33,7 +36,7 @@ class myHandler(BaseHTTPRequestHandler):
                          )
         self.end_headers()
 
-    def do_GET(self):
+    def do_get(self):
         global temps, lock
         self.send_response(200)
         self.send_header('Content-type', 'text/json')
@@ -49,17 +52,17 @@ class myHandler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(s))
 
 
-def sensorname(str):
+def sensorname(name):
     try:
-        return sensornames[str]
+        return sensornames[name]
     except KeyError:
-        return 'temp-' + str
+        return 'temp-' + name
 
 
 def t_http():
     try:
-        server = HTTPServer(('0.0.0.0', PORT_NUMBER), myHandler)
-        print 'Started httpserver on port ', PORT_NUMBER
+        server = HTTPServer(('0.0.0.0', PORT_NUMBER), MyHandler)
+        print('Started httpserver on port ' + str(PORT_NUMBER))
         server.serve_forever()
     except:
         server.close()
@@ -82,7 +85,7 @@ def t_udp():
         temps[addr] = tempf
         temptimes[addr] = time.time()
         lock.release()
-        print 'udp>' + addr + ':' + str(tempf)
+        print('udp>' + addr + ':' + str(tempf))
 
 
 def t_temp():
@@ -91,7 +94,7 @@ def t_temp():
             lock.acquire()
             temps[sensor.id] = sensor.get_temperature(W1ThermSensor.DEGREES_F)
             temptimes[sensor.id] = time.time()
-            print 'hwr>' + sensor.id + ':' + str(temps[sensor.id])
+            print('hwr>' + sensor.id + ':' + str(temps[sensor.id]))
             lock.release()
 
         lock.acquire()
@@ -103,10 +106,11 @@ def t_temp():
         for t in todelete:
             temptimes.pop(t, None)
             temps.pop(t, None)
-            print "del>" + t
+            print('del>' + t)
         lock.release()
 
         time.sleep(120)
+
 
 t_httpt = Thread(target=t_http)
 t_httpt.daemon = True

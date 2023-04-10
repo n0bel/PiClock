@@ -51,12 +51,12 @@ So what do you need to build a PiClock?
   * A USB Keyboard and Mouse for setup (if you want something small
     and semi-permanent, I've had good luck with this:
     https://www.google.com/search?q=iPazzPort+2.4G+Mini+Wireless+Keyboard
-    I like the one with the mousepad on the side)
+    I like the one with the touchpad on the side)
   * USB Wi-Fi or Internet Connection
 
 Optional things
 
-  * One or more DS18B20s for showing the inside temperature (https://www.google.com/#q=ds18b20)
+  * One or more DS18B20s for showing the indoor temperature (https://www.google.com/search?q=ds18b20)
   * A string of WS2818 based RGB LEDs for the AmbiLight effect.  At 40ma per LED, and 30 or so
     LEDs you're quickly up to needing an extra 1.2A from the power supply.  Size it appropriately.
     One option is https://learn.adafruit.com/adafruit-neopixel-uberguide/overview)
