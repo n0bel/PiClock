@@ -161,12 +161,6 @@ def tick():
     global sun, daytime, sunrise, sunset
     global bottom
 
-    if Config.DateLocale != "":
-        try:
-            locale.setlocale(locale.LC_TIME, Config.DateLocale)
-        except:
-            pass
-
     now = datetime.datetime.now()
     try:
         if Config.clockUTC:
@@ -325,7 +319,6 @@ def heightm(f):
 
 def heighti(f):
     return f / 25.4
-
 
 
 def barom(f):
@@ -1508,6 +1501,12 @@ def qtstart():
     global objradar3
     global objradar4
     global sun, daytime, sunrise, sunset
+
+    if Config.DateLocale != "":
+        try:
+            locale.setlocale(locale.LC_TIME, Config.DateLocale)
+        except:
+            pass
 
     dt = datetime.datetime.now(tz=tzlocal.get_localzone())
     sun = suntimes(Config.location.lat, Config.location.lng)
