@@ -737,6 +737,7 @@ def wxfinished_owm_forecast():
         day = fl.findChild(QtWidgets.QLabel, "day")
         icon = fl.findChild(QtWidgets.QLabel, "icon")
         setday = True
+        has_forecast = False
         xpop = 0.0  # max
         rpaccum = 0.0  # total rain
         spaccum = 0.0  # total snow
@@ -752,15 +753,12 @@ def wxfinished_owm_forecast():
                     setday = False
                     day.setText("{0:%A %m/%d}".format(dt))
                 pop = 0.0
-                paccum = 0.0
                 if 'pop' in f:
                     pop = float(f['pop']) * 100.0
                 if 'rain' in f:
-                    ptype = 'rain'
                     paccum = float(f['rain']['3h'])
                     rpaccum += paccum
                 if 'snow' in f:
-                    ptype = 'snow'
                     paccum = float(f['snow']['3h'])
                     spaccum += paccum
                 if pop > xpop:
@@ -770,12 +768,9 @@ def wxfinished_owm_forecast():
                     xmaxtemp = tx
                 if tx < xmintemp:
                     xmintemp = tx
+                has_forecast = True
                 ldesc.append(f['weather'][0]['description'].title())
                 licon.append(f['weather'][0]['icon'])
-        if licon:
-            wicon = getmost(licon)
-        if ldesc:
-            wdesc = getmost(ldesc)
 
         if xpop > 0.1:
             s += '%.0f' % xpop + '% '
@@ -794,17 +789,20 @@ def wxfinished_owm_forecast():
                 s += Config.LRain + '%.1f' % mm2inches(rpaccum) + 'in '
             s += '%.0f' % xmaxtemp + '/' + \
                  '%.0f' % xmintemp + u'°F'
-        wx.setStyleSheet("#wx { font-size: " + str(int(19 * xscale * Config.fontmult)) + "px; }")
-        wx.setText(wdesc + "\n" + s)
 
-        wicon = owm_code_icons[wicon]
-        wicon = wicon.replace('-night', '-day')
-        wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + wicon + ".png")
-        icon.setPixmap(wxiconpixmap.scaled(
-            icon.width(),
-            icon.height(),
-            Qt.IgnoreAspectRatio,
-            Qt.SmoothTransformation))
+        if has_forecast:
+            wicon = getmost(licon)
+            wdesc = getmost(ldesc)
+            wx.setStyleSheet("#wx { font-size: " + str(int(19 * xscale * Config.fontmult)) + "px; }")
+            wx.setText(wdesc + "\n" + s)
+            wicon = owm_code_icons[wicon]
+            wicon = wicon.replace('-night', '-day')
+            wxiconpixmap = QtGui.QPixmap(Config.icons + "/" + wicon + ".png")
+            icon.setPixmap(wxiconpixmap.scaled(
+                icon.width(),
+                icon.height(),
+                Qt.IgnoreAspectRatio,
+                Qt.SmoothTransformation))
 
         dx6am += datetime.timedelta(1)
         dx6amnext += datetime.timedelta(1)
