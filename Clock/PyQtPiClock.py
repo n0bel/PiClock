@@ -792,6 +792,8 @@ def wxfinished_owm_forecast():
             s += '%.0f' % xmaxtemp + '/' + \
                  '%.0f' % xmintemp + u'°F'
 
+        # when current time is shortly after midnight
+        # there may not be any forecast after 6am for the final day
         if has_forecast:
             wicon = getmost(licon)
             wdesc = getmost(ldesc)
@@ -1591,8 +1593,7 @@ class Radar(QtWidgets.QLabel):
         self.interval = Config.radar_refresh * 60
         self.lastwx = 0
         self.retries = 0
-        self.corners = get_corners(self.point, self.zoom,
-                                   rect.width(), rect.height())
+        self.corners = get_corners(self.point, self.zoom, rect.width(), rect.height())
         self.baseTime = 0
         self.cornerTiles = {
             'NW': get_tile_xy(LatLng(self.corners['N'],
@@ -1623,8 +1624,7 @@ class Radar(QtWidgets.QLabel):
 
         self.overlay = QtWidgets.QLabel(self)
         self.overlay.setObjectName('overlay')
-        self.overlay.setStyleSheet(
-            '#overlay { background-color: transparent; }')
+        self.overlay.setStyleSheet('#overlay { background-color: transparent; }')
         self.overlay.setGeometry(0, 0, rect.width(), rect.height())
 
         self.wmk = QtWidgets.QLabel(self)
@@ -1745,6 +1745,7 @@ class Radar(QtWidgets.QLabel):
             self.tileQimages[self.getIndex].loadFromData(self.tilereply.readAll())
             self.getIndex += 1
         except IndexError:
+            print(traceback.format_exc())
             pass
         if self.getIndex < len(self.tileurls):
             self.get_tiles(self.getTime, self.getIndex)
@@ -1754,6 +1755,7 @@ class Radar(QtWidgets.QLabel):
 
     def combine_tiles(self):
         ii = QImage(self.tilesWidth * 256, self.tilesHeight * 256, QImage.Format_ARGB32)
+        ii.fill(Qt.transparent)
         painter = QPainter()
         painter.begin(ii)
         i = 0
@@ -1763,7 +1765,7 @@ class Radar(QtWidgets.QLabel):
         yo = int((int(yo) - yo) * 256)
         for y in range(0, self.totalHeight, 256):
             for x in range(0, self.totalWidth, 256):
-                if self.tileQimages[i].format() == 5:
+                if self.tileQimages[i].format() == QImage.Format_ARGB32:
                     painter.drawImage(x, y, self.tileQimages[i])
                 i += 1
         painter.end()
