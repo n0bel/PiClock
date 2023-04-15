@@ -593,10 +593,7 @@ def wxfinished_owm_current():
     global wxreplyc
     global wxicon, temper, wxdesc, press, humidity
     global wind, feelslike, wdate
-    global wxicon2, temper2, wxdesc2, attribution
-
-    attribution.setText('OpenWeatherMap.org')
-    attribution2.setText('OpenWeatherMap.org')
+    global wxicon2, temper2, wxdesc2
 
     wxstr = str(wxreplyc.readAll(), 'utf-8')
 
@@ -655,7 +652,12 @@ def wxfinished_owm_current():
 
 
 def wxfinished_owm_forecast():
-    global wxreplyf, forecast, tzlatlng
+    global wxreplyf, forecast
+    global attribution
+    global tzlatlng
+
+    attribution.setText('OpenWeatherMap.org')
+    attribution2.setText('OpenWeatherMap.org')
 
     wxstr = str(wxreplyf.readAll(), 'utf-8')
 
@@ -1100,7 +1102,7 @@ def wxfinished_tm_daily():
         if Config.metric:
             if ptype == 'snow':
                 if paccum > 0.1:
-                    s += Config.LSnow + '%.1f' % inches2mm(paccum * 15) + 'mm/hr '
+                    s += Config.LSnow + '%.1f' % inches2mm(paccum) + 'mm/hr '
             else:
                 if paccum > 0.1:
                     s += Config.LRain + '%.1f' % inches2mm(paccum) + 'mm/hr '
@@ -1109,7 +1111,7 @@ def wxfinished_tm_daily():
         else:
             if ptype == 'snow':
                 if paccum > 0.1:
-                    s += Config.LSnow + '%.1f' % (paccum * 15) + 'in/hr '
+                    s += Config.LSnow + '%.1f' % paccum + 'in/hr '
             else:
                 if paccum > 0.1:
                     s += Config.LRain + '%.1f' % paccum + 'in/hr '
@@ -1440,7 +1442,7 @@ def qtstart():
     if Config.DateLocale != '':
         try:
             locale.setlocale(locale.LC_TIME, Config.DateLocale)
-        except AttributeError:
+        except locale.Error:
             print(traceback.format_exc())
             pass
 
@@ -1570,7 +1572,6 @@ class SlideShow(QtWidgets.QLabel):
 class Radar(QtWidgets.QLabel):
 
     def __init__(self, parent, radar, rect, myname):
-        global xscale, yscale
         self.myname = myname
         self.rect = rect
         self.anim = 5
@@ -1580,7 +1581,7 @@ class Radar(QtWidgets.QLabel):
         self.baseurl = self.mapurl(radar, rect, overlayonly=False)
         print('map base url for ' + self.myname + ': ' + self.baseurl)
 
-        if Config.usemapbox:
+        if usemapbox:
             if 'overlay' in radar:
                 if radar['overlay'] != '':
                     self.overlayurl = self.mapurl(radar, rect, overlayonly=True)
@@ -1667,16 +1668,10 @@ class Radar(QtWidgets.QLabel):
         self.getIndex = 0
         self.tileurls = []
         self.tileQimages = []
-        self.tilereq = None
         self.tilereply = None
-        self.basepixmap = None
-        self.mkpixmap = None
-        self.basereq = None
         self.basereply = None
         self.timer = None
-        self.overlayreq = None
         self.overlayreply = None
-        self.overlaypixmap = None
 
     def rtick(self):
         if time.time() > (self.lastget + self.interval):
@@ -1736,8 +1731,8 @@ class Radar(QtWidgets.QLabel):
                           % (t, tt)
                 self.tileurls.append(tileurl)
         print(self.myname + ' tile' + str(self.getIndex) + ' ' + self.tileurls[i])
-        self.tilereq = QNetworkRequest(QUrl(self.tileurls[i]))
-        self.tilereply = manager.get(self.tilereq)
+        tilereq = QNetworkRequest(QUrl(self.tileurls[i]))
+        self.tilereply = manager.get(tilereq)
         self.tilereply.finished.connect(self.get_tilesreply)
 
     def get_tilesreply(self):
@@ -1758,12 +1753,9 @@ class Radar(QtWidgets.QLabel):
             self.get()
 
     def combine_tiles(self):
-        ii = QImage(self.tilesWidth * 256, self.tilesHeight * 256,
-                    QImage.Format_ARGB32)
+        ii = QImage(self.tilesWidth * 256, self.tilesHeight * 256, QImage.Format_ARGB32)
         painter = QPainter()
         painter.begin(ii)
-        painter.setPen(QColor(255, 255, 255, 255))
-        painter.setFont(QFont('Arial', 10))
         i = 0
         xo = self.cornerTiles['NW']['X']
         xo = int((int(xo) - xo) * 256)
@@ -1779,9 +1771,9 @@ class Radar(QtWidgets.QLabel):
         ii2 = ii.copy(-xo, -yo, self.rect.width(), self.rect.height())
         painter2 = QPainter()
         painter2.begin(ii2)
-        timestamp = '{0:%H:%M} rainviewer.com'.format(datetime.datetime.fromtimestamp(self.getTime))
+        timestamp = '{0:%H:%M} RainViewer.com'.format(datetime.datetime.fromtimestamp(self.getTime))
         painter2.setPen(QColor(63, 63, 63, 255))
-        painter2.setFont(QFont('Arial', 8))
+        painter2.setFont(QFont("Arial", pointSize=8, weight=75))
         painter2.setRenderHint(QPainter.TextAntialiasing)
         painter2.drawText(3 - 1, 12 - 1, timestamp)
         painter2.drawText(3 + 2, 12 + 1, timestamp)
@@ -1793,7 +1785,7 @@ class Radar(QtWidgets.QLabel):
         self.frameImages.append({'time': self.getTime, 'image': ii3})
 
     def mapurl(self, radar, rect, overlayonly):
-        if Config.usemapbox:
+        if usemapbox:
             if overlayonly:
                 return self.mapboxoverlayurl(radar, rect)
             else:
@@ -1865,7 +1857,7 @@ class Radar(QtWidgets.QLabel):
     def basefinished(self):
         if self.basereply.error() != QNetworkReply.NoError:
             basestr = str(self.basereply.readAll(), 'utf-8')
-            if Config.usemapbox:
+            if usemapbox:
                 try:
                     basejson = json.loads(basestr)
                     print('ERROR from api.mapbox.com: ' + basejson['message'])
@@ -1875,22 +1867,20 @@ class Radar(QtWidgets.QLabel):
             else:
                 print('ERROR from maps.googleapis.com: ' + basestr)
             return
-        self.basepixmap = QPixmap()
-        self.basepixmap.loadFromData(self.basereply.readAll())
-        if self.basepixmap.size() != self.rect.size():
-            self.basepixmap = self.basepixmap.scaled(self.rect.size(),
-                                                     Qt.KeepAspectRatio,
-                                                     Qt.SmoothTransformation)
-        self.setPixmap(self.basepixmap)
+        basepixmap = QPixmap()
+        basepixmap.loadFromData(self.basereply.readAll())
+        if basepixmap.size() != self.rect.size():
+            basepixmap = basepixmap.scaled(self.rect.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.setPixmap(basepixmap)
 
         # make marker pixmap
-        self.mkpixmap = QPixmap(self.basepixmap.size())
-        self.mkpixmap.fill(Qt.transparent)
+        mkpixmap = QPixmap(basepixmap.size())
+        mkpixmap.fill(Qt.transparent)
         br = QBrush(QColor(Config.dimcolor))
         painter = QPainter()
-        painter.begin(self.mkpixmap)
-        painter.fillRect(0, 0, self.mkpixmap.width(),
-                         self.mkpixmap.height(), br)
+        painter.begin(mkpixmap)
+        painter.fillRect(0, 0, mkpixmap.width(),
+                         mkpixmap.height(), br)
         for marker in self.radar['markers']:
             if 'visible' not in marker or marker['visible'] == 1:
                 pt = get_point(marker['location'], self.point, self.zoom,
@@ -1919,19 +1909,17 @@ class Radar(QtWidgets.QLabel):
                     (cr, cg, cb, ca) = c.getRgbF()
                     for x in range(0, mk2.width()):
                         for y in range(0, mk2.height()):
-                            (r, g, b, a) = QColor.fromRgba(
-                                mk2.pixel(x, y)).getRgbF()
+                            (r, g, b, a) = QColor.fromRgba(mk2.pixel(x, y)).getRgbF()
                             r = r * cr
                             g = g * cg
                             b = b * cb
-                            mk2.setPixel(x, y, QColor.fromRgbF(r, g, b, a)
-                                         .rgba())
+                            mk2.setPixel(x, y, QColor.fromRgbF(r, g, b, a).rgba())
                 mk2 = mk2.scaledToHeight(mkh, 1)
                 painter.drawImage(int(pt.x - mkh / 2), int(pt.y - mkh / 2), mk2)
 
         painter.end()
 
-        self.wmk.setPixmap(self.mkpixmap)
+        self.wmk.setPixmap(mkpixmap)
 
     def overlayfinished(self):
         if self.overlayreply.error() != QNetworkReply.NoError:
@@ -1943,25 +1931,25 @@ class Radar(QtWidgets.QLabel):
                 print('ERROR from api.mapbox.com: ' + overlaystr)
                 pass
             return
-        self.overlaypixmap = QPixmap()
-        self.overlaypixmap.loadFromData(self.overlayreply.readAll())
-        if self.overlaypixmap.size() != self.rect.size():
-            self.overlaypixmap = self.overlaypixmap.scaled(
+        overlaypixmap = QPixmap()
+        overlaypixmap.loadFromData(self.overlayreply.readAll())
+        if overlaypixmap.size() != self.rect.size():
+            overlaypixmap = overlaypixmap.scaled(
                 self.rect.size(),
                 Qt.KeepAspectRatio,
                 Qt.SmoothTransformation)
-        self.overlay.setPixmap(self.overlaypixmap)
+        self.overlay.setPixmap(overlaypixmap)
 
     def getbase(self):
         global manager
-        self.basereq = QNetworkRequest(QUrl(self.baseurl))
-        self.basereply = manager.get(self.basereq)
+        basereq = QNetworkRequest(QUrl(self.baseurl))
+        self.basereply = manager.get(basereq)
         self.basereply.finished.connect(self.basefinished)
 
     def getoverlay(self):
         global manager
-        self.overlayreq = QNetworkRequest(QUrl(self.overlayurl))
-        self.overlayreply = manager.get(self.overlayreq)
+        overlayreq = QNetworkRequest(QUrl(self.overlayurl))
+        self.overlayreply = manager.get(overlayreq)
         self.overlayreply.finished.connect(self.overlayfinished)
 
     def start(self, interval=0):
@@ -1969,7 +1957,7 @@ class Radar(QtWidgets.QLabel):
             self.interval = interval
         self.getbase()
 
-        if Config.usemapbox:
+        if usemapbox:
             if 'overlay' in self.radar:
                 if self.radar['overlay'] != '':
                     self.getoverlay()
@@ -2094,11 +2082,6 @@ Config = __import__(configname)
 # define default values for new/optional config variables.
 
 try:
-    Config.location
-except AttributeError:
-    Config.location = Config.wulocation
-
-try:
     Config.metric
 except AttributeError:
     Config.metric = 0
@@ -2142,10 +2125,7 @@ except AttributeError:
 try:
     Config.Language
 except AttributeError:
-    try:
-        Config.Language = Config.wuLanguage
-    except AttributeError:
-        Config.Language = 'en'
+    Config.Language = 'EN'
 
 try:
     Config.fontmult
@@ -2198,13 +2178,13 @@ try:
 except AttributeError:
     Config.useslideshow = 0
 
-#
 # Check if Mapbox API key is set, and use mapbox if so
+usemapbox = 0
 try:
     if ApiKeys.mbapi[:3].lower() == 'pk.':
-        Config.usemapbox = 1
+        usemapbox = 1
 except AttributeError:
-    Config.usemapbox = 0
+    pass
 
 hasMetar = False
 try:
@@ -2212,7 +2192,6 @@ try:
         hasMetar = True
         from metar import Metar
 except AttributeError:
-    print(traceback.format_exc())
     pass
 
 lastmin = -1
@@ -2565,7 +2544,7 @@ temp.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
 temp.setGeometry(0, int(height - 100 * yscale), width, int(50 * yscale))
 
 owmonecall = True
-
+tzlatlng = pytz.utc
 forecast = []
 
 for i in range(0, 9):

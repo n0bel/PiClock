@@ -11,7 +11,8 @@ primary_coordinates = 44.9764016, -93.2486732  # Change to your Lat/Lon
 # Location for weather report
 location = LatLng(primary_coordinates[0], primary_coordinates[1])
 # Default radar location
-primary_location = LatLng(primary_coordinates[0], primary_coordinates[1])
+radar_location = LatLng(primary_coordinates[0], primary_coordinates[1])
+
 noaastream = 'http://www.urberg.net:8000/tim273/edina'
 background = 'images/clockbackground-kevin.png'
 squares1 = 'images/squares1-kevin.png'
@@ -56,6 +57,7 @@ map_overlay = 'bcurley/cj712r01c0bw62rm9isme3j8c'  # Custom Mapbox style for lab
 # map_base = 'mapbox/streets-v12'  # Uncomment for standard Mapbox Streets style, and comment/remove the custom style
 # map_base = 'mapbox/outdoors-v12'  # Uncomment for standard Mapbox Outdoors style, and comment/remove the custom style
 # map_base = 'mapbox/dark-v11'  # Uncomment for standard Mapbox Dark style, and comment/remove the custom style
+# map_base = 'mapbox/cj5l80zrp29942rmtg0zctjto'  # Mapbox calls this map style 'Decimal'
 # map_overlay = ''  # Uncomment and leave blank if using standard Mapbox style, and comment/remove the custom style
 
 # For more Mapbox styles, see https://docs.mapbox.com/api/maps/styles/
@@ -93,7 +95,8 @@ dimcolor.setAlpha(0)
 METAR = ''
 
 # Language specific wording
-# Language code
+# OpenWeather Language code
+#  (https://openweathermap.org/current#multi)
 Language = 'EN'
 
 # The Python Locale for date/time (locale.setlocale)
@@ -157,7 +160,7 @@ Ltm_code_map = {
 
 # RADAR
 # By default, primary_location entered will be the
-#  center and marker of all radar images.
+# center and marker of all radar images.
 # To update centers/markers, change radar sections
 # below the desired lat/lon as:
 # -FROM-
@@ -165,7 +168,7 @@ Ltm_code_map = {
 # -TO-
 # LatLng(44.9764016,-93.2486732),
 radar1 = {
-    'center': primary_location,  # the center of your radar block
+    'center': radar_location,  # the center of your radar block
     'zoom': 7,  # this is a maps zoom factor, bigger = smaller area
     'basemap': map_base,  # Mapbox style for standard map or custom map with land and water only
     'overlay': map_overlay,  # Mapbox style for labels, roads, and borders only
@@ -176,7 +179,7 @@ radar1 = {
     'markers': (  # google maps markers can be overlaid
         {
             'visible': 1,  # 0 = hide marker, 1 = show marker
-            'location': primary_location,
+            'location': radar_location,
             'color': 'red',
             'size': 'small',
             'image': 'teardrop-dot',  # optional image from the markers folder
@@ -185,7 +188,7 @@ radar1 = {
 }
 
 radar2 = {
-    'center': primary_location,
+    'center': radar_location,
     'zoom': 11,
     'basemap': map_base,
     'overlay': map_overlay,
@@ -195,7 +198,7 @@ radar2 = {
     'markers': (
         {
             'visible': 1,
-            'location': primary_location,
+            'location': radar_location,
             'color': 'red',
             'size': 'small',
             'image': 'teardrop-dot',
@@ -204,7 +207,7 @@ radar2 = {
 }
 
 radar3 = {
-    'center': primary_location,
+    'center': radar_location,
     'zoom': 7,
     'basemap': map_base,
     'overlay': map_overlay,
@@ -214,7 +217,7 @@ radar3 = {
     'markers': (
         {
             'visible': 1,
-            'location': primary_location,
+            'location': radar_location,
             'color': 'red',
             'size': 'small',
             'image': 'teardrop-dot',
@@ -223,7 +226,7 @@ radar3 = {
 }
 
 radar4 = {
-    'center': primary_location,
+    'center': radar_location,
     'zoom': 11,
     'basemap': map_base,
     'overlay': map_overlay,
@@ -233,7 +236,7 @@ radar4 = {
     'markers': (
         {
             'visible': 1,
-            'location': primary_location,
+            'location': radar_location,
             'color': 'red',
             'size': 'small',
             'image': 'teardrop-dot',
