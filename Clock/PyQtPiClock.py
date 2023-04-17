@@ -311,27 +311,27 @@ def tempfinished():
 
 
 def tempf2tempc(f):
-    return (f - 32) / 1.8
+    return (f - 32) / 1.8  # temperature degrees Fahrenheit to degrees Celsius
 
 
 def mph2kph(f):
-    return f * 1.609
+    return f * 1.609  # speed MPH to km/h
 
 
 def mbar2inhg(f):
-    return f / 33.864
+    return f / 33.864  # pressure millibars to inHg
+
+
+def inhg2mbar(f):
+    return f * 33.864  # pressure inHg to millibars
 
 
 def inches2mm(f):
-    return f * 25.4
+    return f * 25.4  # height inches to millimeters
 
 
 def mm2inches(f):
-    return f / 25.4
-
-
-def inhg2mmhg(f):
-    return f * 25.4
+    return f / 25.4  # height millimeters to inches
 
 
 def phase(f):
@@ -461,7 +461,7 @@ def wxfinished_owm_onecall():
         if Config.metric:
             temper.setText('%.1f' % (tempf2tempc(f['temp'])) + u'°C')
             temper2.setText('%.1f' % (tempf2tempc(f['temp'])) + u'°C')
-            press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mb')
+            press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mbar')
             w = (Config.LWind + wd + ' ' + '%.1f' % (mph2kph(f['wind_speed'])) + 'km/h')
             if 'wind_gust' in f:
                 w += (Config.Lgusting + '%.1f' % (mph2kph(f['wind_gust'])) + 'km/h')
@@ -469,7 +469,7 @@ def wxfinished_owm_onecall():
         else:
             temper.setText('%.1f' % (f['temp']) + u'°F')
             temper2.setText('%.1f' % (f['temp']) + u'°F')
-            press.setText(Config.LPressure + '%.2f' % mbar2inhg(f['pressure']) + 'in')
+            press.setText(Config.LPressure + '%.2f' % mbar2inhg(f['pressure']) + 'inHg')
             w = (Config.LWind + wd + ' ' + '%.1f' % (f['wind_speed']) + 'mph')
             if 'wind_gust' in f:
                 w += (Config.Lgusting + '%.1f' % (f['wind_gust']) + 'mph')
@@ -632,7 +632,7 @@ def wxfinished_owm_current():
     if Config.metric:
         temper.setText('%.1f' % (tempf2tempc(f['main']['temp'])) + u'°C')
         temper2.setText('%.1f' % (tempf2tempc(f['main']['temp'])) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % f['main']['pressure'] + 'mb')
+        press.setText(Config.LPressure + '%.1f' % f['main']['pressure'] + 'mbar')
         w = (Config.LWind + wd + ' ' + '%.1f' % (mph2kph(f['wind']['speed'])) + 'km/h')
         if 'gust' in f['wind']:
             w += (Config.Lgusting + '%.1f' % (mph2kph(f['wind']['gust'])) + 'km/h')
@@ -640,7 +640,7 @@ def wxfinished_owm_current():
     else:
         temper.setText('%.1f' % (f['main']['temp']) + u'°F')
         temper2.setText('%.1f' % (f['main']['temp']) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % mbar2inhg(f['main']['pressure']) + 'in')
+        press.setText(Config.LPressure + '%.2f' % mbar2inhg(f['main']['pressure']) + 'inHg')
         w = (Config.LWind + wd + ' ' + '%.1f' % (f['wind']['speed']) + 'mph')
         if 'gust' in f['wind']:
             w += (Config.Lgusting + '%.1f' % (f['wind']['gust']) + 'mph')
@@ -921,7 +921,7 @@ def wxfinished_tm_current():
     if Config.metric:
         temper.setText('%.1f' % (tempf2tempc(f['values']['temperature'])) + u'°C')
         temper2.setText('%.1f' % (tempf2tempc(f['values']['temperature'])) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % inhg2mmhg(f['values']['pressureSurfaceLevel']) + 'mm')
+        press.setText(Config.LPressure + '%.1f' % inhg2mbar(f['values']['pressureSeaLevel']) + 'mbar')
         wind.setText(Config.LWind + wd + ' ' +
                      '%.1f' % (mph2kph(f['values']['windSpeed'])) + 'km/h' +
                      Config.Lgusting +
@@ -931,7 +931,7 @@ def wxfinished_tm_current():
     else:
         temper.setText('%.1f' % (f['values']['temperature']) + u'°F')
         temper2.setText('%.1f' % (f['values']['temperature']) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % (f['values']['pressureSurfaceLevel']) + 'in')
+        press.setText(Config.LPressure + '%.2f' % (f['values']['pressureSeaLevel']) + 'inHg')
         wind.setText(Config.LWind +
                      wd + ' ' +
                      '%.1f' % (f['values']['windSpeed']) + 'mph' +
@@ -1390,7 +1390,7 @@ def getwx_tm():
         wxurl += '&location=' + str(Config.location.lat) + ',' + str(Config.location.lng)
         wxurl += '&units=imperial'
         wxurl += '&fields=temperature,weatherCode,temperatureApparent,humidity,'
-        wxurl += 'windSpeed,windDirection,windGust,pressureSurfaceLevel,precipitationType'
+        wxurl += 'windSpeed,windDirection,windGust,pressureSeaLevel,precipitationType'
         print('getting Tomorrow.io current conditions: ' + wxurl)
         r = QUrl(wxurl)
         r = QNetworkRequest(r)

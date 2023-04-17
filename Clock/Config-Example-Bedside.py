@@ -158,12 +158,12 @@ Ltm_code_map = {
 }
 
 # RADAR
-# By default, primary_location entered will be the
+# By default, radar_location entered will be the
 # center and marker of all radar images.
 # To update centers/markers, change radar sections
 # below the desired lat/lon as:
 # -FROM-
-# primary_location,
+# radar_location,
 # -TO-
 # LatLng(44.9764016,-93.2486732),
 radar1 = {
