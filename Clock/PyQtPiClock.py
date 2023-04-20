@@ -391,7 +391,7 @@ owm_code_icons = {
     '01d': 'clear-day',
     '02d': 'partly-cloudy-day',
     '03d': 'partly-cloudy-day',
-    '04d': 'partly-cloudy-day',
+    '04d': 'cloudy',
     '09d': 'rain',
     '10d': 'rain',
     '11d': 'thunderstorm',
@@ -400,7 +400,7 @@ owm_code_icons = {
     '01n': 'clear-night',
     '02n': 'partly-cloudy-night',
     '03n': 'partly-cloudy-night',
-    '04n': 'partly-cloudy-night',
+    '04n': 'cloudy',
     '09n': 'rain',
     '10n': 'rain',
     '11n': 'thunderstorm',
@@ -1612,25 +1612,35 @@ class Radar(QtWidgets.QLabel):
         self.tilesWidth = 0
         self.tilesHeight = 0
 
+        # base map layer
         self.setObjectName('radar')
         self.setGeometry(rect)
         self.setStyleSheet('#radar { background-color: grey; }')
         self.setAlignment(Qt.AlignCenter)
 
+        # weather radar layer
         self.wwx = QtWidgets.QLabel(self)
         self.wwx.setObjectName('wx')
         self.wwx.setStyleSheet('#wx { background-color: transparent; }')
         self.wwx.setGeometry(0, 0, rect.width(), rect.height())
 
+        # map overlay layer
         self.overlay = QtWidgets.QLabel(self)
         self.overlay.setObjectName('overlay')
         self.overlay.setStyleSheet('#overlay { background-color: transparent; }')
         self.overlay.setGeometry(0, 0, rect.width(), rect.height())
 
+        # marker layer
         self.wmk = QtWidgets.QLabel(self)
         self.wmk.setObjectName('mk')
         self.wmk.setStyleSheet('#mk { background-color: transparent; }')
         self.wmk.setGeometry(0, 0, rect.width(), rect.height())
+
+        # timestamp and attribution layer
+        self.timestamp = QtWidgets.QLabel(self)
+        self.timestamp.setObjectName('timestamp')
+        self.timestamp.setStyleSheet('#timestamp { background-color: transparent; }')
+        self.timestamp.setGeometry(0, 0, rect.width(), rect.height())
 
         for y in range(int(self.cornerTiles['NW']['Y']),
                        int(self.cornerTiles['SW']['Y']) + 1):
@@ -1687,6 +1697,7 @@ class Radar(QtWidgets.QLabel):
         try:
             f = self.frameImages[self.displayedFrame]
             self.wwx.setPixmap(f['image'])
+            self.timestamp.setPixmap(f['timestamp'])
         except IndexError:
             pass
         self.displayedFrame += 1
@@ -1754,6 +1765,7 @@ class Radar(QtWidgets.QLabel):
             self.get()
 
     def combine_tiles(self):
+        # create weather radar image
         ii = QImage(self.tilesWidth * 256, self.tilesHeight * 256, QImage.Format_ARGB32)
         ii.fill(Qt.transparent)
         painter = QPainter()
@@ -1770,9 +1782,14 @@ class Radar(QtWidgets.QLabel):
                 i += 1
         painter.end()
         self.tileQimages = []
-        ii2 = ii.copy(-xo, -yo, self.rect.width(), self.rect.height())
+        ii2 = QPixmap(ii.copy(-xo, -yo, self.rect.width(), self.rect.height()))
+        # finish weather radar image
+
+        # create timestamp layer
+        ii3 = ii.copy(-xo, -yo, self.rect.width(), self.rect.height())
+        ii3.fill(Qt.transparent)
         painter2 = QPainter()
-        painter2.begin(ii2)
+        painter2.begin(ii3)
         timestamp = '{0:%H:%M} RainViewer.com'.format(datetime.datetime.fromtimestamp(self.getTime))
         painter2.setPen(QColor(63, 63, 63, 255))
         painter2.setFont(QFont("Arial", pointSize=8, weight=75))
@@ -1783,8 +1800,10 @@ class Radar(QtWidgets.QLabel):
         painter2.drawText(3, 12, timestamp)
         painter2.drawText(3 + 1, 12, timestamp)
         painter2.end()
-        ii3 = QPixmap(ii2)
-        self.frameImages.append({'time': self.getTime, 'image': ii3})
+        ts = QPixmap(ii3)
+        # finish timestamp layer
+
+        self.frameImages.append({'time': self.getTime, 'image': ii2, 'timestamp': ts})
 
     def mapurl(self, radar, rect, overlayonly):
         if usemapbox:
@@ -2356,7 +2375,7 @@ datex2.setStyleSheet('#datex2 { font-family:sans-serif; color: ' +
                      Config.fontattr +
                      '}')
 datex2.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-datex2.setGeometry(int(800 * xscale), int(780 * yscale), int(640 * xscale), 100)
+datex2.setGeometry(int(800 * xscale), int(760 * yscale), int(640 * xscale), 100)
 datey2 = QtWidgets.QLabel(frame2)
 datey2.setObjectName('datey2')
 datey2.setStyleSheet('#datey2 { font-family:sans-serif; color: ' +
@@ -2367,7 +2386,13 @@ datey2.setStyleSheet('#datey2 { font-family:sans-serif; color: ' +
                      Config.fontattr +
                      '}')
 datey2.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-datey2.setGeometry(int(800 * xscale), int(840 * yscale), int(640 * xscale), 100)
+datey2.setGeometry(int(800 * xscale), int(820 * yscale), int(640 * xscale), 100)
+
+ypos = -25
+wxicon = QtWidgets.QLabel(foreGround)
+wxicon.setObjectName('wxicon')
+wxicon.setStyleSheet('#wxicon { background-color: transparent; }')
+wxicon.setGeometry(int(75 * xscale), int(ypos * yscale), int(150 * xscale), int(150 * yscale))
 
 attribution = QtWidgets.QLabel(foreGround)
 attribution.setObjectName('attribution')
@@ -2382,11 +2407,10 @@ attribution.setStyleSheet('#attribution { ' +
 attribution.setAlignment(Qt.AlignTop)
 attribution.setGeometry(int(6 * xscale), int(3 * yscale), int(130 * xscale), 100)
 
-ypos = -25
-wxicon = QtWidgets.QLabel(foreGround)
-wxicon.setObjectName('wxicon')
-wxicon.setStyleSheet('#wxicon { background-color: transparent; }')
-wxicon.setGeometry(int(75 * xscale), int(ypos * yscale), int(150 * xscale), int(150 * yscale))
+wxicon2 = QtWidgets.QLabel(frame2)
+wxicon2.setObjectName('wxicon2')
+wxicon2.setStyleSheet('#wxicon2 { background-color: transparent; }')
+wxicon2.setGeometry(int(0 * xscale), int(750 * yscale), int(150 * xscale), int(150 * yscale))
 
 attribution2 = QtWidgets.QLabel(frame2)
 attribution2.setObjectName('attribution2')
@@ -2400,11 +2424,6 @@ attribution2.setStyleSheet('#attribution2 { ' +
                            '}')
 attribution2.setAlignment(Qt.AlignTop)
 attribution2.setGeometry(int(6 * xscale), int(880 * yscale), int(130 * xscale), 100)
-
-wxicon2 = QtWidgets.QLabel(frame2)
-wxicon2.setObjectName('wxicon2')
-wxicon2.setStyleSheet('#wxicon2 { background-color: transparent; }')
-wxicon2.setGeometry(int(0 * xscale), int(750 * yscale), int(150 * xscale), int(150 * yscale))
 
 ypos += 130
 wxdesc = QtWidgets.QLabel(foreGround)
