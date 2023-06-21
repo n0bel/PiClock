@@ -1282,7 +1282,7 @@ def wxfinished_metar():
     if Config.metric:
         temper.setText('%.1f' % (f.temp.value('C')) + u'°C')
         temper2.setText('%.1f' % (f.temp.value('C')) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % f.press.value('MB') + 'mb')
+        press.setText(Config.LPressure + '%.1f' % f.press.value('MB') + 'mbar')
         ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('KMH')) + 'km/h')
         if f.wind_gust:
             ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('KMH')) + 'km/h')
@@ -1290,7 +1290,7 @@ def wxfinished_metar():
     else:
         temper.setText('%.1f' % (f.temp.value('F')) + u'°F')
         temper2.setText('%.1f' % (f.temp.value('F')) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % f.press.value('IN') + 'in')
+        press.setText(Config.LPressure + '%.2f' % f.press.value('IN') + 'inHg')
         ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('MPH')) + 'mph')
         if f.wind_gust:
             ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('MPH')) + 'mph')
