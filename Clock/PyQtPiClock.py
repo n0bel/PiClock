@@ -1046,82 +1046,86 @@ def wxfinished_tm_daily():
     if datetime.datetime.now().day != dt.day:
         ioff += 1
     for i in range(3, 9):
-        f = wxdata3['data']['timelines'][0]['intervals'][i - 3 + ioff]
-        wicon = f['values']['weatherCode']
-        wicon = tm_code_icons[wicon]
-        fl = forecast[i]
-        icon = fl.findChild(QtWidgets.QLabel, 'icon')
-        wxiconpixmap = QtGui.QPixmap(Config.icons + '/' + wicon + '.png')
-        icon.setPixmap(wxiconpixmap.scaled(
-            icon.width(),
-            icon.height(),
-            Qt.IgnoreAspectRatio,
-            Qt.SmoothTransformation))
-        wx = fl.findChild(QtWidgets.QLabel, 'wx')
-        day = fl.findChild(QtWidgets.QLabel, 'day')
-        day.setText('{0:%A %m/%d}'.format(dateutil.parser.parse(f['startTime']).astimezone(tzlocal.get_localzone())))
-        s = ''
-        pop = float(f['values']['precipitationProbability'])
-        ptype = ''
-        paccum = float(f['values']['precipitationIntensity'])
-        wc = tm_code_icons[f['values']['weatherCode']]
+        try:
+            f = wxdata3['data']['timelines'][0]['intervals'][i - 3 + ioff]
+            wicon = f['values']['weatherCode']
+            wicon = tm_code_icons[wicon]
+            fl = forecast[i]
+            icon = fl.findChild(QtWidgets.QLabel, 'icon')
+            wxiconpixmap = QtGui.QPixmap(Config.icons + '/' + wicon + '.png')
+            icon.setPixmap(wxiconpixmap.scaled(
+                icon.width(),
+                icon.height(),
+                Qt.IgnoreAspectRatio,
+                Qt.SmoothTransformation))
+            wx = fl.findChild(QtWidgets.QLabel, 'wx')
+            day = fl.findChild(QtWidgets.QLabel, 'day')
+            day.setText('{0:%A %m/%d}'.format(dateutil.parser.parse(f['startTime']).astimezone(tzlocal.get_localzone())))
+            s = ''
+            pop = float(f['values']['precipitationProbability'])
+            ptype = ''
+            paccum = float(f['values']['precipitationIntensity'])
+            wc = tm_code_icons[f['values']['weatherCode']]
 
-        if '4000' in wc:
-            ptype = 'rain'
-        if '4001' in wc:
-            ptype = 'rain'
-        if '4200' in wc:
-            ptype = 'rain'
-        if '4201' in wc:
-            ptype = 'rain'
-        if '5000' in wc:
-            ptype = 'snow'
-        if '5001' in wc:
-            ptype = 'snow'
-        if '5100' in wc:
-            ptype = 'snow'
-        if '5101' in wc:
-            ptype = 'snow'
-        if '6000' in wc:
-            ptype = 'rain'
-        if '6001' in wc:
-            ptype = 'rain'
-        if '6200' in wc:
-            ptype = 'rain'
-        if '6201' in wc:
-            ptype = 'rain'
-        if '7000' in wc:
-            ptype = 'snow'
-        if '7101' in wc:
-            ptype = 'snow'
-        if '7102' in wc:
-            ptype = 'snow'
-        if '8000' in wc:
-            ptype = 'rain'
+            if '4000' in wc:
+                ptype = 'rain'
+            if '4001' in wc:
+                ptype = 'rain'
+            if '4200' in wc:
+                ptype = 'rain'
+            if '4201' in wc:
+                ptype = 'rain'
+            if '5000' in wc:
+                ptype = 'snow'
+            if '5001' in wc:
+                ptype = 'snow'
+            if '5100' in wc:
+                ptype = 'snow'
+            if '5101' in wc:
+                ptype = 'snow'
+            if '6000' in wc:
+                ptype = 'rain'
+            if '6001' in wc:
+                ptype = 'rain'
+            if '6200' in wc:
+                ptype = 'rain'
+            if '6201' in wc:
+                ptype = 'rain'
+            if '7000' in wc:
+                ptype = 'snow'
+            if '7101' in wc:
+                ptype = 'snow'
+            if '7102' in wc:
+                ptype = 'snow'
+            if '8000' in wc:
+                ptype = 'rain'
 
-        if pop > 0.05 or ptype != '':
-            s += '%.0f' % pop + '% '
-        if Config.metric:
-            if ptype == 'snow':
-                if paccum > 0.1:
-                    s += Config.LSnow + '%.1f' % inches2mm(paccum) + 'mm/hr '
+            if pop > 0.05 or ptype != '':
+                s += '%.0f' % pop + '% '
+            if Config.metric:
+                if ptype == 'snow':
+                    if paccum > 0.1:
+                        s += Config.LSnow + '%.1f' % inches2mm(paccum) + 'mm/hr '
+                else:
+                    if paccum > 0.1:
+                        s += Config.LRain + '%.1f' % inches2mm(paccum) + 'mm/hr '
+                s += '%.0f' % tempf2tempc(f['values']['temperatureMax']) + '/' + \
+                     '%.0f' % tempf2tempc(f['values']['temperatureMin']) + u'°C'
             else:
-                if paccum > 0.1:
-                    s += Config.LRain + '%.1f' % inches2mm(paccum) + 'mm/hr '
-            s += '%.0f' % tempf2tempc(f['values']['temperatureMax']) + '/' + \
-                 '%.0f' % tempf2tempc(f['values']['temperatureMin']) + u'°C'
-        else:
-            if ptype == 'snow':
-                if paccum > 0.1:
-                    s += Config.LSnow + '%.1f' % paccum + 'in/hr '
-            else:
-                if paccum > 0.1:
-                    s += Config.LRain + '%.1f' % paccum + 'in/hr '
-            s += '%.0f' % f['values']['temperatureMax'] + '/' + \
-                 '%.0f' % f['values']['temperatureMin'] + u'°F'
+                if ptype == 'snow':
+                    if paccum > 0.1:
+                        s += Config.LSnow + '%.1f' % paccum + 'in/hr '
+                else:
+                    if paccum > 0.1:
+                        s += Config.LRain + '%.1f' % paccum + 'in/hr '
+                s += '%.0f' % f['values']['temperatureMax'] + '/' + \
+                     '%.0f' % f['values']['temperatureMin'] + u'°F'
 
-        wx.setStyleSheet('#wx { font-size: ' + str(int(19 * xscale * Config.fontmult)) + 'px; }')
-        wx.setText(tm_code_map[f['values']['weatherCode']] + '\n' + s)
+            wx.setStyleSheet('#wx { font-size: ' + str(int(19 * xscale * Config.fontmult)) + 'px; }')
+            wx.setText(tm_code_map[f['values']['weatherCode']] + '\n' + s)
+        except IndexError:
+            print(traceback.format_exc())
+            pass
 
 
 metar_cond = [
