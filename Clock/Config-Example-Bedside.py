@@ -40,7 +40,7 @@ digitalsize = 200
 # The above example shows in this way:
 #  https://github.com/n0bel/PiClock/blob/master/Documentation/Digital%20Clock%20v1.jpg
 # (specifications of the time string are documented here:
-#  https://docs.python.org/2/library/time.html#time.strftime)
+#  https://docs.python.org/3/library/time.html#time.strftime)
 
 # digitalformat = '{0:%I:%M}'
 # digitalsize = 250
@@ -171,8 +171,8 @@ radar1 = {
     'zoom': 7,  # this is a maps zoom factor, bigger = smaller area
     'basemap': map_base,  # Mapbox style for standard map or custom map with land and water only
     'overlay': map_overlay,  # Mapbox style for labels, roads, and borders only
-    'color': 6,  # rainviewer radar color style:
-    # https://www.rainviewer.com/api.html#colorSchemes
+    'color': 6,  # rainviewer radar color scheme:
+    # https://www.rainviewer.com/api/color-schemes.html
     'smooth': 1,  # rainviewer radar smoothing
     'snow': 1,  # rainviewer radar show snow as different color
     'markers': (  # google maps markers can be overlaid
