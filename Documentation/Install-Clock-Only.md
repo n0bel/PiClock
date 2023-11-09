@@ -105,8 +105,7 @@ https://www.mapbox.com/signup/
 Now that you have your API keys...
 
 ```
-cd PiClock
-cd Clock
+cd PiClock/Clock
 cp ApiKeys-example.py ApiKeys.py
 nano ApiKeys.py
 ```
@@ -132,8 +131,7 @@ Here's where you tell PiClock where your weather should come from, and the
 radar map centers and markers.
 
 ```
-cd PiClock
-cd Clock
+cd PiClock/Clock
 cp Config-Example.py Config.py  (copy on windows)
 [use your favorite editor] Config.py
 ```

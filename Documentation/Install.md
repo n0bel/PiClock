@@ -42,10 +42,120 @@ Just change the Items below.
 
 Click ok, and allow it to reboot.
 
-### editing config.txt
+### Get connected to the internet
+
+Log into your Pi, (either on the screen or via ssh). 
+
+Verify you have internet access from the Pi.
+
+```
+ping github.com
+```
+(remember ctrl-c aborts programs, like breaking out of ping, which will
+go on forever)
+
+### Get all the software that PiClock needs
+Update the package repository and get the full Python3 and Qt5 for Python
+```
+sudo apt update
+sudo apt install python3-full python3-pyqt5
+```
+You may need to confirm some things, like:
+After this operation, 59.5 MB of additional disk space will be used.
+Do you want to continue [Y/n]? 
+Go ahead, say yes.
+
+### Get the PiClock software
+Log into your Pi, (either on the screen or via ssh) (NOT as root).
+You'll be in the home directory of the user pi (/home/pi) by default,
+and this is where you want to be.  Note that the following command while
+itself not being case-sensitive, further operation of PiClock may be
+affected if the upper and lower case of the command is not followed.
+```
+git clone https://github.com/SerBrynden/PiClock.git
+```
+
+Once that is done, you'll have a new directory called PiClock.
+
+### Create virtual environment
+Create a Python virtual environment in the PiClock directory for 
+installing the required Python packages and running PiClock.
+```
+cd PiClock
+python3 -m venv --system-site-packages venv
+```
+Activate the virtual environment in the PiClock directory 
+before you install any Python packages.
+```
+source venv/bin/activate
+```
+You will know you are working in the virtual environment when the 
+command prompt begins with (venv). 
+It will look something like this:
+```
+(venv) pi@piclock:~/PiClock $
+```
+
+### Required software packages
+Once inside the virtual environment, install required Python packages
+```
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
+```
+then get unclutter (disables the mouse pointer when there's no activity)
+```
+sudo apt install unclutter
+```
+### Optional software packages
+#### Optional - NeoPixel LED Driver
+Get optional ws281x driver for Python if using NeoPixel LEDs
+```
+python3 -m pip install rpi_ws281x
+```
+Some versions of Raspberry Pi OS need python3-dev to be installed as well, before
+rpi-ws281x can be installed.  If the previous command fails reporting
+a missing include file, then do this:
+```
+sudo apt install python3-dev
+python3 -m pip install rpi_ws281x
+```
+
+#### Optional - DS18B20 Temperature Driver
+Get optional DS18B20 Temperature driver for Python if using indoor temperature sensors
+```
+git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
+sudo python3 setup.py install
+```
+
+#### Optional - Lirc IR Remote Driver
+Get optional Lirc driver if using IR remote
+```
+sudo apt install lirc
+```
+use nano to edit lirc options file
+```
+sudo nano /etc/lirc/lirc_options.conf
+```
+Be sure the uinput line appears as follows
+```
+uinput         = True
+```
+Be sure the driver line appears as follows
+```
+driver          = default
+```
+
+#### Optional - mpg123 Audio Streaming
+Get optional mpg123 to play NOAA weather radio streams
+```
+sudo apt install mpg123
+```
+
+### Optional - Editing config.txt
 
 (Only required if you will be using IR Remote control or DS18B20 temperature
  sensors)
+
 Log into your Pi, (either on the screen or via ssh)
 
 use nano to edit the boot config file
@@ -75,89 +185,10 @@ w1-gpio
 ```
 are in there somewhere, and only occur once.
 
-reboot
+### Exit virtual environment
+The leave the virtual environment, use the following command
 ```
-sudo reboot
-```
-
-### Get connected to the internet
-
-Verify you have internet access from the Pi
-
-```
-ping github.com
-```
-(remember ctrl-c aborts programs, like breaking out of ping, which will
-go on forever)
-
-### Get all the software that PiClock needs.
-Update the package repository and get Qt5 for Python
-```
-sudo apt-get update
-sudo apt-get install python3-pyqt5
-```
-You may need to confirm some things, like:
-After this operation, 59.5 MB of additional disk space will be used.
-Do you want to continue [Y/n]? 
-Go ahead, say yes
-
-### Required Python packages
-Install required Python packages
-```
-python3 -m pip install --upgrade pip
-python3 -m pip install python-dateutil --upgrade
-python3 -m pip install python-metar --upgrade
-python3 -m pip install pytz --upgrade
-python3 -m pip install timezonefinder --upgrade
-python3 -m pip install tzlocal --upgrade
-```
-then get unclutter (disables the mouse pointer when there's no activity)
-```
-sudo apt-get install unclutter
-```
-
-#### Optional - NeoPixel LED Driver
-Get optional ws281x driver for Python if using NeoPixel LEDs
-```
-python3 -m pip install rpi_ws281x
-```
-Some versions of Raspberry Pi OS need python3-dev to be installed as well, before
-rpi-ws281x can be installed.  If the previous command fails reporting
-a missing include file, then do this:
-```
-sudo apt-get install python3-dev
-python3 -m pip install rpi_ws281x
-```
-
-#### Optional - DS18B20 Temperature Driver
-Get optional DS18B20 Temperature driver for Python if using indoor temperature sensors
-```
-git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
-sudo python3 setup.py install
-```
-
-#### Optional - Lirc IR Remote Driver
-Get optional Lirc driver if using IR remote
-```
-sudo apt-get install lirc
-```
-use nano to edit lirc options file
-```
-sudo nano /etc/lirc/lirc_options.conf
-```
-Be sure the uinput line appears as follows
-```
-uinput         = True
-```
-Be sure the driver line appears as follows
-```
-driver          = default
-```
-
-#### Optional - mpg123 Audio Streaming
-Get optional mpg123 to play NOAA weather radio streams
-```
-sudo apt-get install mpg123
+deactivate
 ```
 
 ### Reboot
@@ -167,17 +198,11 @@ a reboot
 sudo reboot
 ```
 
-### Get the PiClock software
 Log into your Pi, (either on the screen or via ssh) (NOT as root).
-You'll be in the home directory of the user pi (/home/pi) by default,
-and this is where you want to be.  Note that the following command while
-itself not being case-sensitive, further operation of PiClock may be
-affected if the upper and lower case of the command is not followed.
-```
-git clone https://github.com/SerBrynden/PiClock.git
-```
-(Optional for GPIO keys)
-Once that is done, you'll have a new directory called PiClock
+You'll be in the home directory of the user pi (/home/pi) by default.
+
+### Optional - Set up GPIO keys
+
 A few commands are needed if you intend to use gpio buttons
 and the gpio-keys driver to compile it for the latest Raspberry Pi OS:
 ```
@@ -186,7 +211,7 @@ make gpio-keys
 cd ../..
 ```
 
-### Set up Lirc (IR Remote)
+### Optional - Set up Lirc IR Remote
 
 If you're using the recommended IR Key Fob,
 https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain
@@ -312,8 +337,7 @@ https://www.mapbox.com/signup/
 Now that you have your API keys...
 
 ```
-cd PiClock
-cd Clock
+cd PiClock/Clock
 cp ApiKeys-example.py ApiKeys.py
 nano ApiKeys.py
 ```
@@ -339,8 +363,7 @@ Here's where you tell PiClock where your weather should come from, and the
 radar map centers and markers.
 
 ```
-cd PiClock
-cd Clock
+cd PiClock/Clock
 cp Config-Example.py Config.py
 nano Config.py
 ```
@@ -398,13 +421,13 @@ or from crontab.  Logs are then created for debugging auto starts.
 If you're using the temperature feature AND you have multiple temperature sensors,
 you'll see the clock display: 000000283872:74.6 00000023489:65.4 or something similar.
 Note the numbers exactly.   Use F4 to stop the clock,
-then..
+then
 ```
 nano Temperature/TempNames.py
 ```
 Give each number a name, like is shown in the examples in that file
 
-### setting the clock to auto start
+### Setting the clock to auto start
 At this point the clock will only start when you manually start it, as
 described in the Run It section.
 
@@ -439,9 +462,9 @@ sudo reboot
 
 ## Some notes about startup.sh
 startup.sh has a few options:
-* -n or --no-delay			Don't delay on starting the clock right away (default is 45 seconds delay)
-* -d X or --delay X			Delay X seconds before starting the clock
-* -m X or --message-delay X 	Delay X seconds while displaying a message on the desktop
+* -n or --no-delay&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Don't delay on starting the clock right away (default is 45 seconds delay)
+* -d X or --delay X&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Delay X seconds before starting the clock
+* -m X or --message-delay X&emsp;&emsp;Delay X seconds while displaying a message on the desktop
 
 Startup also looks at the various optional PiClock items (Buttons, Temperature, NeoPixel, etc.)
 and only starts those things that are configured to run.   It also checks if they are already
@@ -492,7 +515,12 @@ using git and GitHub.
 ```
 cd PiClock
 git pull
+```
+Then activate the virtual environment and run update.py 
+```
+source venv/bin/activate
 python3 update.py
+deactivate
 ```
 This will automatically update any part(s) of the software that has changed.
 The update.py program will then convert any config files as needed.
