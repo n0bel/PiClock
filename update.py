@@ -6,24 +6,7 @@ cmd = 'python3 -m pip install --upgrade pip'
 print(cmd)
 os.system(cmd)
 print('\nUpdating Python Modules')
-print('Updating python-dateutil')
-cmd = 'python3 -m pip install python-dateutil --upgrade'
-print(cmd)
-os.system(cmd)
-print('\nUpdating python-metar')
-cmd = 'python3 -m pip install python-metar --upgrade'
-print(cmd)
-os.system(cmd)
-print('\nUpdating pytz')
-cmd = 'python3 -m pip install pytz --upgrade'
-print(cmd)
-os.system(cmd)
-print('\nUpdating timezonefinder')
-cmd = 'python3 -m pip install timezonefinder --upgrade'
-print(cmd)
-os.system(cmd)
-print('\nUpdating tzlocal')
-cmd = 'python3 -m pip install tzlocal --upgrade'
+cmd = 'python3 -m pip install -r requirements.txt'
 print(cmd)
 os.system(cmd)
 

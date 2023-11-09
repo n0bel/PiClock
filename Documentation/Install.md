@@ -515,15 +515,10 @@ using git and GitHub.
 ```
 cd PiClock
 git pull
-```
-Then activate the virtual environment and run update.py 
-```
-source venv/bin/activate
-python3 update.py
-deactivate
+bash update.sh
 ```
 This will automatically update any part(s) of the software that has changed.
-The update.py program will then convert any config files as needed.
+The update.sh script will then convert any config files as needed.
 
 You'll want to reboot after the update.
 

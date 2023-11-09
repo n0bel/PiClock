@@ -175,7 +175,7 @@ using git and GitHub.
 ```
 cd PiClock
 git pull
-python3 update.py
+bash update.sh
 ```
 This will automatically update any part(s) of the software that has changed.
-The update.py program will then convert any config files as needed.
+The update.sh script will then convert any config files as needed.
