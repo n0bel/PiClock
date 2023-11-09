@@ -186,7 +186,7 @@ w1-gpio
 are in there somewhere, and only occur once.
 
 ### Exit virtual environment
-The leave the virtual environment, use the following command
+To leave the virtual environment, use the following command
 ```
 deactivate
 ```
