@@ -1761,7 +1761,7 @@ class Radar(QtGui.QLabel):
             self.tileurls = []
             self.tileQimages = []
             for tt in self.tiletails:
-                tileurl = "http://tilecache.rainviewer.com/v2/radar/%d/%s" \
+                tileurl = "https://tilecache.rainviewer.com/v2/radar/%d/%s" \
                     % (t, tt)
                 self.tileurls.append(tileurl)
         print self.myname + " " + str(self.getIndex) + " " + self.tileurls[i]
