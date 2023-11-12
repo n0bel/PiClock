@@ -268,10 +268,10 @@ We need to set API keys for DarkSky and Mapbox or Google Maps.
 These are both unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost api keys.
 
-#### DarkSky api keys
+#### Openweathermap api keys
 
-DarkSky api keys are created at this link:
-https://darksky.net/dev
+OpenWeatherMap api keys are created at this link:
+https://home.openweathermap.org/api_keys
 
 #### Map API Key
 
@@ -321,8 +321,8 @@ nano ApiKeys.py
 Put your api keys in the file as indicated
 ```
 #change this to your API keys
-# DarkSky API key
-dsapi = 'YOUR DARKSKY API KEY'
+#If you want to use Openweathermap.org, uncomment and add API key
+owmapi = 'YOUR OPENWEATHERMAP API KEY'
 # Map API keys -- only needs 1 of the following
 # Google Maps API key (if usemapbox is not set in Config)
 googleapi = 'YOUR GOOGLE MAPS API KEY'
