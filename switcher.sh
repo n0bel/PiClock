@@ -3,7 +3,7 @@ cd "$HOME"/PiClock || exit
 pkill -INT -f PyQtPiClock.py
 # virtual environment
 echo "Activating virtual environment..."
-source venv/bin/activate
+source venv/bin/activate || exit
 # the main app
 cd Clock || exit
 if [ "$DISPLAY" = "" ]; then

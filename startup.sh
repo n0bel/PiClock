@@ -62,7 +62,7 @@ amixer cset numid=1 -- 400 >/dev/null 2>&1
 
 # virtual environment
 echo "Activating virtual environment..."
-source venv/bin/activate
+source venv/bin/activate || exit
 
 # NeoPixel AmbiLights
 echo "Checking for NeoPixels Ambilight..."
