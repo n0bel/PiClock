@@ -10,9 +10,7 @@ clock on a desktop OS.
 The minium requirements for a PiClock is pretty simple
 * Python 3
 * Python Qt5, known as PyQt5
-* git (as an alternative to git, you can pull the zip file from GitHub
-(download button on the right side of the GitHub project) then unzip it
-onto your system )
+* git (as an alternative to git, you can download the zip file from GitHub)
 
 Theses are available under Windows, Linux, and OSX OS's.
 
@@ -20,13 +18,27 @@ How to get these installed on your choice of system I'll leave
 as an exercise for the reader.
 
 ### Get the PiClock software
-```
-git clone https://github.com/SerBrynden/PiClock.git
-```
-Alternatively, you can download a zip file of the GitHub project.
+1. On GitHub.com, navigate to the main page of the repository: [PiClock](../)
+2. Above the list of files, click the **< > Code** button.
+3. Copy the HTTPS URL for the repository. It'll look something like this:
+https://github.com/USERNAME/PiClock.git
+4. Log into your Pi, (either on the screen or via ssh) (NOT as root).
+You'll be in the home directory of the user pi (/home/pi) by default,
+and this is where you want to be.  Note that the following command while
+itself not being case-sensitive, further operation of PiClock may be
+affected if the upper and lower case of the command is not followed.
+5. Download PiClock using the `git clone` command followed by the 
+HTTPS URL for the repository, for example:
 
-https://github.com/SerBrynden/PiClock/archive/master.zip, then unzip it.
+```
+git clone https://github.com/USERNAME/PiClock.git
+```
 
+Once that is done, you'll have a new directory called PiClock.
+
+Alternatively, you can download the zip file from GitHub
+by clicking the **< > Code** button above the list of files at [PiClock](../), 
+select **Download ZIP**, then unzip it onto your system.
 
 ### Configure the PiClock API keys
 

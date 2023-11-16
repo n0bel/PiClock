@@ -8,8 +8,8 @@ but you may have to add more packages, etc.  That exercise is left for the reade
 
 What follows is a step-by-step guide.  If you start with a new clean Raspberry Pi OS
 image, it should just work. I'm assuming that you already know how to hook
-up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
-regarding setting up the basic hardware for your Raspi.
+up your Raspberry Pi, monitor, and keyboard/mouse.   If not, please do a web search
+regarding setting up the basic hardware for your Raspberry Pi.
 
 ### Download Raspberry Pi OS and put it on an SD Card
 
@@ -66,13 +66,20 @@ Do you want to continue [Y/n]?
 Go ahead, say yes.
 
 ### Get the PiClock software
-Log into your Pi, (either on the screen or via ssh) (NOT as root).
+1. On GitHub.com, navigate to the main page of the repository: [PiClock](../)
+2. Above the list of files, click the **< > Code** button.
+3. Copy the HTTPS URL for the repository. It'll look something like this:
+https://github.com/USERNAME/PiClock.git
+4. Log into your Pi, (either on the screen or via ssh) (NOT as root).
 You'll be in the home directory of the user pi (/home/pi) by default,
 and this is where you want to be.  Note that the following command while
 itself not being case-sensitive, further operation of PiClock may be
 affected if the upper and lower case of the command is not followed.
+5. Download PiClock using the `git clone` command followed by the 
+HTTPS URL for the repository, for example:
+
 ```
-git clone https://github.com/SerBrynden/PiClock.git
+git clone https://github.com/USERNAME/PiClock.git
 ```
 
 Once that is done, you'll have a new directory called PiClock.
