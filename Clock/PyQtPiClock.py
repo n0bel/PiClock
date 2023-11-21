@@ -1278,10 +1278,12 @@ def wxfinished_metar():
     wxdesc.setText(weather)
     wxdesc2.setText(weather)
 
-    if Config.wind_degrees:
-        wd = str(f.wind_dir.value) + u'°'
-    else:
-        wd = f.wind_dir.compass()
+    wd = ''
+    if f.wind_dir:
+        if Config.wind_degrees:
+            wd = str(f.wind_dir.value()) + u'°'
+        else:
+            wd = f.wind_dir.compass()
 
     if Config.metric:
         temper.setText('%.1f' % (f.temp.value('C')) + u'°C')
