@@ -6,7 +6,7 @@ cmd = 'python3 -m pip install --upgrade pip'
 print(cmd)
 os.system(cmd)
 print('\nRemoving old Python Modules')
-cmd = 'python3 -m pip uninstall python-metar'
+cmd = 'python3 -m pip uninstall python-metar -y'
 print(cmd)
 os.system(cmd)
 print('\nUpdating Python Modules')
