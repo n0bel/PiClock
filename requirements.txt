@@ -1,5 +1,5 @@
 python-dateutil>=2.8.2
-python-metar>=1.4.0
+metar>=1.11.0
 pytz>=2023.3.post1
 tzlocal>=5.2
 timezonefinder>=6.2.0

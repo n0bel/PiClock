@@ -1226,7 +1226,7 @@ def wxfinished_metar():
         if wxline.startswith(Config.METAR):
             wxstr = wxline
     print('wxmetar: ' + wxstr)
-    f = Metar.Metar(wxstr)
+    f = Metar.Metar(wxstr, strict=False)
     dt = f.time.replace(tzinfo=datetime.timezone.utc).astimezone(tzlocal.get_localzone())
 
     pri = -1

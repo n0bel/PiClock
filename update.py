@@ -5,6 +5,10 @@ print('\nUpdating Python Package Manager')
 cmd = 'python3 -m pip install --upgrade pip'
 print(cmd)
 os.system(cmd)
+print('\nRemoving old Python Modules')
+cmd = 'python3 -m pip uninstall python-metar'
+print(cmd)
+os.system(cmd)
 print('\nUpdating Python Modules')
 cmd = 'python3 -m pip install -r requirements.txt'
 print(cmd)
