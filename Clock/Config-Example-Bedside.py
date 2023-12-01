@@ -73,6 +73,9 @@ radar_refresh = 10  # minutes
 weather_refresh = 30  # minutes
 # Wind in degrees instead of cardinal 0 = cardinal, 1 = degrees
 wind_degrees = 0
+# Override pressure units in millibars, mbar, instead of inches Mercury, inHg, (0 = inHg, 1 = mbar)
+# or use metric setting from above
+pressure_mbar = metric
 
 # gives all text additional attributes using QT style notation
 # example: fontattr = 'font-weight: bold; '
