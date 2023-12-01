@@ -1327,7 +1327,10 @@ def wxfinished_metar():
 def getallwx():
     global hasMetar
     if hasMetar:
-        getwx_metar()
+        try:
+            getwx_metar()
+        except AttributeError:
+            pass
 
     try:
         ApiKeys.tmapi
