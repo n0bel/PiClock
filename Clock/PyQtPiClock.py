@@ -461,7 +461,6 @@ def wxfinished_owm_onecall():
         if Config.metric:
             temper.setText('%.1f' % (tempf2tempc(f['temp'])) + u'°C')
             temper2.setText('%.1f' % (tempf2tempc(f['temp'])) + u'°C')
-            press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mbar')
             w = (Config.LWind + wd + ' ' + '%.1f' % (mph2kph(f['wind_speed'])) + 'km/h')
             if 'wind_gust' in f:
                 w += (Config.Lgusting + '%.1f' % (mph2kph(f['wind_gust'])) + 'km/h')
@@ -469,11 +468,15 @@ def wxfinished_owm_onecall():
         else:
             temper.setText('%.1f' % (f['temp']) + u'°F')
             temper2.setText('%.1f' % (f['temp']) + u'°F')
-            press.setText(Config.LPressure + '%.2f' % mbar2inhg(f['pressure']) + 'inHg')
             w = (Config.LWind + wd + ' ' + '%.1f' % (f['wind_speed']) + 'mph')
             if 'wind_gust' in f:
                 w += (Config.Lgusting + '%.1f' % (f['wind_gust']) + 'mph')
             feelslike.setText(Config.LFeelslike + '%.1f' % (f['feels_like']) + u'°F')
+
+        if Config.pressure_mbar:
+            press.setText(Config.LPressure + '%.1f' % f['pressure'] + 'mbar')
+        else:
+            press.setText(Config.LPressure + '%.2f' % mbar2inhg(f['pressure']) + 'inHg')
 
         wind.setText(w)
         humidity.setText(Config.LHumidity + '%.0f%%' % (f['humidity']))
@@ -632,7 +635,6 @@ def wxfinished_owm_current():
     if Config.metric:
         temper.setText('%.1f' % (tempf2tempc(f['main']['temp'])) + u'°C')
         temper2.setText('%.1f' % (tempf2tempc(f['main']['temp'])) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % f['main']['pressure'] + 'mbar')
         w = (Config.LWind + wd + ' ' + '%.1f' % (mph2kph(f['wind']['speed'])) + 'km/h')
         if 'gust' in f['wind']:
             w += (Config.Lgusting + '%.1f' % (mph2kph(f['wind']['gust'])) + 'km/h')
@@ -640,11 +642,15 @@ def wxfinished_owm_current():
     else:
         temper.setText('%.1f' % (f['main']['temp']) + u'°F')
         temper2.setText('%.1f' % (f['main']['temp']) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % mbar2inhg(f['main']['pressure']) + 'inHg')
         w = (Config.LWind + wd + ' ' + '%.1f' % (f['wind']['speed']) + 'mph')
         if 'gust' in f['wind']:
             w += (Config.Lgusting + '%.1f' % (f['wind']['gust']) + 'mph')
         feelslike.setText(Config.LFeelslike + '%.1f' % (f['main']['feels_like']) + u'°F')
+
+    if Config.pressure_mbar:
+        press.setText(Config.LPressure + '%.1f' % f['main']['pressure'] + 'mbar')
+    else:
+        press.setText(Config.LPressure + '%.2f' % mbar2inhg(f['main']['pressure']) + 'inHg')
 
     wind.setText(w)
     humidity.setText(Config.LHumidity + '%.0f%%' % (f['main']['humidity']))
@@ -921,7 +927,6 @@ def wxfinished_tm_current():
     if Config.metric:
         temper.setText('%.1f' % (tempf2tempc(f['values']['temperature'])) + u'°C')
         temper2.setText('%.1f' % (tempf2tempc(f['values']['temperature'])) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % inhg2mbar(f['values']['pressureSeaLevel']) + 'mbar')
         wind.setText(Config.LWind + wd + ' ' +
                      '%.1f' % (mph2kph(f['values']['windSpeed'])) + 'km/h' +
                      Config.Lgusting +
@@ -931,7 +936,6 @@ def wxfinished_tm_current():
     else:
         temper.setText('%.1f' % (f['values']['temperature']) + u'°F')
         temper2.setText('%.1f' % (f['values']['temperature']) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % (f['values']['pressureSeaLevel']) + 'inHg')
         wind.setText(Config.LWind +
                      wd + ' ' +
                      '%.1f' % (f['values']['windSpeed']) + 'mph' +
@@ -939,6 +943,11 @@ def wxfinished_tm_current():
                      '%.1f' % (f['values']['windGust']) + 'mph')
         feelslike.setText(Config.LFeelslike +
                           '%.1f' % (f['values']['temperatureApparent']) + u'°F')
+
+    if Config.pressure_mbar:
+        press.setText(Config.LPressure + '%.1f' % inhg2mbar(f['values']['pressureSeaLevel']) + 'mbar')
+    else:
+        press.setText(Config.LPressure + '%.2f' % (f['values']['pressureSeaLevel']) + 'inHg')
 
     humidity.setText(Config.LHumidity + '%.0f%%' % (f['values']['humidity']))
     wdate.setText('{0:%H:%M %Z}'.format(dt))
@@ -1288,7 +1297,6 @@ def wxfinished_metar():
     if Config.metric:
         temper.setText('%.1f' % (f.temp.value('C')) + u'°C')
         temper2.setText('%.1f' % (f.temp.value('C')) + u'°C')
-        press.setText(Config.LPressure + '%.1f' % f.press.value('MB') + 'mbar')
         ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('KMH')) + 'km/h')
         if f.wind_gust:
             ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('KMH')) + 'km/h')
@@ -1296,11 +1304,16 @@ def wxfinished_metar():
     else:
         temper.setText('%.1f' % (f.temp.value('F')) + u'°F')
         temper2.setText('%.1f' % (f.temp.value('F')) + u'°F')
-        press.setText(Config.LPressure + '%.2f' % f.press.value('IN') + 'inHg')
         ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('MPH')) + 'mph')
         if f.wind_gust:
             ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('MPH')) + 'mph')
         feelslike.setText(Config.LFeelslike + '%.1f' % (feels_like(f)) + u'°F')
+
+    if f.press:
+        if Config.pressure_mbar:
+            press.setText(Config.LPressure + '%.1f' % f.press.value('MB') + 'mbar')
+        else:
+            press.setText(Config.LPressure + '%.2f' % f.press.value('IN') + 'inHg')
 
     t = f.temp.value('C')
     d = f.dewpt.value('C')
@@ -1783,9 +1796,13 @@ class Radar(QtWidgets.QLabel):
         yo = int((int(yo) - yo) * 256)
         for y in range(0, self.totalHeight, 256):
             for x in range(0, self.totalWidth, 256):
-                if self.tileQimages[i].format() == QImage.Format_ARGB32:
-                    painter.drawImage(x, y, self.tileQimages[i])
-                i += 1
+                try:
+                    if self.tileQimages[i].format() == QImage.Format_ARGB32:
+                        painter.drawImage(x, y, self.tileQimages[i])
+                    i += 1
+                except IndexError:
+                    print(traceback.format_exc())
+                    pass
         painter.end()
         self.tileQimages = []
         ii2 = QPixmap(ii.copy(-xo, -yo, self.rect.width(), self.rect.height()))
@@ -2143,6 +2160,11 @@ try:
     Config.wind_degrees
 except AttributeError:
     Config.wind_degrees = 0
+
+try:
+    Config.pressure_mbar
+except AttributeError:
+    Config.pressure_mbar = Config.metric
 
 try:
     Config.digital
