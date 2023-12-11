@@ -45,7 +45,7 @@ GPIO3 Pin 5                  Pin 3
 ## Inside Temperature (DS18B20)
 
 There are many guides showing how to connect and check one or more DS18B20s to
-a Raspberry Pi.   Here's one: http://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
+a Raspberry Pi.   Here's one: https://thepihut.com/blogs/raspberry-pi-tutorials/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
 
 ```
 Raspi Header Pin           DS18B20 Pin
