@@ -6,10 +6,10 @@
 import json
 import socket
 import time
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread, Lock
 
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from w1thermsensor import W1ThermSensor
+from w1thermsensor import W1ThermSensor, Unit
 
 from TempNames import sensornames
 
@@ -20,11 +20,8 @@ lock = Lock()
 PORT_NUMBER = 48213
 
 
-# This class will handle any incoming request from
-# the browser
-
-
 class MyHandler(BaseHTTPRequestHandler):
+    """This class will handle any incoming request from the browser."""
 
     def do_options(self):
         self.send_response(200, "ok")
@@ -49,7 +46,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 s['temp'] = "%.1f" % temps[k]
             s['temps'][sensorname(k)] = "%.1f" % temps[k]
         lock.release()
-        self.wfile.write(json.dumps(s))
+        self.wfile.write(bytes(json.dumps(s), 'utf-8'))
 
 
 def sensorname(name):
@@ -64,8 +61,9 @@ def t_http():
         server = HTTPServer(('0.0.0.0', PORT_NUMBER), MyHandler)
         print('Started httpserver on port ' + str(PORT_NUMBER))
         server.serve_forever()
-    except:
-        server.close()
+    except Exception as e:
+        print('An error occurred:', e)
+        server.server_close()
 
 
 def t_udp():
@@ -75,7 +73,7 @@ def t_udp():
     sock.bind(server_address)
     while True:
         data, address = sock.recvfrom(4096)
-        (addr, temp) = data.split(':')
+        (addr, temp) = str(data).split(':')
         saddr = [addr[i:i + 2] for i in range(0, len(addr), 2)]
         saddr.reverse()
         saddr = saddr[1:7]
@@ -92,7 +90,7 @@ def t_temp():
     while True:
         for sensor in W1ThermSensor.get_available_sensors():
             lock.acquire()
-            temps[sensor.id] = sensor.get_temperature(W1ThermSensor.DEGREES_F)
+            temps[sensor.id] = sensor.get_temperature(Unit.DEGREES_F)
             temptimes[sensor.id] = time.time()
             print('hwr>' + sensor.id + ':' + str(temps[sensor.id]))
             lock.release()
