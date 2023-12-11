@@ -23,7 +23,7 @@ PORT_NUMBER = 48213
 class MyHandler(BaseHTTPRequestHandler):
     """This class will handle any incoming request from the browser."""
 
-    def do_options(self):
+    def do_OPTIONS(self):
         self.send_response(200, "ok")
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', '*')
@@ -33,7 +33,7 @@ class MyHandler(BaseHTTPRequestHandler):
                          )
         self.end_headers()
 
-    def do_get(self):
+    def do_GET(self):
         global temps, lock
         self.send_response(200)
         self.send_header('Content-type', 'text/json')

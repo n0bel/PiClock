@@ -285,28 +285,25 @@ def tempfinished():
         tempdata = json.loads(tempstr)
     except ValueError:  # includes json.decoder.JSONDecodeError
         print(traceback.format_exc())
-        print('Response from piclock.local: ' + tempstr)
+        print('Response from localhost: ' + tempstr)
         return  # ignore and try again on the next refresh
 
     if tempdata['temp'] == '':
         return
     if Config.metric:
-        s = Config.LInsideTemp + \
-            '%3.1f' % ((float(tempdata['temp']) - 32.0) * 5.0 / 9.0)
+        s = Config.LInsideTemp + '%.1f' % tempf2tempc(float(tempdata['temp'])) + u'°C'
         if tempdata['temps']:
             if len(tempdata['temps']) > 1:
                 s = ''
                 for tk in tempdata['temps']:
-                    s += ' ' + tk + ':' + \
-                         '%3.1f' % (
-                                 (float(tempdata['temps'][tk]) - 32.0) * 5.0 / 9.0)
+                    s += ' ' + tk + ': ' + '%.1f' % tempf2tempc(float(tempdata['temps'][tk])) + u'°C'
     else:
-        s = Config.LInsideTemp + tempdata['temp']
+        s = Config.LInsideTemp + tempdata['temp'] + u'°F'
         if tempdata['temps']:
             if len(tempdata['temps']) > 1:
                 s = ''
                 for tk in tempdata['temps']:
-                    s += ' ' + tk + ':' + tempdata['temps'][tk]
+                    s += ' ' + tk + ': ' + tempdata['temps'][tk] + u'°F'
     temp.setText(s)
 
 
