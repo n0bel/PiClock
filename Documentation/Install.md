@@ -130,8 +130,7 @@ python3 -m pip install rpi_ws281x
 #### Optional - DS18B20 Temperature Driver
 Get optional DS18B20 Temperature driver for Python if using indoor temperature sensors
 ```
-git clone https://github.com/timofurrer/w1thermsensor.git && cd w1thermsensor
-sudo python3 setup.py install
+python3 -m pip install w1thermsensor
 ```
 
 #### Optional - Lirc IR Remote Driver
