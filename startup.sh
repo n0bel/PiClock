@@ -115,5 +115,5 @@ else
   mv PyQtPiClock.1.log PyQtPiClock.2.log >/dev/null 2>&1
   echo "Starting PiClock... logging to Clock/PyQtPiClock.1.log"
   # start PiClock and add timestamp to log output
-  python3 -u PyQtPiClock.py 2>&1 | (while read -r line; do echo "$(date +'[%F %T.%6N%:z]') $line"; done) >PyQtPiClock.1.log
+  python3 -u PyQtPiClock.py 2>&1 | (while read -r line; do echo "$(date +'%F %T.%6N %Z%z -') $line"; done) >PyQtPiClock.1.log
 fi

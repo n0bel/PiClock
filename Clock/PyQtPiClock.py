@@ -284,8 +284,9 @@ def tempfinished():
     try:
         tempdata = json.loads(tempstr)
     except ValueError:  # includes json.decoder.JSONDecodeError
-        print(traceback.format_exc())
-        print('Response from localhost: ' + tempstr)
+        print('WARNING:', traceback.format_exc())
+        print('WARNING: Response from localhost: ' + tempstr)
+        print('WARNING: Moving on...')
         return  # ignore and try again on the next refresh
 
     if tempdata['temp'] == '':
@@ -421,14 +422,15 @@ def wxfinished_owm_onecall():
     try:
         wxdata = json.loads(wxstr)
     except ValueError:  # includes json.decoder.JSONDecodeError
-        print(traceback.format_exc())
-        print('Response from api.openweathermap.org: ' + wxstr)
+        print('WARNING:', traceback.format_exc())
+        print('WARNING: Response from api.openweathermap.org: ' + wxstr)
+        print('WARNING: Moving on...')
         return  # ignore and try again on the next refresh
 
     if 'cod' in wxdata:
-        print('ERROR from api.openweathermap.org: ' + str(wxdata['cod']) + ' - ' + str(wxdata['message']))
+        print('WARNING: Response from api.openweathermap.org: ' + str(wxdata['cod']) + ' - ' + str(wxdata['message']))
         if wxdata['cod'] == 401:  # Invalid API
-            print("OpenWeather One Call failed... switching to Current Weather and Forecast")
+            print('WARNING: OpenWeather One Call failed... switching to separate Current Weather and Forecast calls')
             owmonecall = False
             getwx_owm()
         return
@@ -600,12 +602,13 @@ def wxfinished_owm_current():
     try:
         wxdata = json.loads(wxstr)
     except ValueError:  # includes json.decoder.JSONDecodeError
-        print(traceback.format_exc())
-        print('Response from api.openweathermap.org: ' + wxstr)
+        print('WARNING:', traceback.format_exc())
+        print('WARNING: Response from api.openweathermap.org: ' + wxstr)
+        print('WARNING: Moving on...')
         return  # ignore and try again on the next refresh
 
     if 'message' in wxdata:
-        print('ERROR from api.openweathermap.org: ' + str(wxdata['cod']) + ' - ' + str(wxdata['message']))
+        print('ERROR: Response from api.openweathermap.org: ' + str(wxdata['cod']) + ' - ' + str(wxdata['message']))
         return
 
     f = wxdata
@@ -667,13 +670,14 @@ def wxfinished_owm_forecast():
     try:
         wxdata = json.loads(wxstr)
     except ValueError:  # includes json.decoder.JSONDecodeError
-        print(traceback.format_exc())
-        print('Response from api.openweathermap.org: ' + wxstr)
+        print('WARNING:', traceback.format_exc())
+        print('WARNING: Response from api.openweathermap.org: ' + wxstr)
+        print('WARNING: Moving on...')
         return  # ignore and try again on the next refresh
 
     if 'message' in wxdata:
         if wxdata['message']:  # OWM forecast normally includes message of 0... if not 0 or text, print error and return
-            print('ERROR from api.openweathermap.org: ' + str(wxdata['cod']) + ' - ' + str(wxdata['message']))
+            print('ERROR: Response from api.openweathermap.org: ' + str(wxdata['cod']) + ' - ' + str(wxdata['message']))
             return
 
     for i in range(0, 3):
@@ -817,7 +821,7 @@ def wxfinished_owm_forecast():
 
 def getmost(a):
     b = dict((i, a.count(i)) for i in a)  # list to key and counts
-    # print('getmost', b)
+    # print('INFO:', 'getmost', b)
     c = sorted(b, key=b.get)  # sort by counts
     return c[-1]  # get last (most counted) item
 
@@ -889,12 +893,13 @@ def wxfinished_tm_current():
     try:
         wxdata = json.loads(wxstr)
     except ValueError:  # includes json.decoder.JSONDecodeError
-        print(traceback.format_exc())
-        print('Response from api.tomorrow.io: ' + wxstr)
+        print('WARNING:', traceback.format_exc())
+        print('WARNING: Response from api.tomorrow.io: ' + wxstr)
+        print('WARNING: Moving on...')
         return  # ignore and try again on the next refresh
 
     if 'message' in wxdata:
-        print('ERROR from from api.tomorrow.io: ' + str(wxdata['code']) + ' - ' + str(wxdata['type']) + ' - ' +
+        print('ERROR: Response from api.tomorrow.io: ' + str(wxdata['code']) + ' - ' + str(wxdata['type']) + ' - ' +
               str(wxdata['message']))
         return
 
@@ -962,12 +967,13 @@ def wxfinished_tm_hourly():
     try:
         wxdata2 = json.loads(wxstr2)
     except ValueError:  # includes json.decoder.JSONDecodeError
-        print(traceback.format_exc())
-        print('Response from api.tomorrow.io: ' + wxstr2)
+        print('WARNING:', traceback.format_exc())
+        print('WARNING: Response from api.tomorrow.io: ' + wxstr2)
+        print('WARNING: Moving on...')
         return  # ignore and try again on the next refresh
 
     if 'message' in wxdata2:
-        print('ERROR from from api.tomorrow.io: ' + str(wxdata2['code']) + ' - ' + wxdata2['type'] + ' - ' +
+        print('ERROR: Response from api.tomorrow.io: ' + str(wxdata2['code']) + ' - ' + wxdata2['type'] + ' - ' +
               wxdata2['message'])
         return
 
@@ -1038,12 +1044,13 @@ def wxfinished_tm_daily():
     try:
         wxdata3 = json.loads(wxstr3)
     except ValueError:  # includes json.decoder.JSONDecodeError
-        print(traceback.format_exc())
-        print('Response from api.tomorrow.io: ' + wxstr3)
+        print('WARNING:', traceback.format_exc())
+        print('WARNING: Response from api.tomorrow.io: ' + wxstr3)
+        print('WARNING: Moving on...')
         return  # ignore and try again on the next refresh
 
     if 'message' in wxdata3:
-        print('ERROR from from api.tomorrow.io: ' + str(wxdata3['code']) + ' - ' + wxdata3['type'] + ' - ' +
+        print('ERROR: Response from api.tomorrow.io: ' + str(wxdata3['code']) + ' - ' + wxdata3['type'] + ' - ' +
               wxdata3['message'])
         return
 
@@ -1130,7 +1137,7 @@ def wxfinished_tm_daily():
             wx.setStyleSheet('#wx { font-size: ' + str(int(19 * xscale * Config.fontmult)) + 'px; }')
             wx.setText(tm_code_map[f['values']['weatherCode']] + '\n' + s)
         except IndexError:
-            print(traceback.format_exc())
+            print('WARNING:', traceback.format_exc())
             pass
 
 
@@ -1225,13 +1232,13 @@ def wxfinished_metar():
     wxstr = str(metarreply.readAll(), 'utf-8')
 
     if metarreply.error() != QNetworkReply.NoError:
-        print('ERROR from nws.noaa.gov: ' + wxstr)
+        print('ERROR: Response from nws.noaa.gov: ' + wxstr)
         return
 
     for wxline in wxstr.splitlines():
         if wxline.startswith(Config.METAR):
             wxstr = wxline
-    print('wxmetar: ' + wxstr)
+    print('INFO: wxmetar: ' + wxstr)
     f = Metar.Metar(wxstr, strict=False)
     dt = f.time.replace(tzinfo=datetime.timezone.utc).astimezone(tzlocal.get_localzone())
 
@@ -1369,9 +1376,9 @@ def getwx_owm():
     wxurl += '&r=' + str(random.random())
 
     if owmonecall:
-        print('getting OpenWeather One Call: ' + wxurl)
+        print('INFO: getting OpenWeather One Call: ' + wxurl)
     else:
-        print('getting OpenWeather forecast: ' + wxurl)
+        print('INFO: getting OpenWeather forecast: ' + wxurl)
 
     r = QUrl(wxurl)
     r = QNetworkRequest(r)
@@ -1390,7 +1397,7 @@ def getwx_owm():
                  '&lon=' + str(Config.location.lng)
         wxurl += '&units=imperial&lang=' + Config.Language.lower()
         wxurl += '&r=' + str(random.random())
-        print('getting OpenWeather current conditions: ' + wxurl)
+        print('INFO: getting OpenWeather current conditions: ' + wxurl)
         r = QUrl(wxurl)
         r = QNetworkRequest(r)
         wxreplyc = manager.get(r)
@@ -1410,7 +1417,7 @@ def getwx_tm():
         wxurl += '&units=imperial'
         wxurl += '&fields=temperature,weatherCode,temperatureApparent,humidity,'
         wxurl += 'windSpeed,windDirection,windGust,pressureSeaLevel,precipitationType'
-        print('getting Tomorrow.io current conditions: ' + wxurl)
+        print('INFO: getting Tomorrow.io current conditions: ' + wxurl)
         r = QUrl(wxurl)
         r = QNetworkRequest(r)
         wxreply = manager.get(r)
@@ -1422,7 +1429,7 @@ def getwx_tm():
     wxurl2 += '&units=imperial'
     wxurl2 += '&fields=temperature,precipitationIntensity,precipitationType,'
     wxurl2 += 'precipitationProbability,weatherCode'
-    print('getting Tomorrow.io hourly forecast: ' + wxurl2)
+    print('INFO: getting Tomorrow.io hourly forecast: ' + wxurl2)
     r2 = QUrl(wxurl2)
     r2 = QNetworkRequest(r2)
     wxreply2 = manager.get(r2)
@@ -1434,7 +1441,7 @@ def getwx_tm():
     wxurl3 += '&units=imperial'
     wxurl3 += '&fields=temperature,precipitationIntensity,precipitationType,'
     wxurl3 += 'precipitationProbability,weatherCode,temperatureMax,temperatureMin'
-    print('getting Tomorrow.io daily forecast: ' + wxurl3)
+    print('INFO: getting Tomorrow.io daily forecast: ' + wxurl3)
     r3 = QUrl(wxurl3)
     r3 = QNetworkRequest(r3)
     wxreply3 = manager.get(r3)
@@ -1444,7 +1451,7 @@ def getwx_tm():
 def getwx_metar():
     global metarreply
     metarurl = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations/' + Config.METAR + '.TXT'
-    print('getting METAR current conditions: ' + metarurl)
+    print('INFO: getting METAR current conditions: ' + metarurl)
     r = QUrl(metarurl)
     r = QNetworkRequest(r)
     metarreply = manager.get(r)
@@ -1464,7 +1471,7 @@ def qtstart():
         try:
             locale.setlocale(locale.LC_TIME, Config.DateLocale)
         except locale.Error:
-            print(traceback.format_exc())
+            print('WARNING:', traceback.format_exc())
             pass
 
     dt = datetime.datetime.now(tz=tzlocal.get_localzone())
@@ -1538,7 +1545,7 @@ class SlideShow(QtWidgets.QLabel):
             self.timer.stop()
             self.timer = None
         except AttributeError:
-            print(traceback.format_exc())
+            print('WARNING:', traceback.format_exc())
             pass
 
     def run_ss(self):
@@ -1587,7 +1594,7 @@ class SlideShow(QtWidgets.QLabel):
                                                   or full_file.lower().endswith('jpg')):
                     self.img_list.append(full_file)
         except OSError:
-            print(traceback.format_exc())
+            print('ERROR:', traceback.format_exc())
 
 
 class Radar(QtWidgets.QLabel):
@@ -1600,13 +1607,13 @@ class Radar(QtWidgets.QLabel):
         self.point = radar['center']
         self.radar = radar
         self.baseurl = self.mapurl(radar, rect, overlayonly=False)
-        print('map base url for ' + self.myname + ': ' + self.baseurl)
+        print('INFO: map base url for ' + self.myname + ': ' + self.baseurl)
 
         if usemapbox:
             if 'overlay' in radar:
                 if radar['overlay'] != '':
                     self.overlayurl = self.mapurl(radar, rect, overlayonly=True)
-                    print('map overlay url for ' + self.myname + ': ' + self.overlayurl)
+                    print('INFO: map overlay url for ' + self.myname + ': ' + self.overlayurl)
 
         QtWidgets.QLabel.__init__(self, parent)
         self.interval = Config.radar_refresh * 60
@@ -1739,7 +1746,7 @@ class Radar(QtWidgets.QLabel):
         self.frameImages = newf
         firstt = t - self.anim * 600
         for tt in range(firstt, t + 1, 600):
-            print(self.myname + '... get radar tiles for time ' + str(tt) +
+            print('INFO: ' + self.myname + '... get radar tiles for time ' + str(tt) +
                   ' (' + str(datetime.datetime.fromtimestamp(tt).astimezone(tzlocal.get_localzone())) + ')')
             gotit = False
             for f in self.frameImages:
@@ -1760,7 +1767,7 @@ class Radar(QtWidgets.QLabel):
                 tileurl = 'https://tilecache.rainviewer.com/v2/radar/%d/%s' \
                           % (t, tt)
                 self.tileurls.append(tileurl)
-        print(self.myname + ' tile' + str(self.getIndex) + ' ' + self.tileurls[i])
+        print('INFO: ' + self.myname + ' tile' + str(self.getIndex) + ' ' + self.tileurls[i])
         tilereq = QNetworkRequest(QUrl(self.tileurls[i]))
         self.tilereply = manager.get(tilereq)
         self.tilereply.finished.connect(self.get_tilesreply)
@@ -1768,14 +1775,14 @@ class Radar(QtWidgets.QLabel):
     def get_tilesreply(self):
         if self.tilereply.error() != QNetworkReply.NoError:
             tilestr = str(self.tilereply.readAll(), 'utf-8')
-            print('ERROR from rainviewer.com: ' + tilestr)
+            print('ERROR: Response from rainviewer.com: ' + tilestr)
             return
         self.tileQimages.append(QImage())
         try:
             self.tileQimages[self.getIndex].loadFromData(self.tilereply.readAll())
             self.getIndex += 1
         except IndexError:
-            print(traceback.format_exc())
+            print('WARNING:', traceback.format_exc())
             pass
         if self.getIndex < len(self.tileurls):
             self.get_tiles(self.getTime, self.getIndex)
@@ -1801,7 +1808,7 @@ class Radar(QtWidgets.QLabel):
                         painter.drawImage(x, y, self.tileQimages[i])
                     i += 1
                 except IndexError:
-                    print(traceback.format_exc())
+                    print('WARNING:', traceback.format_exc())
                     pass
         painter.end()
         self.tileQimages = []
@@ -1904,12 +1911,12 @@ class Radar(QtWidgets.QLabel):
             if usemapbox:
                 try:
                     basejson = json.loads(basestr)
-                    print('ERROR from api.mapbox.com: ' + basejson['message'])
+                    print('ERROR: Response from api.mapbox.com: ' + basejson['message'])
                 except ValueError:  # includes json.decoder.JSONDecodeError
-                    print('ERROR from api.mapbox.com: ' + basestr)
+                    print('ERROR: Response from api.mapbox.com: ' + basestr)
                     pass
             else:
-                print('ERROR from maps.googleapis.com: ' + basestr)
+                print('ERROR: Response from maps.googleapis.com: ' + basestr)
             return
         basepixmap = QPixmap()
         basepixmap.loadFromData(self.basereply.readAll())
@@ -1970,9 +1977,9 @@ class Radar(QtWidgets.QLabel):
             overlaystr = str(self.overlayreply.readAll(), 'utf-8')
             try:
                 overlayjson = json.loads(overlaystr)
-                print('ERROR from api.mapbox.com: ' + overlayjson['message'])
+                print('ERROR: Response from api.mapbox.com: ' + overlayjson['message'])
             except ValueError:  # includes json.decoder.JSONDecodeError
-                print('ERROR from api.mapbox.com: ' + overlaystr)
+                print('ERROR: Response from api.mapbox.com: ' + overlaystr)
                 pass
             return
         overlaypixmap = QPixmap()
@@ -2011,11 +2018,11 @@ class Radar(QtWidgets.QLabel):
         self.lastget = time.time() - self.interval + random.uniform(3, 10)
 
     def wxstart(self):
-        print('wxstart for ' + self.myname)
+        print('INFO: wxstart for ' + self.myname)
         self.timer.start(200)
 
     def wxstop(self):
-        print('wxstop for ' + self.myname)
+        print('INFO: wxstop for ' + self.myname)
         self.timer.stop()
 
     def stop(self):
@@ -2023,7 +2030,7 @@ class Radar(QtWidgets.QLabel):
             self.timer.stop()
             self.timer = None
         except AttributeError:
-            print(traceback.format_exc())
+            print('WARNING:', traceback.format_exc())
             pass
 
 
@@ -2052,10 +2059,10 @@ def fixupframe(frame, onoff):
     for child in frame.children():
         if isinstance(child, Radar):
             if onoff:
-                # print('calling wxstart on radar on', frame.objectName())
+                # print('INFO: calling wxstart on radar on', frame.objectName())
                 child.wxstart()
             else:
-                # print('calling wxstop on radar on', frame.objectName())
+                # print('INFO: calling wxstop on radar on', frame.objectName())
                 child.wxstop()
 
 
@@ -2077,7 +2084,7 @@ class MyMain(QtWidgets.QWidget):
     def keyPressEvent(self, event):
         global weatherplayer, lastkeytime
         if isinstance(event, QtGui.QKeyEvent):
-            # print(event.key(), format(event.key(), '08x'))
+            # print('INFO:', event.key(), format(event.key(), '08x'))
             if event.key() == Qt.Key_F4:
                 myquit()
             if event.key() == Qt.Key_F2:
@@ -2118,7 +2125,7 @@ if len(sys.argv) > 1:
     configname = sys.argv[1]
 
 if not os.path.isfile(configname + '.py'):
-    print('Config file not found %s' % configname + '.py')
+    print('ERROR: Config file not found %s' % configname + '.py')
     exit(1)
 
 Config = __import__(configname)
