@@ -430,7 +430,8 @@ def wxfinished_owm_onecall():
     if 'cod' in wxdata:
         print('WARNING: Response from api.openweathermap.org: ' + str(wxdata['cod']) + ' - ' + str(wxdata['message']))
         if wxdata['cod'] == 401:  # Invalid API
-            print('WARNING: OpenWeather One Call failed... switching to separate Current Weather and Forecast calls')
+            print('WARNING: OpenWeather One Call failed...')
+            print('WARNING: Falling back to separate OpenWeather calls for current weather conditions and forecast')
             owmonecall = False
             getwx_owm()
         return
