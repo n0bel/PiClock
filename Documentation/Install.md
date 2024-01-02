@@ -438,7 +438,7 @@ At this point the clock will only start when you manually start it, as
 described in the Run It section.
 
 Use only one autostart method.
-## Autostart Method 1
+#### Autostart Method 1
 (NOT as root)
 ```
 cd PiClock
@@ -450,7 +450,7 @@ ln PiClock.desktop ~/.config/autostart
 This puts the PiClock icon on your desktop.  It also runs it when
 the desktop starts.
 
-## Autostart Method 2
+#### Autostart Method 2
 To have it auto start on boot you need to do one more thing, edit the
 crontab file as follows: (it will automatically start nano)  (NOT as root)
 ```
@@ -466,7 +466,7 @@ and reboot to test
 sudo reboot
 ```
 
-## Some notes about startup.sh
+### Some notes about startup.sh
 startup.sh has a few options:
 * -n or --no-delay&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Don't delay on starting the clock right away (default is 45 seconds delay)
 * -d X or --delay X&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Delay X seconds before starting the clock
