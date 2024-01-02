@@ -46,6 +46,15 @@ You need to set API keys for one weather service and one map service.
 These are free unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost API keys.
 
+_Protect your API keys._  You'd be surprised how many pastebin's are out
+there with valid API keys, because of people not being careful.   _If you post
+your keys somewhere, your usage will skyrocket, and your bill as well._  Google
+has the ability to add referer, device and IP requirements on your API key.  It
+can also allow you to limit an API key to specific applications only (static-maps)
+in this case. Also, you might consider disabling all the other APIs on your
+project dashboard. Under the Billing section of things you can set up budgets
+and alerts (set to like $1.00).
+
 #### Weather API Key
 
 You have your choice of OpenWeather or Tomorrow from which to get your 
@@ -83,6 +92,13 @@ https://www.tomorrow.io/weather-api/
 You have your choice of Mapbox or Google Maps from which to get your underlying maps.
 You only need one or the other (mbapi or googleapi)
 
+#### Mapbox API key
+
+A Mapbox API key (access token) is required to use Mapbox.
+
+Mapbox access tokens are created by signing up at this link:
+https://www.mapbox.com/signup/
+
 #### Google Maps API key
 
 A Google Maps API key is required to use Google Maps.
@@ -98,30 +114,14 @@ $0.62 , if you reboot daily.
 You'll be required to create a "project" (maybe PiClock for a project name?)
 You need to then activate the key.
 
-_Protect your API keys._  You'd be surprised how many pastebin's are out
-there with valid API keys, because of people not being careful.   _If you post
-your keys somewhere, your usage will skyrocket, and your bill as well._  Google
-has the ability to add referer, device and IP requirements on your API key.  It
-can also allow you to limit an API key to specific applications only (static-maps)
-in this case. Also, you might consider disabling all the other APIs on your
-project dashboard. Under the Billing section of things you can set up budgets
-and alerts (set to like $1.00).
-
-#### Mapbox API key
-
-A Mapbox API key (access token) is required to use Mapbox.
-
-Mapbox access tokens are created by signing up at this link:
-https://www.mapbox.com/signup/
-
-Now that you have your API keys...
+Now that you have your API keys, copy the ApiKeys-example.py as ApiKeys.py and edit it...
 
 ```
 cd PiClock/Clock
 cp ApiKeys-example.py ApiKeys.py
 nano ApiKeys.py
 ```
-Put your API keys in the file as indicated
+Put your API keys in the file as indicated. Comment out the lines of unused API keys.
 ```
 # Change this to your API keys
 
@@ -140,7 +140,7 @@ owmapi = 'YOUR OPENWEATHERMAP API KEY'
 
 ### Configure your PiClock
 Here's where you tell PiClock where your weather should come from, and the
-radar map centers and markers.
+radar map centers and markers.  Copy the Config-Example.py as Config.py and edit it...
 
 ```
 cd PiClock/Clock
