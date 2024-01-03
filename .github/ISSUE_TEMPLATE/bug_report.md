@@ -17,10 +17,12 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Operating System**
+Use command `hostnamectl` in terminal window to find OS info.
  - OS: [e.g. Raspberry Pi OS, Debian, Ubuntu, Windows]
  - Version: [e.g. Bookworm, 12.0]
 
 **Python Version**
+Use command `python --version` or `python3 --version` in terminal window to find Python version.
 - Version: [e.g. 3.9]
 
 **Screenshots**
