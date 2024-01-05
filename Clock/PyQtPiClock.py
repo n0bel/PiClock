@@ -1074,7 +1074,8 @@ def wxfinished_tm_daily():
                 Qt.SmoothTransformation))
             wx = fl.findChild(QtWidgets.QLabel, 'wx')
             day = fl.findChild(QtWidgets.QLabel, 'day')
-            day.setText('{0:%A %m/%d}'.format(dateutil.parser.parse(f['startTime']).astimezone(tzlocal.get_localzone())))
+            day.setText('{0:%A %m/%d}'.format(dateutil.parser.parse(f['startTime'])
+                                              .astimezone(tzlocal.get_localzone())))
             s = ''
             pop = float(f['values']['precipitationProbability'])
             ptype = ''
@@ -1204,7 +1205,9 @@ def feels_like(f):
     h = (math.exp((17.625 * d) / (243.04 + d)) /
          math.exp((17.625 * t) / (243.04 + t)))
     t = f.temp.value('F')
-    w = f.wind_speed.value('MPH')
+    w = 0
+    if f.wind_speed:
+        w = f.wind_speed.value('MPH')
     if t > 80 and h >= 0.40:
         hi = (-42.379 + 2.04901523 * t + 10.14333127 * h - .22475541 * t * h -
               .00683783 * t * t - .05481717 * h * h + .00122874 * t * t * h +
@@ -1292,6 +1295,7 @@ def wxfinished_metar():
     wxdesc.setText(weather)
     wxdesc2.setText(weather)
 
+    ws = ''
     wd = ''
     if f.wind_dir:
         if Config.wind_degrees:
@@ -1302,16 +1306,18 @@ def wxfinished_metar():
     if Config.metric:
         temper.setText('%.1f' % (f.temp.value('C')) + u'°C')
         temper2.setText('%.1f' % (f.temp.value('C')) + u'°C')
-        ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('KMH')) + 'km/h')
-        if f.wind_gust:
-            ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('KMH')) + 'km/h')
+        if f.wind_speed:
+            ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('KMH')) + 'km/h')
+            if f.wind_gust:
+                ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('KMH')) + 'km/h')
         feelslike.setText(Config.LFeelslike + ('%.1f' % (tempf2tempc(feels_like(f))) + u'°C'))
     else:
         temper.setText('%.1f' % (f.temp.value('F')) + u'°F')
         temper2.setText('%.1f' % (f.temp.value('F')) + u'°F')
-        ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('MPH')) + 'mph')
-        if f.wind_gust:
-            ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('MPH')) + 'mph')
+        if f.wind_speed:
+            ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('MPH')) + 'mph')
+            if f.wind_gust:
+                ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('MPH')) + 'mph')
         feelslike.setText(Config.LFeelslike + '%.1f' % (feels_like(f)) + u'°F')
 
     if f.press:
@@ -2039,7 +2045,7 @@ def realquit():
     QtWidgets.QApplication.exit(0)
 
 
-def myquit():
+def myquit(signum, frame):
     global objradar1, objradar2, objradar3, objradar4
     global ctimer, wxtimer, temptimer
 
@@ -2087,7 +2093,7 @@ class MyMain(QtWidgets.QWidget):
         if isinstance(event, QtGui.QKeyEvent):
             # print('INFO:', event.key(), format(event.key(), '08x'))
             if event.key() == Qt.Key_F4:
-                myquit()
+                myquit(signal.SIGINT, None)
             if event.key() == Qt.Key_F2:
                 if time.time() > lastkeytime:
                     if weatherplayer is None:
@@ -2116,7 +2122,7 @@ class MyMain(QtWidgets.QWidget):
                     foreGround.show()
 
     def mousePressEvent(self, event):
-        if type(event) == QtGui.QMouseEvent:
+        if isinstance(event, QtGui.QMouseEvent):
             nextframe(1)
 
 
