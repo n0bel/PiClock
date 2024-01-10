@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of your problem.
 
 **Operating System**
-Use command `hostnamectl` in terminal window to find OS info.
+Use command `hostnamectl` in Linux terminal window to find OS info.
  - OS: [e.g. Raspberry Pi OS, Debian, Ubuntu, Windows]
  - Version: [e.g. Bookworm, 12.0]
 
