@@ -738,7 +738,7 @@ def wxfinished_owm_forecast():
     # find 6am in the current timezone (weather day is 6am to 6am next day)
     dx = datetime.datetime.now(tz=tzlatlng)
     dx6am = tzlatlng.localize(datetime.datetime(dx.year, dx.month, dx.day, 6, 0, 0))
-    dx6amnext = dx6am + datetime.timedelta(0, 86399)
+    dx6amnext = dx6am + datetime.timedelta(seconds=86399)
 
     for i in range(3, 9):  # target forecast box
         s = ''
@@ -752,7 +752,7 @@ def wxfinished_owm_forecast():
         rpaccum = 0.0  # total rain
         spaccum = 0.0  # total snow
         xmintemp = 9999  # min
-        xmaxtemp = -9999  # max   
+        xmaxtemp = -9999  # max
         ldesc = []
         licon = []
 
@@ -1244,41 +1244,45 @@ def wxfinished_metar():
             wxstr = wxline
     print('INFO: wxmetar: ' + wxstr)
     f = Metar.Metar(wxstr, strict=False)
-    dt = f.time.replace(tzinfo=datetime.timezone.utc).astimezone(tzlocal.get_localzone())
+    dt = datetime.time(0, 0, 0, tzinfo=datetime.timezone.utc)
+    if f.time:
+        dt = f.time.replace(tzinfo=datetime.timezone.utc).astimezone(tzlocal.get_localzone())
 
     pri = -1
     weather = ''
     icon = ''
-    for s in f.sky:
-        for c in metar_cond:
-            if s[0] == c[0]:
-                if c[5] > pri:
-                    pri = c[5]
-                    weather = c[3]
-                    icon = c[4]
-    for w in f.weather:
-        for c in metar_cond:
-            if w[2] == c[0]:
-                if c[1] > '':
-                    if w[1] == c[1]:
+    if f.sky:
+        for s in f.sky:
+            for c in metar_cond:
+                if s[0] == c[0]:
+                    if c[5] > pri:
+                        pri = c[5]
+                        weather = c[3]
+                        icon = c[4]
+    if f.weather:
+        for w in f.weather:
+            for c in metar_cond:
+                if w[2] == c[0]:
+                    if c[1] > '':
+                        if w[1] == c[1]:
+                            if c[2] > '':
+                                if w[0][0:1] == c[2]:
+                                    if c[5] > pri:
+                                        pri = c[5]
+                                        weather = c[3]
+                                        icon = c[4]
+                    else:
                         if c[2] > '':
                             if w[0][0:1] == c[2]:
                                 if c[5] > pri:
                                     pri = c[5]
                                     weather = c[3]
                                     icon = c[4]
-                else:
-                    if c[2] > '':
-                        if w[0][0:1] == c[2]:
+                        else:
                             if c[5] > pri:
                                 pri = c[5]
                                 weather = c[3]
                                 icon = c[4]
-                    else:
-                        if c[5] > pri:
-                            pri = c[5]
-                            weather = c[3]
-                            icon = c[4]
 
     if not daytime:
         icon = icon.replace('-day', '-night')
@@ -1295,43 +1299,59 @@ def wxfinished_metar():
     wxdesc.setText(weather)
     wxdesc2.setText(weather)
 
-    ws = ''
-    wd = ''
+    temp_str = ''
+    pressure_str = Config.LPressure
+    humidity_str = Config.LHumidity
+    wind_speed_str = Config.LWind
+    wind_dir_str = ''
+    feelslike_str = Config.LFeelslike
+
     if f.wind_dir:
         if Config.wind_degrees:
-            wd = str(f.wind_dir.value()) + u'°'
+            wind_dir_str = str(f.wind_dir.value()) + u'°'
         else:
-            wd = f.wind_dir.compass()
+            wind_dir_str = f.wind_dir.compass()
 
     if Config.metric:
-        temper.setText('%.1f' % (f.temp.value('C')) + u'°C')
-        temper2.setText('%.1f' % (f.temp.value('C')) + u'°C')
+        if f.temp:
+            temp_str = '%.1f' % f.temp.value('C')
+        temp_str += u'°C'
         if f.wind_speed:
-            ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('KMH')) + 'km/h')
+            wind_speed_str += wind_dir_str + ' ' + '%.1f' % f.wind_speed.value('KMH') + 'km/h'
             if f.wind_gust:
-                ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('KMH')) + 'km/h')
-        feelslike.setText(Config.LFeelslike + ('%.1f' % (tempf2tempc(feels_like(f))) + u'°C'))
+                wind_speed_str += Config.Lgusting + '%.1f' % f.wind_gust.value('KMH') + 'km/h'
+        if f.temp and f.dewpt:
+            feelslike_str += '%.1f' % tempf2tempc(feels_like(f)) + u'°C'
     else:
-        temper.setText('%.1f' % (f.temp.value('F')) + u'°F')
-        temper2.setText('%.1f' % (f.temp.value('F')) + u'°F')
+        if f.temp:
+            temp_str = '%.1f' % f.temp.value('F')
+        temp_str += u'°F'
         if f.wind_speed:
-            ws = (Config.LWind + wd + ' ' + '%.1f' % (f.wind_speed.value('MPH')) + 'mph')
+            wind_speed_str += wind_dir_str + ' ' + '%.1f' % f.wind_speed.value('MPH') + 'mph'
             if f.wind_gust:
-                ws += (Config.Lgusting + '%.1f' % (f.wind_gust.value('MPH')) + 'mph')
-        feelslike.setText(Config.LFeelslike + '%.1f' % (feels_like(f)) + u'°F')
+                wind_speed_str += Config.Lgusting + '%.1f' % f.wind_gust.value('MPH') + 'mph'
+        if f.temp and f.dewpt:
+            feelslike_str += '%.1f' % feels_like(f) + u'°F'
 
     if f.press:
         if Config.pressure_mbar:
-            press.setText(Config.LPressure + '%.1f' % f.press.value('MB') + 'mbar')
+            pressure_str += '%.1f' % f.press.value('MB') + 'mbar'
         else:
-            press.setText(Config.LPressure + '%.2f' % f.press.value('IN') + 'inHg')
+            pressure_str += '%.2f' % f.press.value('IN') + 'inHg'
 
-    t = f.temp.value('C')
-    d = f.dewpt.value('C')
-    h = 100.0 * (math.exp((17.625 * d) / (243.04 + d)) /
-                 math.exp((17.625 * t) / (243.04 + t)))
-    humidity.setText(Config.LHumidity + '%.0f%%' % h)
-    wind.setText(ws)
+    if f.temp and f.dewpt:
+        t = f.temp.value('C')
+        d = f.dewpt.value('C')
+        h = 100.0 * (math.exp((17.625 * d) / (243.04 + d)) /
+                     math.exp((17.625 * t) / (243.04 + t)))
+        humidity_str += '%.0f%%' % h
+
+    temper.setText(temp_str)
+    temper2.setText(temp_str)
+    press.setText(pressure_str)
+    humidity.setText(humidity_str)
+    wind.setText(wind_speed_str)
+    feelslike.setText(feelslike_str)
     wdate.setText('{0:%H:%M %Z} {1}'.format(dt, Config.METAR))
 
 
