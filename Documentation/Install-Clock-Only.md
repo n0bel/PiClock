@@ -10,9 +10,7 @@ clock on a desktop OS.
 The minium requirements for a PiClock is pretty simple
 * Python 3
 * Python Qt5, known as PyQt5
-* git (as an alternative to git, you can pull the zip file from GitHub
-(download button on the right side of the GitHub project) then unzip it
-onto your system )
+* git (as an alternative to git, you can download the zip file from GitHub)
 
 Theses are available under Windows, Linux, and OSX OS's.
 
@@ -20,19 +18,42 @@ How to get these installed on your choice of system I'll leave
 as an exercise for the reader.
 
 ### Get the PiClock software
-```
-git clone https://github.com/SerBrynden/PiClock.git
-```
-Alternatively, you can download a zip file of the GitHub project.
+1. On GitHub.com, navigate to the main page of the repository: [PiClock](../)
+2. Above the list of files, click the **< > Code** button.
+3. Copy the HTTPS URL for the repository. It'll look something like this:
+https://github.com/USERNAME/PiClock.git
+4. Log into your Pi, (either on the screen or via ssh) (NOT as root).
+You'll be in the home directory of the user pi (/home/pi) by default,
+and this is where you want to be.  Note that the following command while
+itself not being case-sensitive, further operation of PiClock may be
+affected if the upper and lower case of the command is not followed.
+5. Download PiClock using the `git clone` command followed by the 
+HTTPS URL for the repository, for example:
 
-https://github.com/SerBrynden/PiClock/archive/master.zip, then unzip it.
+```
+git clone https://github.com/USERNAME/PiClock.git
+```
 
+Once that is done, you'll have a new directory called PiClock.
+
+Alternatively, you can download the zip file from GitHub
+by clicking the **< > Code** button above the list of files at [PiClock](../), 
+select **Download ZIP**, then unzip it onto your system.
 
 ### Configure the PiClock API keys
 
-We need to set API keys for one weather service and one map service.
+You need to set API keys for one weather service and one map service.
 These are free unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost API keys.
+
+_Protect your API keys._  You'd be surprised how many pastebin's are out
+there with valid API keys, because of people not being careful.   _If you post
+your keys somewhere, your usage will skyrocket, and your bill as well._  Google
+has the ability to add referer, device and IP requirements on your API key.  It
+can also allow you to limit an API key to specific applications only (static-maps)
+in this case. Also, you might consider disabling all the other APIs on your
+project dashboard. Under the Billing section of things you can set up budgets
+and alerts (set to like $1.00).
 
 #### Weather API Key
 
@@ -42,13 +63,16 @@ You only need one or the other (owmapi or tmapi)
 
 #### OpenWeather API key
 
-An OpenWeather One Call API 3.0 key is required to use OpenWeather data.
-(Requires credit card which won't be charged unless usage is high.)
+An OpenWeather API key is required to use OpenWeather data.
 
-OpenWeather One Call API 3.0 keys are created by signing up at this link:
-https://home.openweathermap.org/subscriptions/unauth_subscribe/onecall_30/base
+OpenWeather API keys are created by signing up at this link:
+https://openweathermap.org/price
 
-Once you subscribe to the One Call API 3.0 plan, the default call limit is set 
+Select either the One Call by Call API 3.0 subscription plan, or scroll down for the 
+Professional Collections current weather and forecasts free plan.
+
+The OpenWeather One Call by Call API 3.0 key requires a credit card which won't be charged 
+unless usage is high. If you subscribe to the One Call API 3.0 plan, the default call limit is set 
 to 2,000 API calls per day, however only the first 1,000 calls are free, which 
 you should not exceed under typical PiClock operation.
 After the daily limit is reached, the overage charge is $0.15 per 100 calls.
@@ -65,8 +89,15 @@ https://www.tomorrow.io/weather-api/
 
 #### Map API Key
 
-You have your choice of Mapbox (for dark maps) or Google Maps from which to get your underlying maps.
+You have your choice of Mapbox or Google Maps from which to get your underlying maps.
 You only need one or the other (mbapi or googleapi)
+
+#### Mapbox API key
+
+A Mapbox API key (access token) is required to use Mapbox.
+
+Mapbox access tokens are created by signing up at this link:
+https://www.mapbox.com/signup/
 
 #### Google Maps API key
 
@@ -83,32 +114,14 @@ $0.62 , if you reboot daily.
 You'll be required to create a "project" (maybe PiClock for a project name?)
 You need to then activate the key.
 
-_Protect your API keys._  You'd be surprised how many pastebin's are out
-there with valid API keys, because of people not being careful.   _If you post
-your keys somewhere, your usage will skyrocket, and your bill as well._  Google
-has the ability to add referer, device and IP requirements on your API key.  It
-can also allow you to limit an API key to specific applications only (static-maps)
-in this case. Also, you might consider disabling all the other APIs on your
-project dashboard. Under the Billing section of things you can set up budgets
-and alerts (set to like $1.00).
-
-#### Mapbox API key
-
-A Mapbox API key (access token) is required to use Mapbox (for dark maps).
-
-Mapbox access tokens are created by signing up at this link:
-https://www.mapbox.com/signup/
-
-
-Now that you have your API keys...
+Now that you have your API keys, copy the ApiKeys-example.py as ApiKeys.py and edit it...
 
 ```
-cd PiClock
-cd Clock
+cd PiClock/Clock
 cp ApiKeys-example.py ApiKeys.py
 nano ApiKeys.py
 ```
-Put your API keys in the file as indicated
+Put your API keys in the file as indicated. Comment out the lines of unused API keys.
 ```
 # Change this to your API keys
 
@@ -127,11 +140,10 @@ owmapi = 'YOUR OPENWEATHERMAP API KEY'
 
 ### Configure your PiClock
 Here's where you tell PiClock where your weather should come from, and the
-radar map centers and markers.
+radar map centers and markers.  Copy the Config-Example.py as Config.py and edit it...
 
 ```
-cd PiClock
-cd Clock
+cd PiClock/Clock
 cp Config-Example.py Config.py  (copy on windows)
 [use your favorite editor] Config.py
 ```
@@ -152,9 +164,9 @@ location pointers.
 
 ```
 cd PiClock
-python PyQtPiClock.py
+python3 PyQtPiClock.py
 ```
-After a few seconds, your screen should be covered by the PiClock  YAY!
+After a few seconds, your screen should be covered by the PiClock. YAY!
 
 There may be some output on the terminal screen as it executes.
 If everything works, it can be ignored.  If for some reason the clock
@@ -170,12 +182,12 @@ file (Config.py)
 
 
 ### Updating to newer/updated versions
-Since we pulled the software from GitHub originally, it can be updated
+Since you pulled the software from GitHub originally, it can be updated
 using git and GitHub.
 ```
 cd PiClock
 git pull
-python update.py
+bash update.sh
 ```
 This will automatically update any part(s) of the software that has changed.
-The update.py program will then convert any config files as needed.
+The update.sh script will then convert any config files as needed.

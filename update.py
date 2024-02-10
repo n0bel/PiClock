@@ -1,23 +1,24 @@
 import os
 import re
-import sys
 
-print('Updating Python Modules')
-print('Updating python-dateutil')
-os.system('sudo pip3 install python-dateutil --upgrade')
-print('Updating tzlocal')
-os.system('sudo pip3 install tzlocal --upgrade')
-print('Updating python-metar')
-os.system('sudo pip3 install python-metar --upgrade')
+print('\nUpdating Python Package Manager')
+cmd = 'python3 -m pip install --upgrade pip'
+print(cmd)
+os.system(cmd)
+print('\nRemoving old Python Modules')
+cmd = 'python3 -m pip uninstall python-metar -y'
+print(cmd)
+os.system(cmd)
+print('\nUpdating Python Modules')
+cmd = 'python3 -m pip install -r requirements.txt'
+print(cmd)
+os.system(cmd)
 
 buttonFileName = 'Button/gpio-keys'
-print('Checking ' + buttonFileName)
+print('\nChecking ' + buttonFileName)
 if os.path.isfile(buttonFileName):
-    try:
-        print('Setting proper permissions on ' + buttonFileName)
-        os.chmod(buttonFileName, 0o744)
-    except AttributeError:
-        pass
+    print('Setting proper permissions on ' + buttonFileName)
+    os.chmod(buttonFileName, 0o744)
 
 apikeysFileName = 'Clock/ApiKeys.py'
 wuapi_re = re.compile('\\s*wuapi\\s*=')
@@ -26,7 +27,7 @@ ccapi_re = re.compile('\\s*ccapi\\s*=')
 tmapi_re = re.compile('\\s*tmapi\\s*=')
 owmapi_re = re.compile('\\s*owmapi\\s*=')
 
-print('Checking ' + apikeysFileName)
+print('\nChecking ' + apikeysFileName)
 if os.path.isfile(apikeysFileName):
     altered = False
     foundtm = False
@@ -52,18 +53,33 @@ if os.path.isfile(apikeysFileName):
     apikeys.close()
 
     if not foundtm and not foundowm:
-        print('This version of PiClock requires an OpenWeather One Call API 3.0 key.')
-        print('https://home.openweathermap.org/subscriptions/unauth_subscribe/onecall_30/base')
-        print('Enter your OpenWeather API key.')
-        print('key: '),
-        k = sys.stdin.readline()
-        k = k.strip()
-        if len(k) > 1:
-            newfile += 'owmapi = \'' + k + '\''
-            altered = True
+        print('\nThis version of PiClock requires a new weather API key.')
+        while 1:
+            print('Please select your weather provider:')
+            print('  <1> OpenWeatherMap.org (https://openweathermap.org/price)')
+            print('  <2> Tomorrow.io (https://www.tomorrow.io/weather-api/)')
+            print('Selection (1 or 2)')
+            choice = int(input('? '))
+            if 1 <= choice <= 2:
+                break
+        if choice == 1:
+            print('Enter your OpenWeatherMap.org API key.')
+            print('key: '),
+            k = input('key: ')
+            k = k.strip()
+            if len(k) > 1:
+                newfile += 'owmapi = \'' + k + '\''
+                altered = True
+        else:
+            print('Enter your Tomorrow.io API key.')
+            k = input('key: ')
+            k = k.strip()
+            if len(k) > 1:
+                newfile += 'tmapi = \'' + k + '\''
+                altered = True
 
     if altered:
-        print('Writing Updated ' + apikeysFileName)
+        print('\nWriting updated ' + apikeysFileName)
         apikeys = open(apikeysFileName, 'w')
         apikeys.write(newfile)
         apikeys.close()
@@ -72,7 +88,8 @@ if os.path.isfile(apikeysFileName):
 
     try:
         from rpi_ws281x import *  # NOQA
-    except AttributeError:
+    except ModuleNotFoundError:
+        print('\nERROR: rpi_ws281x not found')
         print('NeoAmbi.py now uses rpi-ws281x/rpi-ws281x-python')
         print('Please install it as follows:')
-        print('sudo pip3 install rpi_ws281x')
+        print('python3 -m pip install rpi_ws281x')

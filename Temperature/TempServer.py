@@ -3,12 +3,14 @@
 # and makes them available as a json response
 # see TempNames.py for sensor id to name mapping
 #
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from w1thermsensor import W1ThermSensor
 import json
-import time
 import socket
+import time
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread, Lock
+
+from w1thermsensor import W1ThermSensor, Unit
+
 from TempNames import sensornames
 
 temps = {}
@@ -17,11 +19,9 @@ lock = Lock()
 
 PORT_NUMBER = 48213
 
-# This class will handles any incoming request from
-# the browser
 
-
-class myHandler(BaseHTTPRequestHandler):
+class MyHandler(BaseHTTPRequestHandler):
+    """This class will handle any incoming request from the browser."""
 
     def do_OPTIONS(self):
         self.send_response(200, "ok")
@@ -46,23 +46,24 @@ class myHandler(BaseHTTPRequestHandler):
                 s['temp'] = "%.1f" % temps[k]
             s['temps'][sensorname(k)] = "%.1f" % temps[k]
         lock.release()
-        self.wfile.write(json.dumps(s))
+        self.wfile.write(bytes(json.dumps(s), 'utf-8'))
 
 
-def sensorname(str):
+def sensorname(name):
     try:
-        return sensornames[str]
+        return sensornames[name]
     except KeyError:
-        return 'temp-' + str
+        return 'temp-' + name
 
 
 def t_http():
     try:
-        server = HTTPServer(('0.0.0.0', PORT_NUMBER), myHandler)
-        print 'Started httpserver on port ', PORT_NUMBER
+        server = HTTPServer(('0.0.0.0', PORT_NUMBER), MyHandler)
+        print('Started httpserver on port ' + str(PORT_NUMBER))
         server.serve_forever()
-    except:
-        server.close()
+    except Exception as e:
+        print('An error occurred:', e)
+        server.server_close()
 
 
 def t_udp():
@@ -72,7 +73,7 @@ def t_udp():
     sock.bind(server_address)
     while True:
         data, address = sock.recvfrom(4096)
-        (addr, temp) = data.split(':')
+        (addr, temp) = str(data).split(':')
         saddr = [addr[i:i + 2] for i in range(0, len(addr), 2)]
         saddr.reverse()
         saddr = saddr[1:7]
@@ -82,16 +83,16 @@ def t_udp():
         temps[addr] = tempf
         temptimes[addr] = time.time()
         lock.release()
-        print 'udp>' + addr + ':' + str(tempf)
+        print('udp>' + addr + ':' + str(tempf))
 
 
 def t_temp():
     while True:
         for sensor in W1ThermSensor.get_available_sensors():
             lock.acquire()
-            temps[sensor.id] = sensor.get_temperature(W1ThermSensor.DEGREES_F)
+            temps[sensor.id] = sensor.get_temperature(Unit.DEGREES_F)
             temptimes[sensor.id] = time.time()
-            print 'hwr>' + sensor.id + ':' + str(temps[sensor.id])
+            print('hwr>' + sensor.id + ':' + str(temps[sensor.id]))
             lock.release()
 
         lock.acquire()
@@ -103,10 +104,11 @@ def t_temp():
         for t in todelete:
             temptimes.pop(t, None)
             temps.pop(t, None)
-            print "del>" + t
+            print('del>' + t)
         lock.release()
 
         time.sleep(120)
+
 
 t_httpt = Thread(target=t_http)
 t_httpt.daemon = True

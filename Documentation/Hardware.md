@@ -40,12 +40,12 @@ Raspi Header Pin           TSOP4838 Pin
 Gnd   Pin 9                  Pin 1
 GPIO3 Pin 5                  Pin 3
 ```
-![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/tsop4838.jpg)
+![PiClock Picture](tsop4838.jpg)
 
 ## Inside Temperature (DS18B20)
 
 There are many guides showing how to connect and check one or more DS18B20s to
-a Raspberry Pi.   Here's one: http://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
+a Raspberry Pi.   Here's one: https://thepihut.com/blogs/raspberry-pi-tutorials/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
 
 ```
 Raspi Header Pin           DS18B20 Pin
@@ -54,7 +54,7 @@ Gnd   Pin 9                  Pin 1
 GPIO4 Pin 7                  Pin 2
 ```
 
-![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/ds18b20.jpg)
+![PiClock Picture](ds18b20.jpg)
 
 
 ## WS2818b RGB LED AmbiLight strip
@@ -75,7 +75,7 @@ to GPIO18, header pin 12.   Note the markings on the LED strip since they all ar
 the same.
 
 
-![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/NeoPixel.jpg)
+![PiClock Picture](NeoPixel.jpg)
 
 ## GPIO Buttons
 
@@ -90,14 +90,14 @@ sudo Button/gpio-keys 23:KEY_SPACE 24:KEY_F2 25:KEY_UP &
  * GPIO25 (header pin 22) is mapped to UP (which does nothing yet)
  * A convenient ground is on header pin 20.
  
-![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/gpiobuttons.jpg)
+![PiClock Picture](gpiobuttons.jpg)
 
 
 ## Schematic of all connections
 
 For those that want to work from a schematic, I threw together a simple one
 
-![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Documentation/Hardware_Schematic.png)
+![PiClock Picture](Hardware_Schematic.png)
 
 
 

@@ -26,17 +26,17 @@ The power usage I've measured is about 35watts with a 19" HDMI Monitor, 27 LEDs 
 The LEDs contributed 3 or so watts, and I think the Pi is about 2-3 Watts normally.
 
 This is the basic PiClock, with some options added.
-![PiClock Picture](https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150307_222711.jpg)
+![PiClock Picture](../Pictures/20150307_222711.jpg)
 
 I chose to remove the plastic frame from my monitor and mount the Pi directly
 on it, as well as tap power from the display's power supply.
-![PiClock Pi Mounting](https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20141222_220127.jpg)
+![PiClock Pi Mounting](../Pictures/20141222_220127.jpg)
 
 I've made it work on multiple platforms and form factors.
-![PiClock Pi Mounting](https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150404_165441_Fotor_Collage.jpg)
+![PiClock Pi Mounting](../Pictures/20150404_165441_Fotor_Collage.jpg)
 
 And I've made some for friends and family with different customizations.
-![PiClock Pi Mounting](https://raw.githubusercontent.com/n0bel/PiClock/master/Pictures/20150326_225305_Fotor_Collage.jpg)
+![PiClock Pi Mounting](../Pictures/20150326_225305_Fotor_Collage.jpg)
 
 
 ## List of materials
@@ -48,35 +48,34 @@ So what do you need to build a PiClock?
   * Power Supply (or if you are ambitious, tap your display power supply,
     you'll probably need a switching down regulator to 5v)  Remember
     the Pi likes something that can source up to 2A.
-  * A USB Keyboard and Mouse for setup (if you want something small
+  * A USB Keyboard and Mouse for setup. If you want something small
     and semi-permanent, I've had good luck with this:
     https://www.google.com/search?q=iPazzPort+2.4G+Mini+Wireless+Keyboard
-    I like the one with the mousepad on the side)
+    I like the one with the touchpad on the side
   * USB Wi-Fi or Internet Connection
 
 Optional things
 
-  * One or more DS18B20s for showing the inside temperature (https://www.google.com/#q=ds18b20)
+  * One or more DS18B20s for showing the indoor temperature: https://www.google.com/search?q=ds18b20
   * A string of WS2818 based RGB LEDs for the AmbiLight effect.  At 40ma per LED, and 30 or so
     LEDs you're quickly up to needing an extra 1.2A from the power supply.  Size it appropriately.
-    One option is https://learn.adafruit.com/adafruit-neopixel-uberguide/overview)
-  * A TSOP4838 IR Receiver to flip the page display of the PiClock (https://www.google.com/search?q=tsop4838)
-  * An IR Remote control (I use this little guy: https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain)
+    One option is: https://learn.adafruit.com/adafruit-neopixel-uberguide/overview
+  * A TSOP4838 IR Receiver to flip the page display of the PiClock: https://www.google.com/search?q=tsop4838
+  * An IR Remote control. I use this little guy: https://www.google.com/search?q=Mini+Universal+Infrared+IR+TV+Set+Remote+Control+Keychain
   * Button or buttons connected to some GPIO pins (and a ground pin) for flipping pages like the IR remote
 
 ## What else?
 
-The Hardware guide (https://github.com/n0bel/PiClock/blob/master/Documentation/Hardware.md)
+The [Hardware Guide](Hardware.md)
 gives more details about how to wire/connect the various extras.
 
-The Install guide (https://github.com/n0bel/PiClock/blob/master/Documentation/Install.md)
-steps through all the things that you need to do to a stock Raspbian image to make the PiClock work.
+The [Install Guide](Install.md)
+steps through all the things that you need to do to a stock Raspberry Pi image to make the PiClock work.
 
 ## Not a Pi Person?
 
-If you want to use the PiClock on your desktop (not your Pi), I've created instructions for that
-https://github.com/n0bel/PiClock/blob/master/Documentation/Install-Clock-Only.md
-
+If you want to use the PiClock on a different desktop (not your Raspberry Pi), I've created instructions for that:
+[Install Instructions for PiClock (Clock Only)](Install-Clock-Only.md)
 
 ## History
 
@@ -105,9 +104,11 @@ the language of choice for Pi's.  It took a while to settle on a GUI framework.
 The primary issue on most of the GUIs was lack of image transparency support.
 Qt5 and its Python wrapper PyQt5 is what I finally chose.
 
-The details of this evolution are on my blog http://n0bel.net/v1/index.php/projects/raspberry-pi-clock
-as well as newer postings and updates.   Some of my friends have been treated (subjected)
-to more timely updates via my public facebook page https://www.facebook.com/pages/Kevin-N0BEL/946361588712436
+The details of this evolution are on my blog, as well as newer postings and updates: 
+[NØBEL Blog - Raspberry Pi Clock](http://n0bel.net/v1/index.php/projects/raspberry-pi-clock). 
+Some of my friends have been treated (subjected)
+to more timely updates via my public facebook page 
+https://www.facebook.com/pages/Kevin-N0BEL/946361588712436
 
 And of course I tweet https://twitter.com/KevinN0BEL, Pin https://www.pinterest.com/kevinuhir/,
 Instagram https://instagram.com/kevin_n0bel/, and hack https://hackaday.io/n0bel
