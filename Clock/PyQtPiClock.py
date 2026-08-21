@@ -1628,6 +1628,36 @@ class SS(QtGui.QLabel):
                     self.img_list.append(fullFile)
 
 
+rvhost = ''
+rvpaths = {}
+rvreply = None
+rvlastget = 0
+
+
+def getrvindex():
+    global rvreply, rvlastget
+    rvlastget = time.time()
+    if Config.userainviewer:
+        url = 'https://api.rainviewer.com/public/weather-maps.json'
+    else:
+        url = 'https://api.librewxr.net/public/weather-maps.json'
+    rvreply = manager.get(QNetworkRequest(QUrl(url)))
+    rvreply.finished.connect(rvfinished)
+
+
+def rvfinished():
+    global rvhost, rvpaths
+    try:
+        rvdata = json.loads(str(rvreply.readAll()))
+    except Exception:
+        return
+    rvhost = rvdata['host']
+    p = {}
+    for f in rvdata['radar']['past'] + rvdata['radar'].get('nowcast', []):
+        p[int(f['time'])] = f['path']
+    rvpaths = p
+
+
 class Radar(QtGui.QLabel):
 
     def __init__(self, parent, radar, rect, myname):
@@ -1713,6 +1743,8 @@ class Radar(QtGui.QLabel):
         self.lastget = 0
 
     def rtick(self):
+        if time.time() > (rvlastget + 300):
+            getrvindex()
         if time.time() > (self.lastget + self.interval):
             self.get(time.time())
             self.lastget = time.time()
@@ -1757,12 +1789,13 @@ class Radar(QtGui.QLabel):
         t = int(t / 600)*600
         self.getTime = t
         self.getIndex = i
+        if t not in rvpaths:
+            return
         if i == 0:
             self.tileurls = []
             self.tileQimages = []
             for tt in self.tiletails:
-                tileurl = "https://tilecache.rainviewer.com/v2/radar/%d/%s" \
-                    % (t, tt)
+                tileurl = rvhost + rvpaths[t] + tt
                 self.tileurls.append(tileurl)
         print self.myname + " " + str(self.getIndex) + " " + self.tileurls[i]
         self.tilereq = QNetworkRequest(QUrl(self.tileurls[i]))
@@ -2082,6 +2115,11 @@ try:
     Config.radar_refresh
 except AttributeError:
     Config.radar_refresh = 10    # minutes
+
+try:
+    Config.userainviewer
+except AttributeError:
+    Config.userainviewer = 0
 
 try:
     Config.fontattr

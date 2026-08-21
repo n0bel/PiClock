@@ -37,11 +37,11 @@ if (os.path.isfile(apikeysFileName)):
         if ccapi_re.match(aline):
             foundcc = True
         if owmapi_re.match(aline):
-            foundwom = True
+            foundowm = True
         if wuapi_re.match(aline):
             print "Removing wuapi key from " + apikeysFileName
             altered = True
-        if dsapi_re.match(aline):
+        elif dsapi_re.match(aline):
             print "Removing dsapi key from " + apikeysFileName
             altered = True
         else:
@@ -73,3 +73,25 @@ if (os.path.isfile(apikeysFileName)):
         print "NeoAmbi.py now uses rpi-ws281x/rpi-ws281x-python"
         print "Please install it as follows:"
         print "sudo pip install rpi_ws281x"
+
+configFileName = 'Clock/Config.py'
+userainviewer_re = re.compile('\\s*userainviewer\\s*=')
+
+print "Checking " + configFileName
+if (os.path.isfile(configFileName)):
+    found = False
+    config = open(configFileName, "r")
+    for aline in config:
+        if userainviewer_re.match(aline):
+            found = True
+    config.close()
+
+    if not found:
+        print "Adding userainviewer to " + configFileName
+        config = open(configFileName, "a")
+        config.write(
+            "\nuserainviewer = 0   "
+            "# 0 = LibreWXR, 1 = RainViewer (free tier max zoom 7)\n")
+        config.close()
+    else:
+        print "No changes made to " + configFileName
