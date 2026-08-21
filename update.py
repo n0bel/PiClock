@@ -7,9 +7,9 @@ print "Updating Python Modules"
 print "Updating python-dateutil"
 os.system("sudo pip install python-dateutil --upgrade")
 print "Updating tzlocal"
-os.system("sudo pip install tzlocal --upgrade")
+os.system("sudo pip install 'tzlocal<3' --upgrade")
 print "Updating python-metar"
-os.system("sudo pip install python-metar --upgrade")
+os.system("sudo pip install 'python-metar<2' --upgrade")
 
 buttonFileName = 'Button/gpio-keys'
 print "Checking " + buttonFileName
