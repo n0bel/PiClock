@@ -954,19 +954,29 @@ def wxfinished_tm():
         wxdesc.setText(tm_code_map[f['values']['weatherCode']])
         wxdesc2.setText(tm_code_map[f['values']['weatherCode']])
 
-        if Config.wind_degrees:
-            wd = str(f['values']['windDirection']) + u'°'
-        else:
-            wd = bearing(f['values']['windDirection'])
+        wd = ''
+        if 'windDirection' in f['values']:
+            if Config.wind_degrees:
+                wd = str(f['values']['windDirection']) + u'° '
+            else:
+                wd = bearing(f['values']['windDirection']) + ' '
+
+        gust = ''
+        if 'windGust' in f['values']:
+            if Config.metric:
+                gust = (Config.Lgusting +
+                        '%.1f' % (speedm(f['values']['windGust'])) + 'km/h')
+            else:
+                gust = (Config.Lgusting +
+                        '%.1f' % (f['values']['windGust']) + 'mph')
 
         if Config.metric:
             temper.setText('%.1f' % (tempm(f['values']['temperature'])) + u'°C')
             temper2.setText('%.1f' % (tempm(f['values']['temperature'])) + u'°C')
             press.setText(Config.LPressure + '%.1f' % barom(f['values']['pressureSurfaceLevel']) + 'mm')
-            wind.setText(Config.LWind + wd + ' ' +
+            wind.setText(Config.LWind + wd +
                          '%.1f' % (speedm(f['values']['windSpeed'])) + 'km/h' +
-                         Config.Lgusting +
-                         '%.1f' % (speedm(f['values']['windGust'])) + 'km/h')
+                         gust)
             wind2.setText(Config.LFeelslike +
                               '%.1f' % (tempm(f['values']['temperatureApparent'])) + u'°C')
         else:
@@ -974,10 +984,9 @@ def wxfinished_tm():
             temper2.setText('%.1f' % (f['values']['temperature']) + u'°F')
             press.setText(Config.LPressure + '%.2f' % (f['values']['pressureSurfaceLevel']) + 'in')
             wind.setText(Config.LWind +
-                         wd + ' ' +
+                         wd +
                          '%.1f' % (f['values']['windSpeed']) + 'mph' +
-                         Config.Lgusting +
-                         '%.1f' % (f['values']['windGust']) + 'mph')
+                         gust)
             wind2.setText(Config.LFeelslike +
                               '%.1f' % (f['values']['temperatureApparent']) + u'°F')
 
