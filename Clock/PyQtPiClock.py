@@ -609,6 +609,8 @@ def wxfinished_owm_forecast():
                     xmintemp = tx
                 ldesc.append(f['weather'][0]['description'])
                 licon.append(f['weather'][0]['icon'])
+        if len(licon) < 1:
+            continue
         wicon = getmost(licon)
         wdesc = getmost(ldesc)
 
@@ -632,7 +634,7 @@ def wxfinished_owm_forecast():
         wx.setStyleSheet(
             "#wx { font-size: " +
             str(int(19 * xscale * Config.fontmult)) + "px; }")
-        wx.setText(f['weather'][0]['description'].title() + "\n" + s)
+        wx.setText(wdesc.title() + "\n" + s)
 
         wicon = owmicons[wicon]
         wxiconpixmap = QtGui.QPixmap(
@@ -1755,6 +1757,8 @@ class Radar(QtGui.QLabel):
             if self.ticker < 5:
                 return
         self.ticker = 0
+        if self.displayedFrame >= len(self.frameImages):
+            self.displayedFrame = 0
         f = self.frameImages[self.displayedFrame]
         self.wwx.setPixmap(f["image"])
         self.displayedFrame += 1
