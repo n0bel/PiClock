@@ -25,12 +25,14 @@ wuapi_re = re.compile('\\s*wuapi\\s*=')
 dsapi_re = re.compile('\\s*dsapi\\s*=')
 ccapi_re = re.compile('\\s*ccapi\\s*=')
 owmapi_re = re.compile('\\s*owmapi\\s*=')
+tmapi_re = re.compile('\\s*tmapi\\s*=')
 
 print "Checking " + apikeysFileName
 if (os.path.isfile(apikeysFileName)):
     altered = False
     foundcc = False
     foundowm = False
+    foundtm = False
     newfile = ''
     apikeys = open(apikeysFileName, "r")
     for aline in apikeys:
@@ -38,6 +40,8 @@ if (os.path.isfile(apikeysFileName)):
             foundcc = True
         if owmapi_re.match(aline):
             foundowm = True
+        if tmapi_re.match(aline):
+            foundtm = True
         if wuapi_re.match(aline):
             print "Removing wuapi key from " + apikeysFileName
             altered = True
@@ -48,7 +52,7 @@ if (os.path.isfile(apikeysFileName)):
             newfile += aline
     apikeys.close()
 
-    if not foundcc and not foundowm:
+    if not foundcc and not foundowm and not foundtm:
         print "This version of PiClock requires a openweathermap api key."
         print "https://openweathermap.org/price  use the Free option"
         print "Enter your openweathermap api key."
