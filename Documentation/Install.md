@@ -1,5 +1,5 @@
 # Install Instructions for PiClock
-## For Raspbian Stretch
+## For Raspbian Stretch or Buster
 
 PiClock and this install guide are based on Raspian Stretch downloaded from
 https://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/ I suggest using
@@ -10,6 +10,18 @@ What follows is a step by step guide.  If you start with a new clean raspbian
 image, it should just work. I'm assuming that you already know how to hook
 up your Raspi, monitor, and keyboard/mouse.   If not, please do a web search
 regarding setting up the basic hardware for your Raspi.
+
+### Which Raspbian version
+
+Buster (Debian 10) is the newest that will run PiClock.  PyQt4 was dropped
+from Debian after Buster, so Bullseye and anything newer cannot run it at
+all.  If you're on Bullseye or newer, use SerBrynden's fork instead
+https://github.com/SerBrynden/PiClock
+
+The last Buster image is 2021-05-07-raspios-buster-armhf.zip here
+https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-05-28/
+
+The steps below were written for Stretch, and apply to Buster as well.
 
 ### Download Raspbian Stretch and put it on an SD Card
 
@@ -105,6 +117,58 @@ ping github.com
 ```
 (remember ctrl-c aborts programs, like breaking out of ping, which will
 go on forever)
+
+### The raspbian mirrors have moved
+
+raspbian.raspberrypi.org no longer carries stretch or buster, so apt-get
+update on a fresh image fails before you get started.  The legacy archive
+still has them.  Edit the sources list
+```
+sudo nano /etc/apt/sources.list
+```
+and change raspbian.raspberrypi.org to legacy.raspbian.org, so the line
+reads something like
+```
+deb http://legacy.raspbian.org/raspbian/ buster main contrib non-free rpi
+```
+archive.raspberrypi.org still serves buster, so
+/etc/apt/sources.list.d/raspi.list can be left alone.
+
+### Certificate authorities on older releases
+
+The weather and radar services have all moved to certificates issued under
+authorities that didn't exist when these older releases shipped.  A Pi
+installed years ago carries the certificate store from that time, and will
+quietly fail to talk to them.  There is no useful error on screen -- Qt
+reports an SSL handshake failure into the log, and the clock simply shows
+no weather and no radar.
+
+Buster doesn't need any of this.  Its store already trusts the authorities
+these services chain back to.  Stretch, Jessie and older do need it.
+
+The certificates go into /usr/local/share/ca-certificates, which is the
+directory meant for locally added ones.  Nothing raspbian installed is
+removed or altered, and you can undo the whole thing by deleting that
+directory and running update-ca-certificates again.
+```
+curl -O https://curl.se/ca/cacert.pem
+mkdir cacert
+awk '/BEGIN CERT/{n++; inc=1} inc{f=sprintf("cacert/%03d.crt",n); print > f} /END CERT/{inc=0; close(f)}' cacert.pem
+sudo mkdir -p /usr/local/share/ca-certificates/cacert
+sudo cp cacert/*.crt /usr/local/share/ca-certificates/cacert/
+sudo update-ca-certificates
+```
+That file is the set of authorities Mozilla trusts, published by the curl
+project.  update-ca-certificates rebuilds the hashed directory that both
+openssl and Qt read.  Appending to ca-certificates.crt by hand looks like
+it should work and does not, because openssl reads the directory rather
+than that file.
+
+To check that it worked
+```
+openssl s_client -connect api.librewxr.net:443 -servername api.librewxr.net < /dev/null 2>/dev/null | grep Verify
+```
+You are looking for "Verify return code: 0 (ok)".
 
 ### Get all the software that PiClock needs.
 
