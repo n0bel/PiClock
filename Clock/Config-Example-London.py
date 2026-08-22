@@ -56,8 +56,8 @@ dimcolor.setAlpha(0)
 METAR="EGLL"  # LHR London Heathrow Airport
 
 # Language Specific wording
-# DarkSky Language code
-#  (https://darksky.net/dev/docs under lang=)
+# OpenWeatherMap Language code
+#  (https://openweathermap.org/current#multi)
 Language = "EN"
 
 # The Python Locale for date/time (locale.setlocale)

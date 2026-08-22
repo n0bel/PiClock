@@ -57,8 +57,8 @@ dimcolor = QColor('#103125')
 dimcolor.setAlpha(192)
 
 # Language Specific wording
-# DarkSky Language code
-#  (https://darksky.net/dev/docs under lang=)
+# OpenWeatherMap Language code
+#  (https://openweathermap.org/current#multi)
 Language = "EN"
 
 # The Python Locale for date/time (locale.setlocale)
