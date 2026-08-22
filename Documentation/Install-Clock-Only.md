@@ -30,14 +30,16 @@ https://github.com/n0bel/PiClock/archive/master.zip, then unzip it.
 
 ### Configure the PiClock api keys
 
-The first is to set API keys for DarkSky and Google Maps.
+The first is to set an API key for Google Maps, and optionally one for your
+weather service.
 These are both free, unless you have large volume.
 The PiClock usage is well below the maximums imposed by the no cost api keys.
 
-#### DarkSky api keys
+#### Weather api keys are optional
 
-DarkSky api keys are created at this link:
-https://darksky.net/dev
+PiClock uses Open-Meteo when ApiKeys.py has no weather key in it.  Open-Meteo
+needs no key and works worldwide.  If you would rather use OpenWeatherMap or
+Tomorrow.io, put their key in ApiKeys.py and it will be used instead.
 
 #### Google Maps API key
 
@@ -74,8 +76,8 @@ cp ApiKeys-example.py ApiKeys.py
 Put your api keys in the file as indicated
 ```
 #change this to your API keys
-# DarkSky API key
-dsapi = 'YOUR DARKSKY API KEY'
+# Weather api key is optional, Open-Meteo is used without one
+# owmapi = 'YOUR OPENWEATHERMAP API KEY'
 # Google Maps API key
 googleapi = 'YOUR GOOGLE API KEY'
 ```

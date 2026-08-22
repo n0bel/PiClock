@@ -9,16 +9,11 @@ the composite output as well, but this is not a design goal.  The main
 program (Clock/PyQtPiClock.py) will also run on Windows, Mac, and Linux,
 as long as python 2.7+ and PyQt4 is installed.
 
-~~The Weather data comes from DarkSky using their API ( http://darksky.net/dev/ ).
-The maps are from Mapbox ( https://mapbox.com/ ) Google Maps API.
-**You must get API Keys from DarkSky and Mapbox or Google in order to make
-this work.** It is free for low usage such as this application.~~
-
-The Weather data comes from OpenWeatherMap or Tomorrow.io using their API.
+The Weather data comes from Open-Meteo, OpenWeatherMap or Tomorrow.io.
 The maps are from Mapbox ( https://mapbox.com/ ) or Google Maps API.
-**You must get API Keys from OpenWeatherMap or Tomorrow.io and Mapbox
-or Google in order to makethis work.** It is free for low usage such
- as this application.
+**You must get an API Key from Mapbox or Google in order to make this work.**
+A weather api key is optional, since Open-Meteo needs none.  It is free for
+low usage such as this application.
 
 
 The PiClock can be customized with several supported additional things:
