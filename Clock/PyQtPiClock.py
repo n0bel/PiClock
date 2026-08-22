@@ -12,6 +12,7 @@ import json
 import locale
 import random
 import math
+import re
 # import urllib
 # import re
 
@@ -299,6 +300,11 @@ def tempfinished():
                 for tk in tempdata['temps']:
                     s += ' ' + tk + ':' + tempdata['temps'][tk]
     temp.setText(s)
+
+
+def safeurl(url):
+    return re.sub(r'((?:apikey|appid|key|access_token)=)[^&]*',
+                  r'\1<key>', url)
 
 
 def tempm(f):
@@ -1694,7 +1700,7 @@ def getwx_owm():
         str(Config.location.lng)
     wxurl += '&units=imperial&lang=' + Config.Language.lower()
     wxurl += '&r=' + str(random.random())
-    print(wxurl)
+    print(safeurl(wxurl))
     r = QUrl(wxurl)
     r = QNetworkRequest(r)
     if owmonecall:
@@ -1710,7 +1716,7 @@ def getwx_owm():
             str(Config.location.lng)
         wxurl += '&units=imperial&lang=' + Config.Language.lower()
         wxurl += '&r=' + str(random.random())
-        print(wxurl)
+        print(safeurl(wxurl))
         r = QUrl(wxurl)
         r = QNetworkRequest(r)
         wxreplyc = manager.get(r)
@@ -1729,7 +1735,7 @@ def getwx_tm():
     wxurl += '&units=imperial'
     wxurl += '&fields=temperature,weatherCode,temperatureApparent,humidity,'
     wxurl += 'windSpeed,windDirection,windGust,pressureSurfaceLevel,precipitationType'
-    print(wxurl)
+    print(safeurl(wxurl))
     r = QUrl(wxurl)
     r = QNetworkRequest(r)
     wxreply = manager.get(r)
@@ -1741,7 +1747,7 @@ def getwx_tm():
     wxurl2 += '&units=imperial'
     wxurl2 += '&fields=temperature,precipitationIntensity,precipitationType,'
     wxurl2 += 'precipitationProbability,weatherCode'
-    print(wxurl2)
+    print(safeurl(wxurl2))
     r2 = QUrl(wxurl2)
     r2 = QNetworkRequest(r2)
     wxreply2 = manager.get(r2)
@@ -1753,7 +1759,7 @@ def getwx_tm():
     wxurl3 += '&units=imperial'
     wxurl3 += '&fields=temperature,precipitationIntensity,precipitationType,'
     wxurl3 += 'precipitationProbability,weatherCode,temperatureMax,temperatureMin'
-    print(wxurl3)
+    print(safeurl(wxurl3))
     r3 = QUrl(wxurl3)
     r3 = QNetworkRequest(r3)
     wxreply3 = manager.get(r3)
