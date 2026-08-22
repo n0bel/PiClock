@@ -328,9 +328,19 @@ sudo reboot
 
 ### Configure the PiClock api keys
 
-We need to set API keys for DarkSky and Mapbox or Google Maps.
-These are both unless you have large volume.
-The PiClock usage is well below the maximums imposed by the no cost api keys.
+We need to set an API key for Mapbox or Google Maps, and optionally one for
+your weather service.  Both are no cost, and PiClock usage is well below the
+maximums imposed by the no cost api keys.
+
+#### Weather api keys are optional
+
+PiClock uses Open-Meteo when ApiKeys.py has no weather key in it.  Open-Meteo
+needs no key, works worldwide, and picks the best national weather model for
+your location.  If you would rather use OpenWeatherMap or Tomorrow.io, put
+their key in ApiKeys.py and it will be used instead.  Setting useopenmeteo in
+Config.py forces Open-Meteo even when you have a key.
+
+A map api key is still required -- see below.
 
 #### Openweathermap api keys
 

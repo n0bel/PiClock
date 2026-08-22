@@ -21,6 +21,10 @@ still selectable in Config.py via userainviewer.  Anything older than
 Buster will also need certificate authorities added before those services
 will answer it, which the install guide covers.
 
+Weather comes from Open-Meteo unless you put an api key in ApiKeys.py, so no
+weather signup is needed.  You still need a Mapbox or Google Maps key for the
+maps under the radar.
+
 This project started out as a way to waste a Saturday afternoon.
 I had a Raspberry Pi and an extra monitor and had just taken down an analog clock from my livingroom wall.
 I was contemplating getting a radio sync'ed analog clock to replace it, so I didn't have to worry about
