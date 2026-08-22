@@ -1957,7 +1957,7 @@ class Radar(QtGui.QLabel):
         self.point = radar["center"]
         self.radar = radar
         self.baseurl = self.mapurl(radar, rect)
-        print "map base url: " + self.baseurl
+        print "map base url: " + safeurl(self.baseurl)
         QtGui.QLabel.__init__(self, parent)
         self.interval = Config.radar_refresh * 60
         self.lastwx = 0
@@ -2087,7 +2087,7 @@ class Radar(QtGui.QLabel):
             for tt in self.tiletails:
                 tileurl = rvhost + rvpaths[t] + tt
                 self.tileurls.append(tileurl)
-        print self.myname + " " + str(self.getIndex) + " " + self.tileurls[i]
+        print self.myname + " " + str(self.getIndex) + " " + safeurl(self.tileurls[i])
         self.tilereq = QNetworkRequest(QUrl(self.tileurls[i]))
         self.tilereply = manager.get(self.tilereq)
         QtCore.QObject.connect(self.tilereply, QtCore.SIGNAL(
