@@ -49,6 +49,10 @@ clockUTC = 0 # Clock (analog/digital/top date) to display in UTC regardless of P
 
 usemapbox = 0   # Use Mapbox.com for maps, needs api key (mbapi in ApiKeys.py)
 userainviewer = 0   # 0 = LibreWXR, 1 = RainViewer (free tier max zoom 7)
+
+# A non blank api key usually selects the weather service.  Open-Meteo doesn't
+# use one, so having no keys selects it.  1 forces it even if you have keys.
+useopenmeteo = 0
 metric = 0  # 0 = English, 1 = Metric
 radar_refresh = 10      # minutes
 weather_refresh = 30    # minutes
