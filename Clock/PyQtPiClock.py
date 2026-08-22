@@ -2127,8 +2127,12 @@ class Radar(QtGui.QLabel):
         ii = None
         painter2 = QPainter()
         painter2.begin(ii2)
-        timestamp = "{0:%H:%M} rainvewer.com".format(
-                    datetime.datetime.fromtimestamp(self.getTime))
+        if Config.userainviewer:
+            site = ' RainViewer.com'
+        else:
+            site = ' LibreWXR.net'
+        timestamp = "{0:%H:%M}".format(
+                    datetime.datetime.fromtimestamp(self.getTime)) + site
         painter2.setPen(QColor(63, 63, 63, 255))
         painter2.setFont(QFont("Arial", 8))
         painter2.setRenderHint(QPainter.TextAntialiasing)
