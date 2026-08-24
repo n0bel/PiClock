@@ -1,9 +1,5 @@
 /ApiKeys.py
-/Config-Chris.py
-/Config-Jean.py
-/Config-Kelly.py
-/Config.py
-/Config-jcwho.py
-/Config-Bedside.py
-/Config-7in-night.py
-/Config-7in-day.py
+# a config of your own stays here and is never committed.  only the
+# shipped examples are, and they say so in the name.
+/Config*.py
+!/Config-Example*.py
