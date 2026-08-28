@@ -1221,7 +1221,7 @@ metar_cond = [
     ('SN', 'BL', '', 'Blowing Snow', 'snow', 12),
     ('SN', '', '+', 'Heavy Snow', 'snow', 12),
     ('SN', '', '-', 'Light Snow', 'snow', 12),
-    ('SN', '', '', 'Rain', 'snow', 12),
+    ('SN', '', '', 'Snow', 'snow', 12),
 
     ('SG', 'BL', '', 'Blowing Snow', 'snow', 12),
     ('SG', '', '', 'Snow', 'snow', 12),
@@ -1231,8 +1231,8 @@ metar_cond = [
     ('IC', '', '', 'Ice Crystals', 'snow', 13),
     ('PL', '', '', 'Ice Pellets', 'snow', 13),
 
-    ('GR', '', '+', 'Heavy Hail', 'thuderstorm', 14),
-    ('GR', '', '', 'Hail', 'thuderstorm', 14),
+    ('GR', '', '+', 'Heavy Hail', 'thunderstorm', 14),
+    ('GR', '', '', 'Hail', 'thunderstorm', 14),
 ]
 
 
@@ -1284,29 +1284,37 @@ def wxfinished_metar():
                     pri = c[5]
                     weather = c[3]
                     icon = c[4]
+    # A report lists present weather in decreasing significance, so the first
+    # group that matches is the one to show.  wpri ranks the table rows that
+    # match this one group, which is what picks Light Rain over the plainer
+    # Rain; it does not carry across groups, or a later and less significant
+    # group could outrank an earlier one.
     for w in f.weather:
+        wpri = -1
         for c in metar_cond:
             if w[2] == c[0]:
                 if c[1] > '':
                     if w[1] == c[1]:
                         if c[2] > '':
                             if w[0][0:1] == c[2]:
-                                if c[5] > pri:
-                                    pri = c[5]
+                                if c[5] > wpri:
+                                    wpri = c[5]
                                     weather = c[3]
                                     icon = c[4]
                 else:
                     if c[2] > '':
                         if w[0][0:1] == c[2]:
-                            if c[5] > pri:
-                                pri = c[5]
+                            if c[5] > wpri:
+                                wpri = c[5]
                                 weather = c[3]
                                 icon = c[4]
                     else:
-                        if c[5] > pri:
-                            pri = c[5]
+                        if c[5] > wpri:
+                            wpri = c[5]
                             weather = c[3]
                             icon = c[4]
+        if wpri > -1:
+            break
 
     if not daytime:
         icon = icon.replace('-day', '-night')
